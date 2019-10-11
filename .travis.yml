@@ -1,0 +1,21 @@
+language: node_js
+node_js:
+- stable
+
+install:
+- npm install
+
+jobs:
+  include:
+    - stage: "Tests"                
+      name: "Unit Tests"            # names the first Tests stage job
+      script: 
+        - npm test
+    - stage: "Deploy"              
+      script: skip
+      before_deploy: 
+        - npm run build
+      deploy:
+        provider: heroku
+        api_key:
+          secure: NkCmh3yHl8oF4nvtn27qYQHbRH61cKIa+l5LzC9mUNsHQE3QDayuFxif0uFGO6tg2rPUchnh2nEMkhmGaheAAsMoUEyrM4GVlxaF8UTzudW2Sg0WWBpe8TPOQzUYcOtOWzcvU/l6+mbiWvP5RbowrpxtBkzqlSd+p+yX1uHipjDO8Z8h7XfEg7qpIIR59vmYupzyqfkLMK/hGBPi6pJzvXlAqsGytwCgruClv01PnALmaF2AtSM7HewFD8txMz2iOGrCL+BcViM/Zcf4bI65oOqI2khafR8M0vcPUIc71NiZyZZkqUcD/uGbBg6cJ1QMF9IGzCryq/fbEggJ5kccouceTuZ/W3XSvfCozc7qCQVQjs90OJfYSt0759HjfojM/9bo/RAbDUwmgAks2Lky9reWrs0P9S34aPcimY+A9b/IBFPszeRzUAkcNalhGAnzNAxUcuVj1SvPBbM+/S2Yl93aVpTB6j2dgFIGJPSEJAKtGmCu9VOLHNLpc45VgWUCdux932WOm4rJtnoDQm0Cr+FvIua5R8+BRC5Wc7U47tXS7EC5zX92Cm3peP9qGssolz4bVCpL1M0BLcSmDNfX/63UkXMmrXK9GgwgLuFwLRyQqwf/+1Qdzr0NJzmWyvbCwT69SdoldAenser8wXqRth/3D+8fRIQfFJpM147dghE=
