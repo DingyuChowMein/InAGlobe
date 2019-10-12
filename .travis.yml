@@ -5,11 +5,12 @@ install:
 - npm install
 jobs:
   include:
-  - stage: Tests
-    name: Unit Tests
+  - stage: test
+    name: tests
     script:
     - npm test
-  - stage: Deploy
+    
+  - stage: deploy
     script: skip
     before_deploy:
     - npm run build
