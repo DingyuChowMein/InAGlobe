@@ -17,6 +17,8 @@
 */
 // @material-ui/icons
 import Home from "@material-ui/icons/Home";
+import List from "@material-ui/icons/List";
+import Subject from "@material-ui/icons/Subject";
 import Person from "@material-ui/icons/Person";
 import LibraryBooks from "@material-ui/icons/LibraryBooks";
 import BubbleChart from "@material-ui/icons/BubbleChart";
@@ -35,6 +37,20 @@ const dashboardRoutes = [
     name: "Home",
     icon: Home,
     component: DashboardPage,
+    layout: "/main"
+  },
+  {
+    path: "/projectlist",
+    name: "Project List",
+    icon: List,
+    component: Typography,
+    layout: "/main"
+  },
+  {
+    path: "/addproposal",
+    name: "Add Proposal",
+    icon: Subject,
+    component: TableList,
     layout: "/main"
   },
   {
