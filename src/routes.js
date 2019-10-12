@@ -16,7 +16,7 @@
 
 */
 // @material-ui/icons
-import Dashboard from "@material-ui/icons/Dashboard";
+import Home from "@material-ui/icons/Home";
 import Person from "@material-ui/icons/Person";
 import LibraryBooks from "@material-ui/icons/LibraryBooks";
 import BubbleChart from "@material-ui/icons/BubbleChart";
@@ -33,9 +33,9 @@ import NotificationsPage from "views/Notifications/Notifications.js";
 
 const dashboardRoutes = [
   {
-    path: "/dashboard",
-    name: "Dashboard",
-    icon: Dashboard,
+    path: "/home",
+    name: "Home",
+    icon: Home,
     component: DashboardPage,
     layout: "/main"
   },
