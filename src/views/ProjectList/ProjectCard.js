@@ -19,6 +19,7 @@ export default function ProjectCard(props) {
         <Card>
             <img
                 className={classes.cardImgTop}
+                alt="Provided for a Card."
                 style={{ height: "180px", width: "100%", display: "block", objectFit: "cover" }}
                 src={image}
                 data-holder-rendered="true"

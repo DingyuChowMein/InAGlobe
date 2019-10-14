@@ -1,5 +1,6 @@
 import os
 import logging
+import sys
 from flask import Flask, render_template
 
 app = Flask(__name__, static_folder='build/static', template_folder='build')
@@ -13,4 +14,4 @@ def hello():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='localhost', port=port)
