@@ -16,7 +16,7 @@ export default function ProjectCard(props) {
     const classes = useStyles()
     const { title, organisation, status, description, image } = props
     return (
-        <Card style={{ width: "20rem" }}>
+        <Card style={{ width: "100%" }}>
             <img
                 className={classes.cardImgTop}
                 data-src="holder.js/100px180/"
