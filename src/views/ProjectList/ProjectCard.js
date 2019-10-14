@@ -3,9 +3,9 @@ import React from "react"
 import { makeStyles } from "@material-ui/core/styles"
 
 // core components
-import Button from "../CustomButtons/Button.js"
-import Card from "../Card/Card.js"
-import CardBody from "../Card/CardBody.js"
+import Button from "../../components/CustomButtons/Button.js"
+import Card from "../../components/Card/Card.js"
+import CardBody from "../../components/Card/CardBody.js"
 
 import styles from "../../assets/jss/material-dashboard-react/cardImagesStyles.js"
 

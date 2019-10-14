@@ -7,8 +7,6 @@ import './index.css'
 import * as serviceWorker from './serviceWorker'
 import Home from './layouts/Home'
 
-
-
 const hist = createBrowserHistory()
 
 ReactDOM.render(

@@ -8,8 +8,8 @@ import emissionPicture from "../../assets/img/card_example3.png"
 import mobilePicture from "../../assets/img/card_example4.png"
 
 import styles from "../../assets/jss/material-dashboard-react/views/dashboardStyle.js"
-import GridContainer from "../Grid/GridContainer.js"
-import GridItem from "../Grid/GridItem.js"
+import GridContainer from "../../components/Grid/GridContainer.js"
+import GridItem from "../../components/Grid/GridItem.js"
 
 const useStyles = makeStyles(styles)
 

@@ -9,8 +9,8 @@ import InputAdornment from "@material-ui/core/InputAdornment"
 import People from "@material-ui/icons/People";
 
 //core components
-import CustomInput from "../CustomInput/CustomInput.js"
-import GridItem from "../Grid/GridItem.js"
+import CustomInput from "../../components/CustomInput/CustomInput.js"
+import GridItem from "../../components/Grid/GridItem.js"
 
 import styles from "../../assets/jss/material-dashboard-react/views/dashboardStyle.js"
 
