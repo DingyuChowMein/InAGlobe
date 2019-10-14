@@ -25,6 +25,7 @@ import BubbleChart from "@material-ui/icons/BubbleChart";
 import Notifications from "@material-ui/icons/Notifications";
 // core components/views for Admin layout
 import DashboardPage from "views/Dashboard/Dashboard.js";
+import ProjectList from "views/ProjectList/ProjectList.js"
 import UserProfile from "views/UserProfile/UserProfile.js";
 import TableList from "views/TableList/TableList.js";
 import Typography from "views/Typography/Typography.js";
@@ -43,7 +44,7 @@ const dashboardRoutes = [
     path: "/projectlist",
     name: "Project List",
     icon: List,
-    component: Typography,
+    component: ProjectList,
     layout: "/main"
   },
   {
