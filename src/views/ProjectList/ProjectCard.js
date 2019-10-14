@@ -16,12 +16,10 @@ export default function ProjectCard(props) {
     const classes = useStyles()
     const { title, organisation, status, description, image } = props
     return (
-        <Card style={{ width: "100%" }}>
+        <Card>
             <img
                 className={classes.cardImgTop}
-                data-src="holder.js/100px180/"
-                alt="100%x180"
-                style={{ height: "180px", width: "100%", display: "block" }}
+                style={{ height: "180px", width: "100%", display: "block", objectFit: "cover" }}
                 src={image}
                 data-holder-rendered="true"
             />
