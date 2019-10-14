@@ -12,9 +12,9 @@ import ListItem from "@material-ui/core/ListItem"
 import ListItemText from "@material-ui/core/ListItemText"
 import Icon from "@material-ui/core/Icon"
 // core components
-import NavbarLinks from "components/Navbars/NavbarLinks.js"
+import NavbarLinks from "../Navbars/NavbarLinks.js"
 
-import styles from "assets/jss/material-dashboard-react/components/sidebarStyle.js"
+import styles from "../../assets/jss/material-dashboard-react/components/sidebarStyle.js"
 
 const useStyles = makeStyles(styles)
 

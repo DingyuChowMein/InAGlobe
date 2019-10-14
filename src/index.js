@@ -5,17 +5,16 @@ import { Router, Route, Switch, Redirect } from "react-router-dom"
 
 import './index.css'
 import * as serviceWorker from './serviceWorker'
+import Home from './layouts/Home'
 
-// core-components
-import Home from "layouts/Home.js"
+
 
 const hist = createBrowserHistory()
 
 ReactDOM.render(
     <Router history={hist}>
         <Switch>
-            <Route path="/main" component={Home} />
-            <Redirect from="/" to="/main/home" />
+            <Route path="/" component={Home} />
         </Switch>
     </Router>, 
     document.getElementById('root')

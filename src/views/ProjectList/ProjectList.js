@@ -1,15 +1,15 @@
 import React from "react"
 import { makeStyles } from "@material-ui/core/styles"
-import ProjectCard from "views/ProjectList/ProjectCard"
+import ProjectCard from "./ProjectCard.js"
 
-import pillPicture from "assets/img/card_example1.png"
-import smokePicture from "assets/img/card_example2.png"
-import emissionPicture from "assets/img/card_example3.png"
-import mobilePicture from "assets/img/card_example4.png"
+import pillPicture from "../../assets/img/card_example1.png"
+import smokePicture from "../../assets/img/card_example2.png"
+import emissionPicture from "../../assets/img/card_example3.png"
+import mobilePicture from "../../assets/img/card_example4.png"
 
-import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js"
-import GridContainer from "components/Grid/GridContainer"
-import GridItem from "components/Grid/GridItem"
+import styles from "../../assets/jss/material-dashboard-react/views/dashboardStyle.js"
+import GridContainer from "../Grid/GridContainer.js"
+import GridItem from "../Grid/GridItem.js"
 
 const useStyles = makeStyles(styles)
 
