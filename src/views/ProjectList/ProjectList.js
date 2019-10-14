@@ -7,32 +7,16 @@ import smokePicture from "assets/img/card_example2.png"
 import emissionPicture from "assets/img/card_example3.png"
 import mobilePicture from "assets/img/card_example4.png"
 
-// const useStyles = makeStyles(theme => ({
-//     root: {
-//         display: 'flex',
-//         flexWrap: 'wrap',
-//         justifyContent: 'space-around',
-//         overflow: 'hidden',
-//         backgroundColor: theme.palette.background.paper,
-//     },
-//     gridList: {
-//         width: 500,
-//         height: 450,
-//     },
-//     icon: {
-//         color: 'rgba(255, 255, 255, 0.54)',
-//     }
-// }))
-
-import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
+import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js"
 import GridContainer from "components/Grid/GridContainer"
 import GridItem from "components/Grid/GridItem"
+
 const useStyles = makeStyles(styles)
 
 const cardData = [
     {
         title: "Pill Organiser for Self-Medication",
-        organisation: "Fundacion Mozambique Sur",
+        organisation: "Fundaćion Mozambique Sur",
         status: "Adopted (Department of Bioengineering)",
         description: "A pill organiser for orphans in Casa do Gaiato-Maputo to self medicate appropriately. Motivated by the poor disease management due to limited number of healthcare workers.",
         image: pillPicture

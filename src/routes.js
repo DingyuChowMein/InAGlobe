@@ -16,21 +16,22 @@
 
 */
 // @material-ui/icons
-import Home from "@material-ui/icons/Home";
-import List from "@material-ui/icons/List";
-import Subject from "@material-ui/icons/Subject";
-import Person from "@material-ui/icons/Person";
-import LibraryBooks from "@material-ui/icons/LibraryBooks";
-import BubbleChart from "@material-ui/icons/BubbleChart";
-import Notifications from "@material-ui/icons/Notifications";
+import Home from "@material-ui/icons/Home"
+import List from "@material-ui/icons/List"
+import Subject from "@material-ui/icons/Subject"
+import Person from "@material-ui/icons/Person"
+import LibraryBooks from "@material-ui/icons/LibraryBooks"
+import BubbleChart from "@material-ui/icons/BubbleChart"
+import Notifications from "@material-ui/icons/Notifications"
 // core components/views for Admin layout
-import DashboardPage from "views/Dashboard/Dashboard.js";
+import DashboardPage from "views/Dashboard/Dashboard.js"
 import ProjectList from "views/ProjectList/ProjectList.js"
-import UserProfile from "views/UserProfile/UserProfile.js";
-import TableList from "views/TableList/TableList.js";
-import Typography from "views/Typography/Typography.js";
-import Icons from "views/Icons/Icons.js";
-import NotificationsPage from "views/Notifications/Notifications.js";
+import AddProposal from "views/AddProposal/AddProposal"
+import UserProfile from "views/UserProfile/UserProfile.js"
+import TableList from "views/TableList/TableList.js"
+import Typography from "views/Typography/Typography.js"
+import Icons from "views/Icons/Icons.js"
+import NotificationsPage from "views/Notifications/Notifications.js"
 
 const dashboardRoutes = [
   {
@@ -51,7 +52,7 @@ const dashboardRoutes = [
     path: "/addproposal",
     name: "Add Proposal",
     icon: Subject,
-    component: TableList,
+    component: AddProposal,
     layout: "/main"
   },
   {
@@ -89,6 +90,6 @@ const dashboardRoutes = [
     component: NotificationsPage,
     layout: "/main"
   }
-];
+]
 
-export default dashboardRoutes;
+export default dashboardRoutes

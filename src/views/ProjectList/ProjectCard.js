@@ -1,15 +1,15 @@
-import React from "react";
+import React from "react"
 // @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles"
 
 // core components
-import Button from "components/CustomButtons/Button.js";
-import Card from "components/Card/Card.js";
-import CardBody from "components/Card/CardBody.js";
+import Button from "components/CustomButtons/Button.js"
+import Card from "components/Card/Card.js"
+import CardBody from "components/Card/CardBody.js"
 
-import styles from "assets/jss/material-dashboard-react/cardImagesStyles.js";
+import styles from "assets/jss/material-dashboard-react/cardImagesStyles.js"
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles(styles)
 
 export default function ProjectCard(props) {
     
@@ -29,7 +29,8 @@ export default function ProjectCard(props) {
                 <h4>{organisation}</h4>
                 <h5>{status}</h5>
                 <p>{description}</p>
-                <Button color="primary">{"Learn More"}</Button>
+                <Button color="primary" style={{ marginRight: "10px"}}>{"Learn More"}</Button>
+                <Button color="primary">{"Select Proposal"}</Button>
             </CardBody>
         </Card>
     )
