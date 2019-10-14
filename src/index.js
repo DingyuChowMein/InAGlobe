@@ -7,7 +7,7 @@ import './index.css'
 import * as serviceWorker from './serviceWorker'
 
 // core-components
-import Home from "views/Home.js"
+import Home from "layouts/Home.js"
 
 const hist = createBrowserHistory()
 
