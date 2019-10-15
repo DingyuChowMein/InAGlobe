@@ -50,7 +50,7 @@ export default function ProjectList() {
         <div className={classes.root}>
             <GridContainer spacing={2}>
                 {cardData.map(card => (
-                    <GridItem xs={12}>
+                    <GridItem xs={12} sm={12} md={6}>
                         <ProjectCard 
                             title={card.title}
                             organisation={card.organisation}

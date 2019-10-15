@@ -21,7 +21,7 @@ export default function AddProposal() {
 
     return (
         <Grid container>
-            <GridItem xs={12} sm={12} md={4}>
+            {/* <GridItem xs={12} sm={12} md={4}>
                 <CustomInput
                 labelText="Disabled"
                 id="disabled"
@@ -32,12 +32,12 @@ export default function AddProposal() {
                     disabled: true
                 }}
                 />
-            </GridItem>
-            <GridItem xs={12} sm={12} md={4}>
+            </GridItem> 
+            <GridItem xs={12} sm={12} md={12}>
                 <CustomInput
-                id="regular"
+                id="title"
                 inputProps={{
-                    placeholder: "Regular"
+                    placeholder: "Project Title"
                 }}
                 formControlProps={{
                     fullWidth: true
@@ -87,6 +87,62 @@ export default function AddProposal() {
                     </InputAdornment>
                     )
                 }}
+                />
+            </GridItem> */}
+            <GridItem xs={12} sm={12} md={12}>
+                <CustomInput
+                    id="title"
+                    labelText="Project Title"
+                    formControlProps={{
+                        fullWidth: true
+                    }}
+                />
+            </GridItem>
+            <GridItem xs={12} sm={12} md={12}>
+                <CustomInput
+                    id="organisation_name"
+                    labelText="Name of Organisation"
+                    formControlProps={{
+                        fullWidth: true
+                    }}
+                />
+            </GridItem>
+            <GridItem xs={12} sm={12} md={12}>
+                <CustomInput
+                    id="location"
+                    labelText="Location"
+                    formControlProps={{
+                        fullWidth: true
+                    }}
+                />
+            </GridItem>
+            <GridItem xs={12} sm={12} md={12}>
+                <CustomInput
+                    id="short_des"
+                    labelText="Short Description"
+                    formControlProps={{
+                        fullWidth: true
+                    }}
+                    inputProps={{
+                        rows: 4,
+                        rowsMax: 6
+                    }}
+                    extraLines={true}
+                />
+            </GridItem>
+            <GridItem xs={12} sm={12} md={12}>
+                <CustomInput
+                    id="detailed_des"
+                    labelText="Detailed Description"
+                    formControlProps={{
+                        fullWidth: true
+                    }}
+                    inputProps={{
+                        rows: 6,
+                        rowsMax: 12
+                    }}
+                    placeholder="Detailed Description"
+                    extraLines={true}
                 />
             </GridItem>
         </Grid>
