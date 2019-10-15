@@ -5,4 +5,4 @@ env
 .env
 .DS_Store
 .idea/*
-package-lock.json
+.vscode/*
