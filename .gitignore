@@ -4,3 +4,7 @@ npm-debug.log
 env
 .env
 .DS_Store
+.idea/*
+.vscode/*
+config.py
+__pycache__/*
