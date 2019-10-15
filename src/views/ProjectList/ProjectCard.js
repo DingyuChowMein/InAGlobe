@@ -29,7 +29,7 @@ export default function ProjectCard(props) {
                 <h4>{organisation}</h4>
                 <h5>{status}</h5>
                 <p>{description}</p>
-                <Button color="primary" style={{ marginRight: "10px"}}>{"Learn More"}</Button>
+                <Button color="primary" style={{ marginRight: "10px" }}>{"Learn More"}</Button>
                 <Button color="primary">{"Select Proposal"}</Button>
             </CardBody>
         </Card>
