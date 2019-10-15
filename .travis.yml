@@ -3,6 +3,7 @@ node_js:
 - stable
 install:
 - npm install
+- CI=false npm run build
 jobs:
   include:
   - stage: test
