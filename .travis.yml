@@ -3,6 +3,7 @@ node_js:
 - stable
 install:
 - npm install
+- npm install -g serve
 - CI=false npm run build
 jobs:
   include:
@@ -12,7 +13,7 @@ jobs:
     - npm test
   - stage: deploy
     name: deploy
-    script: skip
+    script: 
     deploy:
       provider: heroku
       skip_cleanup: true
