@@ -42,6 +42,7 @@ class File(db.Model):
 
 project_fields = ["title", "ShortDescription", "LongDescription", "Location", "ProjectOwner"]
 
+
 @app.route("/")
 def index():
     return render_template('index.html')
@@ -107,13 +108,6 @@ def upload_project():
     return "<div>success: added project with id {}</div>".format(new_project.project_id)
 
 
-# UploadProject?Title=””&ShortDescription=””LongDescription=””&Location=””&ProjectOwner=””FileLinks=””
-#     project_id = db.Column(db.Integer, primary_key=True)
-#     title = db.Column(db.Integer, nullable=False)
-#     short_description = db.Column(db.String, nullable=False)
-#     long_description = db.Column(db.String, nullable=False)
-#     location = db.Column(db.String, nullable=False)
-#     project_owner = db.Column(db.String, nullable=False)
 @app.route("/GetProjects")
 def get_projects():
     projects = db.session.query(Project).all()
