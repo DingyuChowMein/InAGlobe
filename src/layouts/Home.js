@@ -1,5 +1,5 @@
 import React from "react"
-import { Switch, Route, Redirect } from "react-router-dom"
+import { Switch, Route } from "react-router-dom"
 
 // creates a beautiful scrollbar
 import PerfectScrollbar from "perfect-scrollbar"
@@ -49,8 +49,8 @@ export default function Home({ ...rest }) {
     const mainPanel = React.createRef()
 
     // states and functions
-    const [image, setImage] = React.useState(bgImage)
-    const [color, setColor] = React.useState("blue")
+    const [image] = React.useState(bgImage)
+    const [color] = React.useState("blue")
     const [mobileOpen, setMobileOpen] = React.useState(false)
 
     const handleDrawerToggle = () => {
