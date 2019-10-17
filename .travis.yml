@@ -14,6 +14,7 @@ jobs:
   - stage: deploy
     name: deploy
     script: 
+      - npm install -g serve
     deploy:
       provider: heroku
       skip_cleanup: true
