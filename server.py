@@ -46,7 +46,28 @@ def upload_project():
         link = db.Column(db.String, nullable=False)
 
     def parse_file_links(fileLinks):
-        return [fileLinks]
+        # state = 0 means parsing link length
+        # state = 1 means parsing link text
+        state = 0
+        link_length = 0
+        link_text = []
+        parsed_links = []
+        pos = 0
+        while pos < len(fileLinks):
+            if state == 0:
+                link_length = link_length * 10 + (ord(fileLinks[pos]) - ord('0'))
+                pos = pos + 1
+                if fileLinks[pos].isalpha():
+                    state = 1
+            elif state == 1:
+                for i in range(link_length):
+                    link_text.append(fileLinks[pos + i])
+                parsed_links.append(''.join(link_text))
+                link_text = []
+                state = 0
+                pos = pos + link_length
+                link_length = 0
+        return parsed_links
 
     parameters = ["title", "ShortDescription", "LongDescription", "Location", "ProjectOwner"]
     for parameter in parameters:
