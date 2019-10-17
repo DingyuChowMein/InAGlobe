@@ -8,6 +8,7 @@
     "@types/classnames": "^2.2.9",
     "@types/history": "^4.7.3",
     "classnames": "^2.2.6",
+    "jest": "^24.9.0",
     "material-ui": "^0.20.2",
     "perfect-scrollbar": "^1.4.0",
     "react": "^16.8.0",
@@ -19,7 +20,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --passWithNoTests",
+    "test": "react-scripts test --env=jsdom",
+    "coverage": "react-scripts test --env=jsdom --coverage",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
