@@ -1,6 +1,6 @@
 import React from "react"
 import ImageUploader from "react-images-upload"
-// import { makeStyles } from "@material-ui/core/styles"
+import { makeStyles } from "@material-ui/core/styles"
 
 // @material-ui/core components
 import Grid from "@material-ui/core/Grid"
@@ -12,19 +12,24 @@ import Description from "@material-ui/icons/Description"
 import CustomInput from "../../components/CustomInput/CustomInput.js"
 import GridItem from "../../components/Grid/GridItem.js"
 
-// import styles from "../../assets/jss/material-dashboard-react/views/dashboardStyle.js"
+import styles from "../../assets/jss/material-dashboard-react/views/dashboardStyle.js"
 import { Button } from "@material-ui/core"
 
 // const useStyles = makeStyles(styles)
+import upload from "../../s3.js"
+
+const useStyles = makeStyles(styles)
 const pictures = []
 const documents = []
 
 const onDropPictures = pictureFiles => {
-    pictures.concat(pictureFiles)
+    pictures.push(pictureFiles)
 }
 
 const onDropDocuments = documentFiles => {
-    documents.concat(documentFiles)
+    documents.push(documentFiles)
+    console.log(documentFiles)
+    console.log(documents)
 }
 
 export default function AddProposal() {
@@ -110,7 +115,11 @@ export default function AddProposal() {
             />
             <div style={{ width: "100%", textAlign: "center" }}>
                 <Button color="primary" style={{ marginRight: "10%" }}>{"Preview"}</Button>
-                <Button color="primary" style={{ marginLeft: "10%" }}>{"Sumbit"}</Button>
+                <Button 
+                    color="primary" 
+                    onClick={function(){upload(documents[0])}}
+                    style={{ marginLeft: "10%" }}>{"Submit"}
+                </Button>
             </div>
         </Grid>
     )

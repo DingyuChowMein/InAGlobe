@@ -7,13 +7,14 @@ const config = {
     bucketName: 'inaglobe-29',
     dirName: 'PDFs', /* optional */
     region: 'eu-west-1',
-    accessKeyId: '////',
-    secretAccessKey: '////',
+    accessKeyId: 'AKIAIPFS5EGTGA3VOSNA',
+    secretAccessKey: 'QPmXm4QHEP24PiSz+LXMmKU1pov2izePFYZrVT5d'
 };
 
 /*  Notice that if you don't provide a dirName, the file will be automatically uploaded to the root of your bucket */
 
-function upload(file) {
+export default function upload(file) {
+    console.log("hello")
     S3FileUpload
     .uploadFile(file, config)
     .then(data => console.log(data))
@@ -29,3 +30,4 @@ function upload(file) {
    *   }
    * }
    */
+

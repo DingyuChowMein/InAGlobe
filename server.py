@@ -6,13 +6,22 @@ from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey
 
-from config import SQLALCHEMY_DATABASE_URI
 from flask import request
 
 app = Flask(__name__)
 port = 5000
+is_prod = os.environ.get('IS_HEROKU', None)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
+if is_prod:
+    print("In production!")
+    key = os.environ.get('INAGLOBE_DB', None)
+else:
+    print("In development!")
+    from config import SQLALCHEMY_DATABASE_URI
+    key = SQLALCHEMY_DATABASE_URI
+
+
+app.config['SQLALCHEMY_DATABASE_URI'] = key
 db = SQLAlchemy(app)
 
 app.logger.addHandler(logging.StreamHandler(sys.stdout))
