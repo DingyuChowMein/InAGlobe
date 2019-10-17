@@ -35,12 +35,19 @@ def upload_project():
         location = db.Column(db.String, nullable=False)
         project_owner = db.Column(db.String, nullable=False)
 
+    parameters = ["title", "ShortDescription", "LongDescription", "Location", "ProjectOwner"]
+    for parameter in parameters:
+        if request.args.get(parameter) is None:
+            return "<div>failure: the parameter named \"{}\" was not provided</div>".format(parameter)
+        if not request.args[parameter].strip():
+            return "<div>failure: the parameter named \"{}\" is empty</div>".format(parameter)
+
     db.session.add(Project(
-        title=request.args["title"],
-        short_description=request.args["ShortDescription"],
-        long_description=request.args["LongDescription"],
-        location=request.args["Location"],
-        project_owner=request.args["ProjectOwner"]
+        title=request.args[parameters[0]],
+        short_description=request.args[parameters[1]],
+        long_description=request.args[parameters[2]],
+        location=request.args[parameters[3]],
+        project_owner=request.args[parameters[4]]
     ))
 
     try:
