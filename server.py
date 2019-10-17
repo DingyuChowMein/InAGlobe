@@ -9,8 +9,8 @@ from sqlalchemy import ForeignKey
 from config import SQLALCHEMY_DATABASE_URI
 from flask import request
 
-app = Flask(__name__, static_folder='build/static', template_folder='build')
-port = int(os.environ.get("PORT", 5000))
+app = Flask(__name__)
+port = 5000
 
 app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
 db = SQLAlchemy(app)
@@ -41,11 +41,6 @@ class File(db.Model):
 
 
 project_fields = ["title", "ShortDescription", "LongDescription", "Location", "ProjectOwner"]
-
-
-@app.route("/")
-def index():
-    return render_template('index.html')
 
 
 # UploadProject?Title=””&ShortDescription=””LongDescription=””&Location=””&ProjectOwner=””FileLinks=””
