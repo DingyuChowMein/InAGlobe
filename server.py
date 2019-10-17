@@ -104,4 +104,4 @@ def upload_project():
 
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=port)
+    app.run(host="localhost", port=port)
