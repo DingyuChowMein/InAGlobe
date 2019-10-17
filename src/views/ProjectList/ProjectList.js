@@ -2,7 +2,7 @@ import React from "react"
 import { makeStyles } from "@material-ui/core/styles"
 import ProjectCard from "./ProjectCard.js"
 
-import cardData from "../../data/ExampleCards.js"
+import cardData from "../../data/ProjectData.js"
 
 import styles from "../../assets/jss/material-dashboard-react/views/dashboardStyle.js"
 import GridContainer from "../../components/Grid/GridContainer.js"

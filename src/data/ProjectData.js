@@ -33,7 +33,7 @@ const cardData = [
         detailedDescription: "Cashew nuts are one of the main produces of Mozambique. This leads to large amounts of cashew nut residue that comes from the processing. Currently this residue incurs a cost in its’ disposal, thus a proposed project improve productivity, job and value value creation is the re-purposing of the residue to constructive means. This is an opportunity to reduce waste and to activate the local economy. This is a project proposed by Helvetas.",
         images: [emissionPicture],
         documents: []
-    },
+    },  
     {
         title: "Mobile Grain Network-Marketplace",
         organisation: "Helvetas Swiss Intercooperation",
