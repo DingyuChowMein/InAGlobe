@@ -1,4 +1,4 @@
-import React from "react"
+import React, { Component } from 'react';
 import { makeStyles } from "@material-ui/core/styles"
 import ProjectCard from "./ProjectCard.js"
 
@@ -11,7 +11,7 @@ import styles from "../../assets/jss/material-dashboard-react/views/dashboardSty
 import GridContainer from "../../components/Grid/GridContainer.js"
 import GridItem from "../../components/Grid/GridItem.js"
 
-
+//To be removed on successful implementation of the upload function
     const cardData = [
         {
             title: "Pill Organiser for Self-Medication",
@@ -43,40 +43,48 @@ import GridItem from "../../components/Grid/GridItem.js"
         }
     ];
 
-
-
-
 class ProjectList extends React.Component {
 
      constructor(props) {
-            super(props);
-            this.state = {
-                projects: []
-            };
-        }
+        super(props);
+        this.state = {
+            projects: [],
+         };
+     }
+
+//     componentDidMount() {
+//           fetch(`inaglobe-api.herokuapp.com/GetProjects`)
+//               .then(res => res.json())
+//               .then(result => this.setState({ projects: result}))
+//       };
 
      componentDidMount() {
-           fetch(`/api/users`)
-               .then(res => res.json())
-               .then(result => this.setState({ projects: result.projects }))
-       };
+        fetch('https://inaglobe-api.herokuapp.com/GetProjects')
+          .then(results => results.json())
+          .then(data => this.setState({ projects: data}))
+          .catch(err => console.log(err))
+//          this.setState({projects: ["testing","hello", 7]})
+
+     }
 
 
         render() {
-            return (
-                    <GridContainer spacing={2}>
-                        {cardData.map(card => (
-                            <GridItem xs={12} sm={12} md={6}>
-                                <ProjectCard
-                                    title={card.title}
-                                    organisation={card.organisation}
-                                    status={card.status}
-                                    description={card.description}
-                                    image={card.image}
-                                />
-                            </GridItem>
-                        ))}
-                    </GridContainer>
+//            const { projects } = this.state;
+
+            return (<div>{this.state.projects}</div>
+//                    <GridContainer spacing={2}>
+//                        {cardData.map(card => (
+//                            <GridItem xs={12} sm={12} md={6}>
+//                                <ProjectCard
+//                                    title={this.state.projects.Title}
+//                                    organisation={this.state.projects.ProjectOwner}
+//                                    status={card.status}
+//                                    description={this.state.projects.ShortDescription}
+//                                    image={card.image}
+//                                />
+//                            </GridItem>
+//                        ))}
+//                    </GridContainer>
             );
         }
 
