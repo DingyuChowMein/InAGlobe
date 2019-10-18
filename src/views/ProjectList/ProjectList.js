@@ -94,9 +94,11 @@ class ProjectList extends React.Component {
 
 
         render() {
-//            const { projects } = this.state;
+            const { projects } = this.state;
 
-            return (<div>{this.state.projects[0]}</div>
+            return (
+//            {projects[0].map(projects[0] => <div>{projects[0].Title}</div>)}
+            <div>{this.state.projects[0]["Title"]}</div>
 //                    <GridContainer spacing={2}>
 //                        {cardData.map(card => (
 //                            <GridItem xs={12} sm={12} md={6}>

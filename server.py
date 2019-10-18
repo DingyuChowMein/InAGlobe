@@ -19,7 +19,7 @@ app.logger.addHandler(logging.StreamHandler(sys.stdout))
 app.logger.setLevel(logging.ERROR)
 @app.route("/")
 def hello():
-    return render_template('index.html')
+    return "<div>Hello World</div>"
 
 # @app.route('/', methods=['POST'])
 # def upload_file():
