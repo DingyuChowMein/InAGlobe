@@ -79,9 +79,9 @@ class ProjectList extends React.Component {
 //      }
 
      componentDidMount() {
-        fetch('https://inaglobe-api.herokuapp.com/GetProjects')
+        fetch('/GetProjects')
           .then(results => results.json())
-          .then(data => this.setState({ projects: data}))
+          .then(results => console.log(results))
           .catch(err => console.log(err))
 //          this.setState({projects: ["testing","hello", 7]})
 
