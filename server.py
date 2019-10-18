@@ -3,12 +3,14 @@ import sys
 import logging
 import json
 from flask import Flask, render_template
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey
 
 from flask import request
 
 app = Flask(__name__)
+CORS(app)
 port = 5000
 is_prod = os.environ.get('IS_HEROKU', None)
 
@@ -125,6 +127,7 @@ def get_projects():
                                "LongDescription": project.long_description, "Location": project.location,
                                "ProjectOwner": project.project_owner, "Files": project_files_json}
         projects_json.append(project_fields_json)
+    
     return json.dumps(projects_json)
 
 

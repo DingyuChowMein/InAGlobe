@@ -1,4 +1,5 @@
 gunicorn
 flask
 Flask-SQLAlchemy
+flask-cors
 pymysql
