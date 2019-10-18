@@ -9,3 +9,4 @@ env
 config.py
 __pycache__/*
 coverage/*
+venv/*
