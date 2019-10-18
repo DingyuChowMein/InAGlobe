@@ -58,6 +58,26 @@ class ProjectList extends React.Component {
 //               .then(result => this.setState({ projects: result}))
 //       };
 
+//     componentWillMount() {
+//        this.getData();
+//     }
+
+//     getData() {
+//        // create a new XMLHttpRequest
+//        var xhr = new XMLHttpRequest()
+//
+//        // get a callback when the server responds
+//        xhr.addEventListener('load', () => {
+//          // update the state of the component with the result here
+//          console.log(xhr.responseText)
+//          this.setState({ projects: xhr.responseText})
+//        })
+//        // open the request with the verb and the url
+//        xhr.open('GET', 'https://inaglobe-api.herokuapp.com/GetProjects')
+//        // send the request
+//        xhr.send()
+//      }
+
      componentDidMount() {
         fetch('https://inaglobe-api.herokuapp.com/GetProjects')
           .then(results => results.json())
@@ -65,13 +85,18 @@ class ProjectList extends React.Component {
           .catch(err => console.log(err))
 //          this.setState({projects: ["testing","hello", 7]})
 
+//        const response = fetch('https://inaglobe-api.herokuapp.com/GetProjects');
+//        const data = response.json();
+//        this.setState({projects: data})
+
+
      }
 
 
         render() {
 //            const { projects } = this.state;
 
-            return (<div>{this.state.projects}</div>
+            return (<div>{this.state.projects[0]}</div>
 //                    <GridContainer spacing={2}>
 //                        {cardData.map(card => (
 //                            <GridItem xs={12} sm={12} md={6}>
