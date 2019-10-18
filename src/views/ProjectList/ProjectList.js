@@ -43,17 +43,19 @@ import GridItem from "../../components/Grid/GridItem.js"
         }
     ];
 
+    const results = [];
+
 class ProjectList extends React.Component {
 
-     constructor(props) {
-        super(props);
+     constructor() {
+        super();
         this.state = {
-            projects: [],
+            projects: null,
          };
      }
 
 //     componentDidMount() {
-//           fetch(`inaglobe-api.herokuapp.com/GetProjects`)
+//           fetch(`inaglobe-api.hreerokuapp.com/GetProjects`)
 //               .then(res => res.json())
 //               .then(result => this.setState({ projects: result}))
 //       };
@@ -80,25 +82,54 @@ class ProjectList extends React.Component {
 
      componentDidMount() {
         fetch('/GetProjects')
+//          .then((response) => {
+//            let projectList = response.json;
+//            this.setState({projects:projectList});
+//            console.log(projectList);
+//          });
           .then(results => results.json())
-          .then(results => console.log(results))
-          .catch(err => console.log(err))
-//          this.setState({projects: ["testing","hello", 7]})
+//          .then(results => console.log(results))
+          .then(results => this.setState({ projects: results }))
+          .then(results => console.log(this.state.projects));
+//          .then((results) => {
+//            this.setState({projects:results})
+//          });
+          console.log("project list")
+          console.log(this.state.projects)
+//          .then(results => this.setState({projects: results}))
+//          .then(this.forceUpdate())
+//          .catch(err => console.log(err))
+//          console.log(this.state.projects)
+//          this.setState({rendered: true})
 
 //        const response = fetch('https://inaglobe-api.herokuapp.com/GetProjects');
 //        const data = response.json();
 //        this.setState({projects: data})
 
+//.then((response) => {
+//              let fileList = response.entries;
+//              this.setState({
+//                  imageSource: fileList
+//              });
 
      }
 
 
         render() {
-            const { projects } = this.state;
+//            const { projects } = this.state;
+//            if(!this.state.projects.length) {
+//                return null;
+//             }
+//
+//             let projList = this.state.projects.map((el, i) => (
+//                <img key={i} className='images' src={el.path_lower} />
+//              ))
+
+            var jsnarray = JSON.parse(this.state.projects);
 
             return (
 //            {projects[0].map(projects[0] => <div>{projects[0].Title}</div>)}
-            <div>{this.state.projects[0]["Title"]}</div>
+            <div>{this.state.projects == null ? "true" : jsnarray}</div>
 //                    <GridContainer spacing={2}>
 //                        {cardData.map(card => (
 //                            <GridItem xs={12} sm={12} md={6}>
