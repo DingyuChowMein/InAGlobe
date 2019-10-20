@@ -25,8 +25,12 @@ class Project(db.Model):
         db.session.commit()
 
     @staticmethod
+
     def get_all():
         return Project.query.all()
+
+    def filter(data):
+        return Project.query.filter(data).all()
 
     def delete(self):
         db.session.remove(self)
@@ -49,8 +53,12 @@ class File(db.Model):
         db.session.commit()
 
     @staticmethod
+
     def get_all():
         return File.query.all()
+
+    def filter(data):
+        return File.query.filter(data).all()
 
     def delete(self):
         db.session.remove(self)
