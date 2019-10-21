@@ -10,10 +10,20 @@ def get_projects():
         project_files = File.filter(Project.project_id)
         project_files_json = []
         for file in project_files:
-            project_files_json.append({"FileId": file.file_id, "Link": file.link})
-        project_fields_json = {"Title": project.title, "ShortDescription": project.short_description,
-                               "LongDescription": project.long_description, "Location": project.location,
-                               "ProjectOwner": project.project_owner, "Files": project_files_json}
+            project_files_json.append(
+                {
+                    "FileId": file.file_id,
+                    "Link": file.link
+                }
+            )
+        project_fields_json = {
+            "Title": project.title,
+            "ShortDescription": project.short_description,
+            "LongDescription": project.long_description,
+            "Location": project.location,
+            "ProjectOwner": project.project_owner,
+            "Files": project_files_json
+        }
         projects_json.append(project_fields_json)
     return projects_json
 
@@ -21,6 +31,7 @@ def get_projects():
 #@app.route('/UploadProjects', methods=['POST'])
 def process_upload(data):
     # TODO: error handling (around saving to db)
+    # TODO: check for duplication
     project = Project(
         title=data['Title'],
         short_description=data['ShortDescription'],
