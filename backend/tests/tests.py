@@ -64,25 +64,23 @@ def test_upload_multiple_files():
     print('Testing good upload with multiple files attached')
     return test_upload('multipleFiles.json')
 
-test_upload_no_files()
-test_upload_one_file()
-test_upload_multiple_files()
+#
 
 #TODO: upload tests for bad json files
 
 #Test upload projects url calls:
 
 def get_upload_projects_http_response(data):
-    response = requests.post(
-        'localhost:5000/UploadProject',
-        data=data,
-        content_type='application/json'
-    )
-
-    print(response.get_data(as_text=True))
+    # response = requests.post(
+    #     'localhost:5000/UploadProject',
+    #     data=data,
+    #     content_type='application/json'
+    # )
+    #
+    # print(response.get_data(as_text=True))
     return 0
 
-get_upload_projects_http_response(_load_json_file('noFiles.json', 'upload_test_files'))
+#get_upload_projects_http_response(_load_json_file('noFiles.json', 'upload_test_files'))
 
 ########################################################################################################################
 
