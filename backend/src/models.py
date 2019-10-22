@@ -1,12 +1,13 @@
 from src import db
 from sqlalchemy import ForeignKey
 
+# TODO: update field length values
 TITLE_FIELD_LENGTH = 16
 SHORT_FIELD_LENGTH = 16
 LONG_FIELD_LENGTH = 32
 LOCATION_FIELD_LENGTH = 16
 OWNER_FIELD_LENGTH = 16
-LINK_FIELD_LENGTH = 16
+LINK_FIELD_LENGTH = 32
 
 class Project(db.Model):
     __tablename__ = 'Projects'
@@ -57,8 +58,9 @@ class File(db.Model):
     def get_all():
         return File.query.all()
 
+    #filter by foreign key
     def filter(data):
-        return File.query.filter(data).all()
+        return File.query.filter_by(project_id=data).all()
 
     def delete(self):
         db.session.remove(self)
