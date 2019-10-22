@@ -1,6 +1,8 @@
 node_modules
 build
 npm-debug.log
+*.vim
+*.pyc
 .env
 .DS_Store
 .idea/*
