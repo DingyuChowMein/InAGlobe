@@ -21,7 +21,7 @@ jobs:
     name: frontend tests
     script: npm test
 
-  - script: cd backend/ ; python tests/test_backend.py ; coverage run tests/test_backend.py; cd ..
+  - script: sh test_scripts/backendTests.sh
     name:  backend tests
 
   - stage: deploy_react
