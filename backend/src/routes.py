@@ -8,9 +8,10 @@ def get_projects():
     projects_json = []
     for project in projects:
         project_files = File.filter(project.project_id)
-        project_file_links = []
-        for file in project_files:
-            project_file_links.append(file.link)
+        # project_file_links = []
+        # for file in project_files:
+        #     project_file_links.append(file.link)
+        project_file_links = [file.link for file in project_files]
         project_fields_json = {
             "Title": project.title,
             "ShortDescription": project.short_description,
