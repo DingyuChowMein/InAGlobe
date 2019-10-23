@@ -1,7 +1,8 @@
 node_modules
 build
 npm-debug.log
-env
+*.vim
+*.pyc
 .env
 .DS_Store
 .idea/*
@@ -9,3 +10,10 @@ env
 config.py
 __pycache__/*
 coverage/*
+venv/
+migrations/
+.idea/
+__pycache__/
+.pytest_cache/
+test.json
+.coverage
