@@ -27,10 +27,3 @@ export default function CardAvatar(props) {
     </div>
   );
 }
-
-CardAvatar.propTypes = {
-  children: PropTypes.node.isRequired,
-  className: PropTypes.string,
-  profile: PropTypes.bool,
-  plain: PropTypes.bool
-};

@@ -41,7 +41,7 @@ const switchRoutes = (
 
 const useStyles = makeStyles(styles)
 
-export default function Home({ ...rest }) {
+export default function Home() {
     // styles
     const classes = useStyles()
 
@@ -93,13 +93,11 @@ export default function Home({ ...rest }) {
                 handleDrawerToggle={handleDrawerToggle}
                 open={mobileOpen}
                 color={color}
-                {...rest}
             />
             <div className={classes.mainPanel} ref={mainPanel}>
                 <Navbar
                     routes={routes}
                     handleDrawerToggle={handleDrawerToggle}
-                    {...rest}
                 />
                 <div className={classes.content}>
                     <div className={classes.container}>{switchRoutes}</div>

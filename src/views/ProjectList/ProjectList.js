@@ -2,7 +2,7 @@ import React from "react"
 import { makeStyles } from "@material-ui/core/styles"
 import ProjectCard from "./ProjectCard.js"
 
-import cardData from "../../data/ProjectData.js"
+import cardData from "../../data/ProjectData/ProjectData.js"
 
 import styles from "../../assets/jss/material-dashboard-react/views/dashboardStyle.js"
 import GridContainer from "../../components/Grid/GridContainer.js"
@@ -16,8 +16,8 @@ export default function ProjectList() {
         <div className={classes.root}>
             <GridContainer spacing={2}>
                 {cardData.map(card => (
-                    <GridItem xs={12} sm={12} md={6}>
-                        <ProjectCard 
+                    <GridItem xs={12} sm={12} md={6} key={card.id}>
+                        <ProjectCard
                             title={card.title}
                             organisation={card.organisation}
                             status={card.status}

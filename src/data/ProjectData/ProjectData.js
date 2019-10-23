@@ -1,10 +1,11 @@
-import pillPicture from "../assets/img/card_example1.png"
-import smokePicture from "../assets/img/card_example2.png"
-import emissionPicture from "../assets/img/card_example3.png"
-import mobilePicture from "../assets/img/card_example4.png"
+import pillPicture from "../../assets/img/card_example1.png"
+import smokePicture from "../../assets/img/card_example2.png"
+import emissionPicture from "../../assets/img/card_example3.png"
+import mobilePicture from "../../assets/img/card_example4.png"
 
 const cardData = [
     {
+        id: 1,
         title: "Pill Organiser for Self-Medication",
         organisation: "Fundaćion Mozambique Sur",
         status: "Adopted (Department of Bioengineering)",
@@ -15,6 +16,7 @@ const cardData = [
         documents: []
     },
     {
+        id: 2,
         title: "Low-Smoke Cooking Environment",
         organisation: "Helvetas Swiss Intercooperation",
         status: "Adopted (Engineering Change)",
@@ -25,6 +27,7 @@ const cardData = [
         documents: []
     },
     {
+        id: 3,
         title: "Low Emission Cashew Nut Processor",
         organisation: "Helvetas Swiss Intercooperation",
         status: "Adopted (Engineering Change)",
@@ -35,6 +38,7 @@ const cardData = [
         documents: []
     },  
     {
+        id: 4,
         title: "Mobile Grain Network-Marketplace",
         organisation: "Helvetas Swiss Intercooperation",
         status: "Unadopted",

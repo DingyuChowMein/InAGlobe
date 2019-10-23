@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import React from "react"
+import React, { Component } from "react"
 import classNames from "classnames"
 import PropTypes from "prop-types"
 import { NavLink } from "react-router-dom"
@@ -139,11 +139,11 @@ export default function Sidebar(props) {
 }
 
 Sidebar.propTypes = {
-  handleDrawerToggle: PropTypes.func,
-  bgColor: PropTypes.oneOf(["purple", "blue", "green", "orange", "red"]),
-  logo: PropTypes.string,
-  image: PropTypes.string,
-  logoText: PropTypes.string,
-  routes: PropTypes.arrayOf(PropTypes.object),
-  open: PropTypes.bool
+    handleDrawerToggle: PropTypes.func,
+    bgColor: PropTypes.oneOf(["purple", "blue", "green", "orange", "red"]),
+    logo: PropTypes.string,
+    image: PropTypes.string,
+    logoText: PropTypes.string,
+    routes: PropTypes.arrayOf(PropTypes.object),
+    open: PropTypes.bool
 }
