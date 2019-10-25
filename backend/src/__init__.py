@@ -15,6 +15,7 @@ def create_app():
     api = Api(app)
 
     from .routes import get_projects, process_upload, get_users, create_user
+    from .tokens import get_token
 
     # Define api
     class Projects(Resource):
@@ -31,8 +32,13 @@ def create_app():
         def post(self):
             return create_user(request.get_json()), 201
 
+    class Tokens(Resource):
+        def get(self):
+            return get_token(), 200
+
     # Route classes to paths
     api.add_resource(Projects, '/projects/')
     api.add_resource(Users, '/users/')
+    api.add_resource(Tokens, '/users/tokens/')
 
     return app

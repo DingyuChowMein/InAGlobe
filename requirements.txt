@@ -10,3 +10,4 @@ pymysql
 coverage
 python-dotenv
 pytest
+flask-httpauth

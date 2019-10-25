@@ -1,7 +1,10 @@
+from .auth import token_auth
 from .models import Project, File, User
+
 
 # helper functions
 
+@token_auth.login_required
 def get_projects():
     projects = Project.query.all()
     projects_json = []
@@ -20,6 +23,7 @@ def get_projects():
     return {'projects': projects_json}
 
 
+@token_auth.login_required
 def process_upload(data):
     # TODO: error handling (around saving to db)
     # TODO: check for duplication
@@ -37,6 +41,8 @@ def process_upload(data):
 
     return {'message': 'Project added to db!'}
 
+
+@token_auth.login_required
 def get_users():
     users = User.query.all()
     users_json = []
