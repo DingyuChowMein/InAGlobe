@@ -8,3 +8,5 @@ flask-restful
 flask-cors
 pymysql
 coverage
+python-dotenv
+pytest
