@@ -16,7 +16,7 @@ import GridItem from "../../components/Grid/GridItem.js"
 import { Button } from "@material-ui/core"
 
 // const useStyles = makeStyles(styles)
-// import upload from "../../s3.js"
+import upload from "../../s3.js"
 
 const pictures = []
 const documents = []
@@ -115,7 +115,7 @@ export default function AddProposal() {
                 <Button color="primary" style={{ marginRight: "10%" }}>{"Preview"}</Button>
                 <Button 
                     color="primary" 
-                    // onClick={upload(documents[0])}
+                    onClick={() => {upload(documents[0])}}
                     style={{ marginLeft: "10%" }}>{"Submit"}
                 </Button>
             </div>
