@@ -34,21 +34,36 @@ def create_app():
 
     class Comments(Resource):
         def get(self):
-            return get_comments(), 200
+            return app.response_class(
+                response=json.dumps(get_projects()),
+                status=200
+            )
 
         def post(self):
-            return add_comment(request.get_json()), 201
+            return app.response_class(
+                response=json.dumps(add_comment(request.get_json())),
+                status=201
+            )
 
     class Users(Resource):
         def get(self):
-            return get_users(), 200
+            return app.response_class(
+                response=json.dumps(get_users()),
+                status=200
+            )
 
         def post(self):
-            return create_user(request.get_json()), 201
+            return app.response_class(
+                response=json.dumps(create_user(request.get_json())),
+                status=201
+            )
 
     class Tokens(Resource):
         def get(self):
-            return get_token(), 200
+            return app.response_class(
+                response=json.dumps(get_token),
+                status=200
+            )
 
     # Route classes to paths
     api.add_resource(Projects, '/projects/')
