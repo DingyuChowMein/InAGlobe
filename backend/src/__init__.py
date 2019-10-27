@@ -5,8 +5,6 @@ from flask_restful import Api, Resource
 from flask_sqlalchemy import SQLAlchemy
 
 # initialise sql-alchemy
-from backend.src.routes import add_comment
-
 db = SQLAlchemy()
 
 
@@ -16,7 +14,7 @@ def create_app():
     db.init_app(app)
     api = Api(app)
 
-    from .routes import get_projects, process_upload, get_users, create_user
+    from .routes import get_projects, process_upload, get_users, create_user, add_comment, get_comments
     from .tokens import get_token
 
     # Define api
@@ -47,6 +45,7 @@ def create_app():
 
     # Route classes to paths
     api.add_resource(Projects, '/projects/')
+    api.add_resource(Comments, '/comments/')
     api.add_resource(Users, '/users/')
     api.add_resource(Tokens, '/users/tokens/')
 
