@@ -87,9 +87,8 @@ class User(Model, db.Model):
         return user
 
 
-class Comment(db.Model):
+class Comment(Model, db.Model):
     __tablename__ = 'Comments'
-    __table_args__ = {'extend_existing': True}
 
     comment_id = db.Column(db.Integer, primary_key=True)
     project_id = db.Column(db.Integer, ForeignKey(Project.id))
