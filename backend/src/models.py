@@ -92,7 +92,7 @@ class Comment(Model, db.Model):
 
     project_id = db.Column(db.Integer, ForeignKey(Project.id))
     owner_id = db.Column(db.Integer, nullable=False)
-    date_time = db.Column(DateTime, default=datetime.now())
+    date_time = db.Column(db.DateTime, default=datetime.now())
     text = db.Column(db.String, nullable=False)
 
     @staticmethod

@@ -4,7 +4,7 @@ from .models import Project, File, User, Comment
 
 # helper functions
 
-# @token_auth.login_required
+@token_auth.login_required
 def get_projects():
     projects = Project.query.all()
     projects_json = []
@@ -23,10 +23,9 @@ def get_projects():
     return {'projects': projects_json}
 
 
-# @token_auth.login_required
+@token_auth.login_required
 def process_upload(data):
     # TODO: error handling (around saving to db)
-    # TODO: check for duplication
     project = Project(
         title=data['Title'],
         short_description=data['ShortDescription'],
@@ -43,8 +42,9 @@ def process_upload(data):
     return [{'message': 'Project added to db!'}]
 
 
-@token_auth.login_required
+# @token_auth.login_required
 def get_users():
+    # TODO: only admins should be able to see the list of users
     users = User.query.all()
     users_json = []
     for user in users:
@@ -55,14 +55,18 @@ def get_users():
 
 
 def create_user(data):
+    # TODO: check for email duplication
     new_user = User(
-        email=data['Email']
+        email=data['Email'],
+        password_hash=data['PasswordHash']
     )
-    new_user.hash_password(data['Password'])
+    # We should hash the password in React so that we don't send plain-text passwords through the network
+    # new_user.hash_password(data['Password'])
     new_user.save()
     return {'message': 'User created!'}
 
 
+@token_auth.login_required
 def add_comment(data):
     comment = Comment(
         project_id=data['ProjectId'],
@@ -71,9 +75,10 @@ def add_comment(data):
     )
 
     comment.save()
-    return {'message': 'Comment added!'}
+    return [{'message': 'Comment added!'}]
 
 
+@token_auth.login_required
 def get_comments(data):
     project_comments = Comment.query.filter_by(project_id=data['ProjectId']).all()
     comments_json = []

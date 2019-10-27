@@ -61,7 +61,7 @@ def create_app():
     class Tokens(Resource):
         def get(self):
             return app.response_class(
-                response=json.dumps(get_token),
+                response=json.dumps(get_token()),
                 status=200
             )
 
