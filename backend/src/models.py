@@ -97,15 +97,6 @@ class Comment(db.Model):
     date_time = db.Column(DateTime, default=datetime.now())
     text = db.Column(db.String, nullable=False)
 
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-
     @staticmethod
     def get_all_comments_for_project_id(proj_id):
         return File.query.filter_by(project_id=proj_id).all()
-
-    def delete(self):
-        db.session.remove(self)
-        db.session.commit()
-
