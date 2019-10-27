@@ -3,6 +3,7 @@ import os
 from flask import Flask, request
 from flask_restful import Api, Resource
 from flask_sqlalchemy import SQLAlchemy
+import json
 
 # initialise sql-alchemy
 db = SQLAlchemy()
@@ -20,10 +21,16 @@ def create_app():
     # Define api
     class Projects(Resource):
         def get(self):
-            return get_projects(), 200
+            return app.response_class(
+                response=json.dumps(get_projects()),
+                status=200
+            )
 
         def post(self):
-            return process_upload(request.get_json()), 201
+            return app.response_class(
+                response=json.dumps(process_upload(request.get_json())),
+                status=201
+            )
 
     class Comments(Resource):
         def get(self):

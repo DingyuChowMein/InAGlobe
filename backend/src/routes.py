@@ -4,7 +4,7 @@ from .models import Project, File, User, Comment
 
 # helper functions
 
-@token_auth.login_required
+# @token_auth.login_required
 def get_projects():
     projects = Project.query.all()
     projects_json = []
@@ -23,7 +23,7 @@ def get_projects():
     return {'projects': projects_json}
 
 
-@token_auth.login_required
+# @token_auth.login_required
 def process_upload(data):
     # TODO: error handling (around saving to db)
     # TODO: check for duplication
@@ -35,11 +35,12 @@ def process_upload(data):
         project_owner=data['ProjectOwner']
     )
     project.save()
-    for link in data['FileLinks']:
-        file = File(project_id=project.id, link=link)
-        file.save()
+    if data.get("FileLinks") is not None:
+        for link in data['FileLinks']:
+            file = File(project_id=project.id, link=link)
+            file.save()
 
-    return {'message': 'Project added to db!'}
+    return [{'message': 'Project added to db!'}]
 
 
 @token_auth.login_required
