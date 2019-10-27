@@ -1,5 +1,5 @@
 from .auth import token_auth
-from .models import Project, File, User
+from .models import Project, File, User, Comment
 
 
 # helper functions
@@ -60,3 +60,28 @@ def create_user(data):
     new_user.hash_password(data['Password'])
     new_user.save()
     return {'message': 'User created!'}
+
+
+def add_comment(data):
+    comment = Comment(
+        project_id=data['ProjectId'],
+        ownerId=data['OwnerId'],
+        text=data['text']
+    )
+
+    comment.save()
+    return {'message': 'Comment added!'}
+
+
+def get_comments(data):
+    # project_files = File.query.filter_by(project_id=project.id).all()
+    project_comments = Comment.query.filter_by(project_id=data['projectId']).all()
+    comments_json = []
+    for comment in project_comments:
+        comments_json.append({
+            "CommentId": comment.comment_id,
+            "Text": comment.text,
+            "OwnerId": comment.owner_id,
+            "Date": comment.date_time
+        })
+    return {"comments": comments_json}

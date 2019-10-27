@@ -5,6 +5,8 @@ from flask_restful import Api, Resource
 from flask_sqlalchemy import SQLAlchemy
 
 # initialise sql-alchemy
+from backend.src.routes import add_comment
+
 db = SQLAlchemy()
 
 
@@ -24,6 +26,13 @@ def create_app():
 
         def post(self):
             return process_upload(request.get_json()), 201
+
+    class Comments(Resource):
+        def get(self):
+            return get_comments(), 200
+
+        def post(self):
+            return add_comment(request.get_json()), 201
 
     class Users(Resource):
         def get(self):
