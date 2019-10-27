@@ -35,7 +35,7 @@ def create_app():
     class Comments(Resource):
         def get(self):
             return app.response_class(
-                response=json.dumps(get_projects()),
+                response=json.dumps(get_comments(request.get_json())),
                 status=200
             )
 

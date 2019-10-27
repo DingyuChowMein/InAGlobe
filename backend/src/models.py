@@ -90,7 +90,6 @@ class User(Model, db.Model):
 class Comment(Model, db.Model):
     __tablename__ = 'Comments'
 
-    comment_id = db.Column(db.Integer, primary_key=True)
     project_id = db.Column(db.Integer, ForeignKey(Project.id))
     owner_id = db.Column(db.Integer, nullable=False)
     date_time = db.Column(DateTime, default=datetime.now())

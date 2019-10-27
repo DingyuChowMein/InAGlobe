@@ -66,8 +66,8 @@ def create_user(data):
 def add_comment(data):
     comment = Comment(
         project_id=data['ProjectId'],
-        ownerId=data['OwnerId'],
-        text=data['text']
+        owner_id=data['OwnerId'],
+        text=data['Text']
     )
 
     comment.save()
@@ -75,14 +75,13 @@ def add_comment(data):
 
 
 def get_comments(data):
-    # project_files = File.query.filter_by(project_id=project.id).all()
-    project_comments = Comment.query.filter_by(project_id=data['projectId']).all()
+    project_comments = Comment.query.filter_by(project_id=data['ProjectId']).all()
     comments_json = []
     for comment in project_comments:
         comments_json.append({
-            "CommentId": comment.comment_id,
+            "CommentId": comment.id,
             "Text": comment.text,
             "OwnerId": comment.owner_id,
-            "Date": comment.date_time
+            "Date": comment.date_time.strftime("%Y-%m-%d %H:%M:%S")
         })
-    return {"comments": comments_json}
+    return [{"Comments": comments_json}]
