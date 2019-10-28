@@ -93,7 +93,7 @@ class Comment(Model, db.Model):
     project_id = db.Column(db.Integer, ForeignKey(Project.id))
     owner_id = db.Column(db.Integer, nullable=False)
     date_time = db.Column(db.DateTime, default=datetime.now())
-    text = db.Column(db.String, nullable=False)
+    text = db.Column(db.String(100), nullable=False)
 
     @staticmethod
     def get_all_comments_for_project_id(proj_id):
