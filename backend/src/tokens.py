@@ -8,7 +8,7 @@ from .auth import basic_auth, token_auth
 def get_token():
     token = g.current_user.get_token()
     db.session.commit()
-    return [{'token': token}]
+    return {'token': token}
 
 
 @token_auth.login_required
