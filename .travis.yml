@@ -8,7 +8,7 @@ before_install:
 install:
   - pip install -r requirements.txt
   - pip install coverage
-  - npm ci
+  - npm install
   - npm install -g serve
 
 cache:
