@@ -1,6 +1,7 @@
 import base64
 import os
 from datetime import datetime, timedelta
+from enum import Enum
 
 from sqlalchemy import ForeignKey, DateTime
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -51,6 +52,19 @@ class File(Model, db.Model):
     link = db.Column(db.String(LINK_FIELD_LENGTH), nullable=False)
 
 
+# class USER_TYPE(Enum):
+#     ADMIN = 0,
+#     HUMANITARIAN = 1,
+#     ACADEMIC = 2,
+#     STUDENT = 3
+
+USER_TYPE = {
+    'ADMIN' : 0,
+    'HUMANITARIAN' : 1,
+    'ACADEMIC' : 2,
+    'STUDENT' : 3
+}
+
 class User(Model, db.Model):
     __tablename__ = 'Users'
 
@@ -59,10 +73,13 @@ class User(Model, db.Model):
     token = db.Column(db.String(32), index=True, unique=True)
     token_expiration = db.Column(db.DateTime)
     user_type = db.Column(db.Integer)
-    # 0 superuser/admin
-    # 1 humanitarian
-    # 2 supervisor/academic
-    # 3 student
+
+    def set_permissions(self, t):
+        self.user_type = USER_TYPE[t]
+
+    def get_permissions(self, type):
+
+        return
 
     def hash_password(self, password):
         self.password_hash = generate_password_hash(password, method='sha256')
