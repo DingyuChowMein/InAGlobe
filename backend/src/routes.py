@@ -55,13 +55,11 @@ def get_users():
 
 
 def create_user(data):
-    # TODO: check for email duplication
     new_user = User(
         email=data['Email'],
-        password_hash=data['PasswordHash']
+        password_hash=data['Password']
     )
-    # We should hash the password in React so that we don't send plain-text passwords through the network
-    # new_user.hash_password(data['Password'])
+    new_user.hash_password(data['Password'])
     new_user.save()
     return {'message': 'User created!'}
 
