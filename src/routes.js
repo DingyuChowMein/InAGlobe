@@ -4,7 +4,7 @@ import SignUp from "./views/SignUp/SignUp"
 import HomePage from "./views/Home/HomePage"
 import ProjectList from "./views/ProjectList/ProjectList"
 import AddProposal from "./views/AddProposal/AddProposal"
-import ProposalPage from "./views/ProposalPage/ProposalPage"
+import ProposalMainPage from "./views/ProposalPage/ProposalMainPage"
 
 // Importing icons from Drawer
 import Person from '@material-ui/icons/Person'
@@ -12,6 +12,8 @@ import PersonAdd from "@material-ui/icons/PersonAdd"
 import Home from "@material-ui/icons/Home"
 import List from "@material-ui/icons/List"
 import Subject from "@material-ui/icons/Subject"
+import ProposalPreviewPage from './views/ProposalPage/ProposalPreviewPage'
+import ProposalPage from './views/ProposalPage/ProposalPage'
 
 const loginRoutes = [
     {
@@ -55,15 +57,31 @@ const drawerRoutes = [
     {
         path: "/proposalpage",
         name: "Proposal Page",
-        icon: null,
+        icon: Subject,
         component: ProposalPage,
+        layout: "/main"
+    }
+]
+
+const proposalRoutes = [
+    {
+        path: "/preview",
+        name: "Preview",
+        component: ProposalPreviewPage,
+        layout: "/main/addproposal"
+    },
+    {
+        path: "/proposalpage",
+        name: "Proposal Page",
+        component: ProposalMainPage,
         layout: "/main/projectlist"
     }
 ]
 
 const routes = {
     auth: loginRoutes,
-    drawer: drawerRoutes
+    drawer: drawerRoutes,
+    proposal: proposalRoutes
 }
 
 export default routes
