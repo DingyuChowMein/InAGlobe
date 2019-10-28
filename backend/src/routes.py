@@ -39,7 +39,7 @@ def process_upload(data):
             file = File(project_id=project.id, link=link)
             file.save()
 
-    return [{'message': 'Project added to db!'}]
+    return {'message': 'Project added to db!'}
 
 
 # @token_auth.login_required
@@ -73,7 +73,7 @@ def add_comment(data):
     )
 
     comment.save()
-    return [{'message': 'Comment added!'}]
+    return {'message': 'Comment added!'}
 
 
 @token_auth.login_required
@@ -87,4 +87,4 @@ def get_comments(data):
             "OwnerId": comment.owner_id,
             "Date": comment.date_time.strftime("%Y-%m-%d %H:%M:%S")
         })
-    return [{"Comments": comments_json}]
+    return {"Comments": comments_json}

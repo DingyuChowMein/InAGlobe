@@ -21,49 +21,28 @@ def create_app():
     # Define api
     class Projects(Resource):
         def get(self):
-            return app.response_class(
-                response=json.dumps(get_projects()),
-                status=200
-            )
+            return get_projects(), 200
 
         def post(self):
-            return app.response_class(
-                response=json.dumps(process_upload(request.get_json())),
-                status=201
-            )
+            return process_upload(request.get_json()), 201
 
     class Comments(Resource):
         def get(self):
-            return app.response_class(
-                response=json.dumps(get_comments(request.get_json())),
-                status=200
-            )
+            return get_comments(request.get_json()), 200
 
         def post(self):
-            return app.response_class(
-                response=json.dumps(add_comment(request.get_json())),
-                status=201
-            )
+            return add_comment(request.get_json()), 201
 
     class Users(Resource):
         def get(self):
-            return app.response_class(
-                response=json.dumps(get_users()),
-                status=200
-            )
+            return get_users(), 200
 
         def post(self):
-            return app.response_class(
-                response=json.dumps(create_user(request.get_json())),
-                status=201
-            )
+            return create_user(request.get_json()), 201
 
     class Tokens(Resource):
         def get(self):
-            return app.response_class(
-                response=json.dumps(get_token()),
-                status=200
-            )
+            return get_token(), 200
 
     # Route classes to paths
     api.add_resource(Projects, '/projects/')
