@@ -2,8 +2,11 @@ gunicorn
 flask
 Flask-SQLAlchemy
 jsonschema
+
+
 flask-script
 flask-migrate
+
 flask-restful
 flask-cors
 pymysql

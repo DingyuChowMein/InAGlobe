@@ -38,7 +38,9 @@ jobs:
 
   - stage: deploy_api
     script: skip
+
     name: deploy_api
+
     if: "(branch = master)"
     deploy:
       provider: heroku
