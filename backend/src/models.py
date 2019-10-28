@@ -2,7 +2,7 @@ import base64
 import os
 from datetime import datetime, timedelta
 
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, DateTime
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from . import db
@@ -85,3 +85,16 @@ class User(Model, db.Model):
         if user is None or user.token_expiration < datetime.utcnow():
             return None
         return user
+
+
+class Comment(Model, db.Model):
+    __tablename__ = 'Comments'
+
+    project_id = db.Column(db.Integer, ForeignKey(Project.id))
+    owner_id = db.Column(db.Integer, nullable=False)
+    date_time = db.Column(db.DateTime, default=datetime.now())
+    text = db.Column(db.String(100), nullable=False)
+
+    @staticmethod
+    def get_all_comments_for_project_id(proj_id):
+        return File.query.filter_by(project_id=proj_id).all()

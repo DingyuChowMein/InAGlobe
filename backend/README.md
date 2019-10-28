@@ -4,7 +4,7 @@ run server with
 ##flask run
 
 create user with:
-####curl -H 'Content-Type: application/json' -d '{"Email": "$(EMAIL)", "PASSWORD": "$(PASSWORD"}' localhost:5000/users/ -X POST
+####curl -H 'Content-Type: application/json' -d '{"Email": "$(EMAIL)", "Password": "$(PASSWORD"}' localhost:5000/users/ -X POST
 
 get user token with
 ####curl --user $(EMAIL):$(PASSWORD) localhost:5000/users/tokens/ -X GET
