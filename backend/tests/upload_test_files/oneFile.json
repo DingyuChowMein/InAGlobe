@@ -4,5 +4,7 @@
   "LongDescription": "longdescr",
   "Location": "test2",
   "ProjectOwner": "test",
-  "FileLinks": ["www.imperial.ac.uk"]
+  "FileLinks": [
+    "www.imperial.ac.uk"
+  ]
 }

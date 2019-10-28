@@ -1,4 +1,5 @@
 import sys
+
 sys.path.append('.')
 
 from flask_script import Manager
