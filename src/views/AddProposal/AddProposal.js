@@ -1,4 +1,5 @@
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 // Main ReactJS libraries
 import React, { Component } from 'react'
 import ImageUploader from "react-images-upload"
@@ -146,6 +147,8 @@ class AddProposal extends Component {
 }
 
 =======
+=======
+>>>>>>> Stashed changes
 // Main ReactJS libraries
 import React, { Component } from 'react'
 import ImageUploader from "react-images-upload"
@@ -292,5 +295,8 @@ class AddProposal extends Component {
     }
 }
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 export default withStyles(styles)(AddProposal)

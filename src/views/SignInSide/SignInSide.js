@@ -1,4 +1,5 @@
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 // Main ReactJS libraries
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
@@ -128,6 +129,8 @@ class SignInSide extends Component {
 }
 
 =======
+=======
+>>>>>>> Stashed changes
 // Main ReactJS libraries
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
@@ -255,5 +258,8 @@ class SignInSide extends Component {
     }
 }
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 export default withRouter(withStyles(styles)(SignInSide))

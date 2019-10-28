@@ -58,6 +58,11 @@ class User(Model, db.Model):
     password_hash = db.Column(db.String(256), nullable=False)
     token = db.Column(db.String(32), index=True, unique=True)
     token_expiration = db.Column(db.DateTime)
+    user_type = db.Column(db.Integer)
+    # 0 superuser/admin
+    # 1 humanitarian
+    # 2 supervisor/academic
+    # 3 student
 
     def hash_password(self, password):
         self.password_hash = generate_password_hash(password, method='sha256')
