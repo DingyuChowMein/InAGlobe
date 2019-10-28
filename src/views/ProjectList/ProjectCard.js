@@ -1,37 +1,49 @@
-import React from "react"
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles"
+// Main ReactJS libraries
+import React, { Component } from "react"
 
-// core components
-import Button from "../../components/CustomButtons/Button.js"
-import Card from "../../components/Card/Card.js"
-import CardBody from "../../components/Card/CardBody.js"
+// Material UI libraries
+import { withStyles } from "@material-ui/styles"
 
-import styles from "../../assets/jss/material-dashboard-react/cardImagesStyles.js"
+// Imports of different components in project
+import Button from "../../components/CustomButtons/RegularButton"
+import Card from "../../components/Card/Card"
+import CardBody from "../../components/Card/CardBody"
 
-const useStyles = makeStyles(styles)
+// Import class's stylesheet
+import styles from "../../assets/jss/views/projectCardStyle"
 
-export default function ProjectCard(props) {
+class ProjectCard extends Component {
+    render() {
+        const { classes } = this.props
+        const {
+            title, 
+            organisation, 
+            status, 
+            shortDescription, 
+            images } = this.props.data
     
-    const classes = useStyles()
-    const { title, organisation, status, description, image } = props
-    return (
-        <Card>
-            <img
-                className={classes.cardImgTop}
-                alt="Provided for a Card."
-                style={{ height: "180px", width: "100%", display: "block", objectFit: "cover" }}
-                src={image}
-                data-holder-rendered="true"
-            />
-            <CardBody>
-                <h3>{title}</h3>
-                <h4>{organisation}</h4>
-                <h5>{status}</h5>
-                <p>{description}</p>
-                <Button color="primary" style={{ marginRight: "10px" }}>{"Learn More"}</Button>
-                <Button color="primary">{"Select Proposal"}</Button>
-            </CardBody>
-        </Card>
-    )
+        return (
+            <Card>
+                <img
+                    className={classes.cardImgTop}
+                    alt="Provided for a Card."
+                    style={{ height: "180px", width: "100%", display: "block", objectFit: "cover" }}
+                    src={images[0]}
+                    data-holder-rendered="true"
+                />
+                <CardBody>
+                    <h3 className={classes.h3}>{title}</h3>
+                    <h4 className={classes.h4}>{organisation}</h4>
+                    <h5 className={classes.h5}>{status}</h5>
+                    <p>{shortDescription}</p>
+                    <div>
+                        <Button color="primary" style={{ marginRight: "10px" }}>{"Learn More"}</Button>
+                        <Button color="primary">{"Select Proposal"}</Button>
+                    </div>
+                </CardBody>
+            </Card>
+        )
+    }
 }
+
+export default withStyles(styles)(ProjectCard)

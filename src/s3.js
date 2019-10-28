@@ -1,33 +1,33 @@
-import S3FileUpload from 'react-s3';
+import AWS from 'aws-sdk';
 
-//Optional Import
-import { uploadFile } from 'react-s3';
-
-const config = {
-    bucketName: 'inaglobe-29',
-    dirName: 'PDFs', /* optional */
-    region: 'eu-west-1',
-    accessKeyId: 'AKIAIPFS5EGTGA3VOSNA',
-    secretAccessKey: 'QPmXm4QHEP24PiSz+LXMmKU1pov2izePFYZrVT5d'
-};
-
-/*  Notice that if you don't provide a dirName, the file will be automatically uploaded to the root of your bucket */
+const s3 = new AWS.S3({
+    accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY,
+    secretAccessKey: process.env.REACT_APP_AWS_SECRET_KEY
+});
 
 export default function upload(file) {
-    console.log("hello")
-    S3FileUpload
-    .uploadFile(file, config)
-    .then(data => console.log(data))
-    .catch(err => console.error(err));
-}
+    const params = {
+        Bucket: process.env.REACT_APP_BUCKET,
+        Key: 'test.pdf', // File name you want to save as in S3
+        Body: file[0]
+    };
 
-  /**
-   * {
-   *   Response: {
-   *     bucket: "your-bucket-name",
-   *     key: "photos/image.jpg",
-   *     location: "https://your-bucket.s3.amazonaws.com/photos/image.jpg"
-   *   }
-   * }
-   */
+    s3.upload(params, function(err, data) {
+        if (err) {
+            throw err;
+        }
+        console.log(`File uploaded successfully. ${data.Location}`);
+    });
+};
+
+/*
+**
+* {
+*   Response: {
+*     bucket: "your-bucket-name",
+*     key: "photos/image.jpg",
+*     location: "https://your-bucket.s3.amazonaws.com/photos/image.jpg"
+*   }
+* }
+*/
 

@@ -1,32 +1,38 @@
-import React from "react"
-import { makeStyles } from "@material-ui/core/styles"
-import ProjectCard from "./ProjectCard.js"
+// Main ReactJS libraries
+import React, { Component } from 'react'
 
-import cardData from "../../data/ProjectData.js"
+// Material UI libraries
+import { withStyles } from '@material-ui/core'
 
-import styles from "../../assets/jss/material-dashboard-react/views/dashboardStyle.js"
-import GridContainer from "../../components/Grid/GridContainer.js"
-import GridItem from "../../components/Grid/GridItem.js"
+// Imports of different components in project
+import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer'
+import GridContainer from "../../components/Grid/GridContainer"
+import GridItem from "../../components/Grid/GridItem"
+import ProjectCard from "./ProjectCard"
 
-const useStyles = makeStyles(styles)
+// Importing example card data
+import cardData from "../../assets/data/ProjectData"
 
-export default function ProjectList() {
-    const classes = useStyles()
-    return (
-        <div className={classes.root}>
-            <GridContainer spacing={2}>
-                {cardData.map(card => (
-                    <GridItem xs={12} sm={12} md={6}>
-                        <ProjectCard 
-                            title={card.title}
-                            organisation={card.organisation}
-                            status={card.status}
-                            description={card.shortDescription}
-                            image={card.images[0]}
-                        />
-                    </GridItem>
-                ))}
-            </GridContainer>
-        </div>
-    )
+// Importing class's stylesheet
+import styles from "../../assets/jss/views/projectListStyle"
+
+class ProjectList extends Component {
+	render() {
+		const { classes } = this.props
+		return (
+			<ResponsiveDrawer name={"Project List"}>
+				<div className={classes.root}>
+					<GridContainer spacing={2}>
+						{cardData.map(card => (
+							<GridItem xs={12} sm={12} md={6} key={card.id}>
+								<ProjectCard data={card}/>
+							</GridItem>
+						))}
+					</GridContainer>
+				</div>
+			</ResponsiveDrawer>
+		)
+	}
 }
+
+export default withStyles(styles)(ProjectList)
