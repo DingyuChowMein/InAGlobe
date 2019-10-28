@@ -32,7 +32,8 @@ class SignInSide extends Component {
     }
 
     authenticate() {
-        {/* You can authenticate here */}
+        // You can authenticate here
+        
         const hist = this.props.history
         return (
             ReactDOM.render(

@@ -132,7 +132,7 @@ class AddProposal extends Component {
                         </Button>
                         <Button 
                             color="primary" 
-                            onClick={upload(this.state.documents[0])}
+                            // onClick={upload(this.state.documents[0])}
                             className={classes.submitButton}
                         >
                             {"Submit"}
