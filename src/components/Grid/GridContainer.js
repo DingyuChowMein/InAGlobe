@@ -1,31 +1,27 @@
-import React from "react";
+// Main ReactJS libraries
+import React, { Component } from "react"
+import PropTypes from "prop-types"
 
-// nodejs library to set properties for components
-import PropTypes from "prop-types";
+// Material UI libraries
+import Grid from "@material-ui/core/Grid"
+import { withStyles } from "@material-ui/core/styles"
 
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
+// Importing class's stylesheet
+import styles from "../../assets/jss/components/gridContainerStyle"
 
-const styles = {
-    grid: {
-        margin: "0 -15px !important",
-        width: "unset"
+class GridContainer extends Component {
+    render() {
+        const { classes, children, ...rest } = this.props
+        return (
+            <Grid container {...rest} className={classes.grid}>
+                {children}
+            </Grid>
+        )
     }
-};
-
-const useStyles = makeStyles(styles);
-
-export default function GridContainer(props) {
-    const classes = useStyles();
-    const { children, ...rest } = props;
-    return (
-        <Grid container {...rest} className={classes.grid}>
-            {children}
-        </Grid>
-    );
 }
 
 GridContainer.propTypes = {
     children: PropTypes.node
-};
+}
+
+export default withStyles(styles)(GridContainer)

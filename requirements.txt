@@ -1,4 +1,23 @@
+<<<<<<< HEAD
 gunicorn
 flask
 Flask-SQLAlchemy
 pymysql
+=======
+gunicorn
+flask
+Flask-SQLAlchemy
+jsonschema
+
+
+flask-script
+flask-migrate
+
+flask-restful
+flask-cors
+pymysql
+coverage
+python-dotenv
+pytest
+flask-httpauth
+>>>>>>> origin/develop
