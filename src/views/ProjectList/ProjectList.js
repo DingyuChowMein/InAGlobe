@@ -88,9 +88,9 @@ class ProjectList extends React.Component {
 //            console.log(projectList);
 //          });
           .then(results => results.json())
-//          .then(results => console.log(results))
-          .then(results => this.setState({ projects: results }))
-          .then(results => console.log(this.state.projects));
+          .then(results => console.log(results))
+//          .then(results => this.setState({ projects: results })) // problem line
+//          .then(results => console.log(this.state.projects));
 //          .then((results) => {
 //            this.setState({projects:results})
 //          });
@@ -129,7 +129,7 @@ class ProjectList extends React.Component {
 
             return (
 //            {projects[0].map(projects[0] => <div>{projects[0].Title}</div>)}
-            <div>{this.state.projects == null ? "true" : jsnarray}</div>
+            <div>{jsnarray == null ? "true" : jsnarray}</div>
 //                    <GridContainer spacing={2}>
 //                        {cardData.map(card => (
 //                            <GridItem xs={12} sm={12} md={6}>
