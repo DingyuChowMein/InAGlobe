@@ -1,5 +1,6 @@
 from .auth import token_auth
 from .models import Project, File, User, Comment
+from collections import defaultdict
 
 
 # helper functions
@@ -7,10 +8,17 @@ from .models import Project, File, User, Comment
 @token_auth.login_required
 def get_projects():
     projects = Project.query.all()
+    files = File.query.all()
+
     projects_json = []
+
+    fileMap = defaultdict(list)
+    for f in files:
+        fileMap[f.project_id].append(f.link)
+    
     for project in projects:
         project_files = File.query.filter_by(project_id=project.id).all()
-        project_file_links = [file.link for file in project_files]
+        project_file_links = fileMap[project.id]
         project_fields_json = {
             "Title": project.title,
             "ShortDescription": project.short_description,
