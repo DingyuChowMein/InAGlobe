@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, request
+from flask import Flask, request, make_response
 from flask_restful import Api, Resource
 from flask_sqlalchemy import SQLAlchemy
 
@@ -8,6 +8,16 @@ from flask_sqlalchemy import SQLAlchemy
 # initialise sql-alchemy
 db = SQLAlchemy()
 
+def _build_cors_preflight_response():
+    response = make_response()
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add('Access-Control-Allow-Headers', "*")
+    response.headers.add('Access-Control-Allow-Methods', "*")
+    return response
+
+def _corsify_actual_response(response):
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
 
 def create_app():
     app = Flask(__name__)
@@ -15,13 +25,21 @@ def create_app():
     db.init_app(app)
     api = Api(app)
 
+    #cors = CORS(app, resources={r"/*": {"origins": "*"}})
+
     from .routes import get_projects, process_upload, get_users, create_user, add_comment, get_comments
     from .tokens import get_token
 
     # Define api
     class Projects(Resource):
+        def options(self):
+            print("\n \n \n PREFLIGHT")
+            return _build_cors_preflight_response()
+
         def get(self):
-            return get_projects(), 200
+            print("\n \n \n GETTING")
+            response = make_response(get_projects(), 200)
+            return _corsify_actual_response(response)
 
         def post(self):
             return process_upload(request.get_json()), 201

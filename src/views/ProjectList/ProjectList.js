@@ -17,6 +17,24 @@ import cardData from "../../assets/data/ProjectData"
 import styles from "../../assets/jss/views/projectListStyle"
 
 class ProjectList extends Component {
+  componentDidMount(){
+    var token = 'RQicsgKSjAjRyo5HEDYMQ7/voSQYZZVt'
+    var bearer = 'Bearer ' + token
+
+    fetch('http://localhost:5000/projects/', {
+      method: 'get',
+      headers: {
+        'Authorization': bearer
+      }
+    })
+      .then(res => res.json())
+      .then((data) => {
+        console.log(data)
+        this.setState({ projects: data })
+      })
+      .catch(console.log)
+  }
+
 	render() {
 		const { classes } = this.props
 		return (

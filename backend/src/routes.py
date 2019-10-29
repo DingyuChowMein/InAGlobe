@@ -42,7 +42,7 @@ def process_upload(data):
     return {'message': 'Project added to db!'}
 
 
-# @token_auth.login_required
+@token_auth.login_required
 def get_users():
     # TODO: only admins should be able to see the list of users
     users = User.query.all()
