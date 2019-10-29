@@ -17,7 +17,6 @@ def get_projects():
         fileMap[f.project_id].append(f.link)
     
     for project in projects:
-        project_files = File.query.filter_by(project_id=project.id).all()
         project_file_links = fileMap[project.id]
         project_fields_json = {
             "Title": project.title,
