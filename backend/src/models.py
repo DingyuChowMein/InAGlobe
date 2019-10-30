@@ -68,8 +68,8 @@ USER_TYPE = {
 class User(Model, db.Model):
     __tablename__ = 'Users'
 
-    email = db.Column(db.String(32), unique=True))
-    first_name = db.Column(db.String(32), nullable=False))
+    email = db.Column(db.String(32), unique=True)
+    first_name = db.Column(db.String(32), nullable=False)
     last_name = db.Column(db.String(32), nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
     token = db.Column(db.String(32), index=True, unique=True)
