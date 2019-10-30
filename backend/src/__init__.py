@@ -36,6 +36,8 @@ def create_app():
             return new_response(get_projects(), 200)
 
         def post(self):
+            print("IN POST \n \n")
+            print(request.get_json())
             return new_response(process_upload(request.get_json()), 201)
 
     class Comments(Resource, CORS):

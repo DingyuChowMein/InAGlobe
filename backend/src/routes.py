@@ -17,32 +17,43 @@ def get_projects():
         fileMap[f.project_id].append(f.link)
     
     for project in projects:
-        project_file_links = fileMap[project.id]
+        documents = fileMap[project.id]
         project_fields_json = {
-            "Title": project.title,
-            "ShortDescription": project.short_description,
-            "LongDescription": project.long_description,
-            "Location": project.location,
-            "ProjectOwner": project.project_owner,
-            "FileLinks": project_file_links
+            "id": project.id,
+            "title": project.title,
+            "shortDescription": project.short_description,
+            "detailedDescription": project.long_description,
+            "location": project.location,
+            "projectOwner": project.project_owner,
+            "documents": documents,
+            "organisation": "",
+            "organisationLogo": "",
+            "status": "",
+            "images": [],
         }
+
         projects_json.append(project_fields_json)
+
     return {'projects': projects_json}
 
 
 @token_auth.login_required
 def process_upload(data):
     # TODO: error handling (around saving to db)
+    print(data)
     project = Project(
-        title=data['Title'],
-        short_description=data['ShortDescription'],
-        long_description=data['LongDescription'],
-        location=data['Location'],
-        project_owner=data['ProjectOwner']
+        title=data['title'],
+        short_description=data['shortDescription'],
+        long_description=data['detailedDescription'],
+        location=data['location'],
+        project_owner=data['projectOwner']
     )
+    print(project.title)
+    print(project.project_owner)
     project.save()
-    if data.get("FileLinks") is not None:
-        for link in data['FileLinks']:
+    print("SAVED")
+    if data.get("documents") is not None:
+        for link in data['documents']:
             file = File(project_id=project.id, link=link)
             file.save()
 

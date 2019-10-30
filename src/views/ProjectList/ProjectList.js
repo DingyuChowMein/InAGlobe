@@ -15,25 +15,33 @@ import cardData from "../../assets/data/ProjectData"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/projectListStyle"
+import config from '../../config'
 
 class ProjectList extends Component {
-    // componentDidMount(){
-    //   var token = 'RQicsgKSjAjRyo5HEDYMQ7/voSQYZZVt'
-    //   var bearer = 'Bearer ' + token
+    constructor(props) {
+        super();
+        this.state = {
+            projects: []
+        }
+    }
 
-    //   fetch('http://localhost:5000/projects/', {
-    //     method: 'get',
-    //     headers: {
-    //       'Authorization': bearer
-    //     }
-    //   })
-    //     .then(res => res.json())
-    //     .then((data) => {
-    //       console.log(data)
-    //       this.setState({ projects: data })
-    //     })
-    //     .catch(console.log)
-    // }
+    componentDidMount() {
+        var token = localStorage.getItem('token');
+        var bearer = 'Bearer ' + token;
+
+        fetch(config.apiUrl + '/projects/', {
+            method: 'get',
+            headers: {
+                'Authorization': bearer
+            }
+        })
+            .then(res => res.json())
+            .then((data) => {
+                console.log(data);
+                this.setState({projects: data.projects})
+            })
+            .catch(console.log)
+    }
 
     render() {
         const {classes} = this.props
@@ -41,7 +49,7 @@ class ProjectList extends Component {
             <ResponsiveDrawer name={"Project List"}>
                 <div className={classes.root}>
                     <GridContainer spacing={2}>
-                        {cardData.map(card => (
+                        {this.state.projects.map(card => (
                             <GridItem xs={12} sm={12} md={6} key={card.id}>
                                 <ProjectCard data={card}/>
                             </GridItem>
