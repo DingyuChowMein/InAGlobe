@@ -1,5 +1,5 @@
 from .auth import token_auth, permission_required
-from .models import Project, File, User, Comment, USER_TYPE
+from .models import Project, File, User, Comment, USER_TYPE, FILE_TYPE
 from collections import defaultdict
 
 
@@ -15,9 +15,9 @@ def get_projects():
     documents_map = defaultdict(list)
     images_map = defaultdict(list)
     for f in files:
-        if f.type == 0:
+        if f.type == FILE_TYPE['DOCUMENT']:
             documents_map[f.project_id].append(f.link)
-        elif f.type == 1:
+        elif f.type == FILE_TYPE['IMAGE']:
             images_map[f.project_id].append(f.link)
 
     for project in projects:
@@ -34,7 +34,7 @@ def get_projects():
             "projectOwner": project.project_owner,
             "documents": documents,
             "organisation": project.project_owner,
-            "organisationLogo": "no_logo",
+            "organisationLogo": project.organisation_logo,
             "status": project.status,
             "images": images,
         }
@@ -53,16 +53,18 @@ def process_upload(data):
         title=data['title'],
         short_description=data['shortDescription'],
         long_description=data['detailedDescription'],
+        status=data['status'],
         location=data['location'],
-        project_owner=data['projectOwner']
+        project_owner=data['projectOwner'],
+        organisation_logo=data['organisationLogo']
     )
     print(project.title)
     print(project.project_owner)
     project.save()
     print("SAVED")
     if data.get("documents") is not None:
-        for link in data['documents']:
-            file = File(project_id=project.id, link=link)
+        for f in data['documents']:
+            file = File(project_id=project.id, link=f['link'], type=f['type'])
             file.save()
 
     return {'message': 'Project added to db!'}
