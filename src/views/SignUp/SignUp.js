@@ -22,11 +22,55 @@ import Copyright from "../../components/Copyright/Copyright"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/signUpStyle"
+import {userService} from "../../services/userService";
 
 class SignUp extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            email: "",
+            password: "",
+            firstName: "",
+            lastName: "",
+            signUpFailed: false,
+            userType: "STUDENT"
+        }
+
+        this.handleFormChange = this.handleFormChange.bind(this)
+        this.signUpPressed = this.signUpPressed.bind(this)
+        this.modifyUserType = this.modifyUserType.bind(this)
+    }
+
+    handleFormChange(e) {
+        const { name, value } = e.target
+        this.setState({
+            [name]: value
+        })
+    }
+
+    signUpPressed() {
+        // You can authenticate here
+        userService.signUp(
+            this.state.firstName,
+            this.state.lastName,
+            this.state.email,
+            this.state.password)
+            .then(response => {
+                console.log(response);
+            }
+        )
+    }
+
+    modifyUserType(event) {
+        console.log(event.target.value)
+        this.setState({
+            userType: event.target.value
+        })
+    }
+
     render() {
-        const { classes } = this.props
+        const { classes } = this.props;
 
         return (
             <Container component="main" maxWidth="xs">
@@ -44,6 +88,7 @@ class SignUp extends Component {
                                 <TextField
                                     autoComplete="fname"
                                     name="firstName"
+                                    onChange={this.handleFormChange}
                                     variant="outlined"
                                     required
                                     fullWidth
@@ -60,6 +105,7 @@ class SignUp extends Component {
                                     id="lastName"
                                     label="Last Name"
                                     name="lastName"
+                                    onChange={this.handleFormChange}
                                     autoComplete="lname"
                                 />
                             </Grid>
@@ -71,6 +117,7 @@ class SignUp extends Component {
                                     id="email"
                                     label="Email Address"
                                     name="email"
+                                    onChange={this.handleFormChange}
                                     autoComplete="email"
                                 />
                             </Grid>
@@ -80,6 +127,7 @@ class SignUp extends Component {
                                     required
                                     fullWidth
                                     name="password"
+                                    onChange={this.handleFormChange}
                                     label="Password"
                                     type="password"
                                     id="password"
@@ -92,6 +140,8 @@ class SignUp extends Component {
                                     <Select
                                         labelId="userTypeLabel"
                                         id="userType"
+                                        value={this.state.userType}
+                                        onChange={this.modifyUserType}
                                     >
                                         <MenuItem value={"HUMANITARIAN"}>Humanitarian</MenuItem>
                                         <MenuItem value={"ACADEMIC"}>Academic</MenuItem>
@@ -101,10 +151,10 @@ class SignUp extends Component {
                             </Grid>
                         </Grid>
                         <Button
-                            type="submit"
                             fullWidth
                             variant="contained"
                             color="primary"
+                            onClick={this.signUpPressed}
                             className={classes.submit}
                         >
                             Sign Up

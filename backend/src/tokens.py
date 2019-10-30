@@ -12,7 +12,7 @@ def get_token():
         'token': token,
         'firstname': g.current_user.first_name,
         'lastname': g.current_user.last_name,
-        'permissions': g.current_user.get_permission()
+        'permissions': g.current_user.get_permissions()
     }
 
 
