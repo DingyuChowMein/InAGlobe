@@ -24,17 +24,33 @@ import MainPage from '../../layouts/MainPage/MainPage'
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/signInSideStyle"
 
+import userService from "../../services/userService";
+
 class SignInSide extends Component {
 
     constructor(props) {
-        super(props)
-        this.authenticate = this.authenticate.bind(this)
+        super(props);
+        this.state = {
+            email: "",
+            password: ""
+        };
+
+        this.handleFormChange = this.handleFormChange.bind(this);
+        this.loginPressed = this.loginPressed.bind(this);
     }
 
-    authenticate() {
+
+    handleFormChange(e) {
+        const { name, value } = e.target;
+        this.setState({ [name]: value });
+    }
+
+    loginPressed() {
         // You can authenticate here
+        user = userService.login(this.state.email, this.state.password);
+
         
-        const hist = this.props.history
+        const hist = this.props.history;
         return (
             ReactDOM.render(
                 <Router history={hist}>
@@ -74,6 +90,7 @@ class SignInSide extends Component {
                                     label="Email Address"
                                     name="email"
                                     autoComplete="email"
+                                    onChange={this.handleFormChange}
                                     autoFocus
                                 />
                                 <TextField
@@ -86,6 +103,7 @@ class SignInSide extends Component {
                                     type="password"
                                     id="password"
                                     autoComplete="current-password"
+                                    onChange={this.handleFormChange}
                                 />
                                 <FormControlLabel
                                     control={<Checkbox value="remember" color="primary" />}
@@ -97,7 +115,7 @@ class SignInSide extends Component {
                                     variant="contained"
                                     color="primary"
                                     className={classes.submit}
-                                    onClick={this.authenticate}
+                                    onClick={this.loginPressed}
                                 >
                                     Sign In
                                 </Button>

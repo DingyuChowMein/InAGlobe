@@ -9,7 +9,7 @@ export const userService = {
 
 function login(email, password) {
     const requestOptions = {
-        method: 'POST',
+        method: 'GET',
         headers: {
             'Authorization': 'Basic ' + base64.encode(email + ":" + password),
         }
@@ -22,8 +22,8 @@ function login(email, password) {
             if (user) {
                 // store user details and basic auth credentials in local storage
                 // to keep user logged in between page refreshes
-                user.authdata = window.btoa(email + ':' + password);
-                localStorage.setItem('user', JSON.stringify(user));
+                // user.authdata = window.btoa(email + ':' + password);
+                localStorage.setItem('user', user.token);
             }
 
             return user;
