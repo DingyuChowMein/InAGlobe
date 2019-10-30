@@ -38,6 +38,7 @@ def get_projects():
 
 
 @token_auth.login_required
+@permission_required(USER_TYPE['HUMANITARIAN'])
 def process_upload(data):
     # TODO: error handling (around saving to db)
     print(data)
@@ -84,6 +85,7 @@ def create_user(data):
 
 
 @token_auth.login_required
+@permission_required(USER_TYPE['STUDENT'])
 def add_comment(data):
     comment = Comment(
         project_id=data['ProjectId'],
