@@ -12,12 +12,19 @@ def get_projects():
 
     projects_json = []
 
-    fileMap = defaultdict(list)
+    documents_map = defaultdict(list)
+    images_map = defaultdict(list)
     for f in files:
-        fileMap[f.project_id].append(f.link)
-    
+        if f.type == 0:
+            documents_map[f.project_id].append(f.link)
+        elif f.type == 1:
+            images_map[f.project_id].append(f.link)
+
     for project in projects:
-        documents = fileMap[project.id]
+
+        documents = documents_map[project.id]
+        images = images_map[project.id]
+
         project_fields_json = {
             "id": project.id,
             "title": project.title,
@@ -26,10 +33,10 @@ def get_projects():
             "location": project.location,
             "projectOwner": project.project_owner,
             "documents": documents,
-            "organisation": "",
-            "organisationLogo": "",
-            "status": "",
-            "images": [],
+            "organisation": project.project_owner,
+            "organisationLogo": "no_logo",
+            "status": project.status,
+            "images": images,
         }
 
         projects_json.append(project_fields_json)

@@ -9,12 +9,12 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
 
 # TODO: update field length values
-TITLE_FIELD_LENGTH = 16
-SHORT_FIELD_LENGTH = 16
-LONG_FIELD_LENGTH = 32
-LOCATION_FIELD_LENGTH = 16
-OWNER_FIELD_LENGTH = 16
-LINK_FIELD_LENGTH = 32
+TITLE_FIELD_LENGTH = 124
+SHORT_FIELD_LENGTH = 256
+LONG_FIELD_LENGTH = 1024
+LOCATION_FIELD_LENGTH = 64
+OWNER_FIELD_LENGTH = 64
+LINK_FIELD_LENGTH = 256
 
 
 class Model:
@@ -43,6 +43,14 @@ class Project(Model, db.Model):
     long_description = db.Column(db.String(LONG_FIELD_LENGTH), nullable=False)
     location = db.Column(db.String(LOCATION_FIELD_LENGTH), nullable=False)
     project_owner = db.Column(db.String(OWNER_FIELD_LENGTH), nullable=False)
+    organisation_logo = db.Column(db.String(LINK_FIELD_LENGTH))
+    status = db.Column(db.String(SHORT_FIELD_LENGTH), nullable=False)
+
+
+FILE_TYPE = {
+    'DOCUMENT': 0,
+    'IMAGE': 0
+}
 
 
 class File(Model, db.Model):
@@ -50,6 +58,7 @@ class File(Model, db.Model):
 
     project_id = db.Column(db.Integer, ForeignKey(Project.id))
     link = db.Column(db.String(LINK_FIELD_LENGTH), nullable=False)
+    type = db.Column(db.Integer, default=FILE_TYPE['DOCUMENT'])
 
 
 # class USER_TYPE(Enum):
