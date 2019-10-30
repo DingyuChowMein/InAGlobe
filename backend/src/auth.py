@@ -36,13 +36,23 @@ def token_error_handler():
     return '', 204
 
 
+def permission_required(permission):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not g.current_user.has_permission(permission):
+                permissions_error_handler(permission)
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
+
+
 def no_user_error():
     return "No user found", 204
 
 
-def permissions_error_handler(type):
-    return "Insufficient permissions: need user type {}".format(type), 204
-
+def permissions_error_handler(permission):
+    return "Insufficient permissions: need user type {}".format(permission), 204
 
 # decorator
 def requires_role(type):
@@ -61,3 +71,4 @@ def requires_role(type):
                 return permissions_error_handler(type)
         return decorated
     return decorator
+

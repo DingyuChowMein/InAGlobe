@@ -1,4 +1,4 @@
-from .auth import token_auth, requires_role
+from .auth import token_auth, permission_required
 from .models import Project, File, User, Comment, USER_TYPE
 
 
@@ -42,8 +42,8 @@ def process_upload(data):
     return {'message': 'Project added to db!'}
 
 
-# @token_auth.login_required
-@requires_role(USER_TYPE['ADMIN'])
+@token_auth.login_required
+@permission_required(USER_TYPE['ADMIN'])
 def get_users():
     # TODO: only admins should be able to see the list of users
     users = User.query.all()
