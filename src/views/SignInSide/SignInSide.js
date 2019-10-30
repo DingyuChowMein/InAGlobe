@@ -18,22 +18,21 @@ import {withStyles} from '@material-ui/core'
 
 // Imports of different components and layouts in project
 import Copyright from '../../components/Copyright/Copyright'
-import MainPage from '../../layouts/MainPage/MainPage'
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/signInSideStyle"
 
-import {userService} from "../../services/userService";
+import { userService } from "../../services/userService";
 
 class SignInSide extends Component {
 
     constructor(props) {
-        super(props);
+        super(props)
         this.state = {
             email: "",
             password: "",
             loginFailed: false
-        };
+        }
 
         this.handleFormChange = this.handleFormChange.bind(this);
         this.loginPressed = this.loginPressed.bind(this);
@@ -41,20 +40,26 @@ class SignInSide extends Component {
 
 
     handleFormChange(e) {
-        const {name, value} = e.target;
-        this.setState({[name]: value});
+        const { name, value } = e.target
+        this.setState({
+            [name]: value
+        })
     }
 
     loginPressed() {
         // You can authenticate here
         userService.login(this.state.email, this.state.password).then(token => {
-            console.log(token);
+            console.log(token)
                 if (token === "") {
-                    this.state.loginFailed = true;
-                    alert('INVALID');
+                    this.setState({
+                        loginFailed: true
+                    })
+                    alert('INVALID')
                 } else {
                     this.props.history.push("/main");
-                    this.state.loginFailed = false;
+                    this.setState({
+                        loginFailed: false
+                    })
                 }
             }
         );
@@ -62,7 +67,7 @@ class SignInSide extends Component {
     }
 
     render() {
-        const {classes} = this.props;
+        const { classes } = this.props
 
         return (
             <div>
@@ -117,11 +122,6 @@ class SignInSide extends Component {
                                     Sign In
                                 </Button>
                                 <Grid container>
-                                    <Grid item xs>
-                                        <Link href="/login/signup" variant="body2">
-                                            Forgot password?
-                                        </Link>
-                                    </Grid>
                                     <Grid item>
                                         <Link href="/login/signup" variant="body2">
                                             {"Don't have an account? Sign Up"}

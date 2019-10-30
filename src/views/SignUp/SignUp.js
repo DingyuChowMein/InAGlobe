@@ -6,8 +6,10 @@ import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import TextField from '@material-ui/core/TextField'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
+import InputLabel from '@material-ui/core/InputLabel'
+import MenuItem from '@material-ui/core/MenuItem'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
 import Link from '@material-ui/core/Link'
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
@@ -22,6 +24,7 @@ import Copyright from "../../components/Copyright/Copyright"
 import styles from "../../assets/jss/views/signUpStyle"
 
 class SignUp extends Component {
+
     render() {
         const { classes } = this.props
 
@@ -84,10 +87,17 @@ class SignUp extends Component {
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <FormControlLabel
-                                    control={<Checkbox value="allowExtraEmails" color="primary" />}
-                                    label="I want to receive inspiration, marketing promotions and updates via email."
-                                />
+                                <FormControl className={classes.formControl}>
+                                    <InputLabel id="userTypeLabel">Select User Type</InputLabel>
+                                    <Select
+                                        labelId="userTypeLabel"
+                                        id="userType"
+                                    >
+                                        <MenuItem value={"HUMANITARIAN"}>Humanitarian</MenuItem>
+                                        <MenuItem value={"ACADEMIC"}>Academic</MenuItem>
+                                        <MenuItem value={"STUDENT"}>Student</MenuItem>
+                                    </Select>
+                                </FormControl>
                             </Grid>
                         </Grid>
                         <Button
