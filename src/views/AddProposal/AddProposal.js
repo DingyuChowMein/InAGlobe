@@ -14,7 +14,7 @@ import GridContainer from "../../components/Grid/GridContainer"
 import CustomInput from '../../components/CustomInput/CustomInput'
 
 // Importing the ability to upload to AWS
-import upload from "../../s3"
+// import upload from "../../s3"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/addProposalStyle"

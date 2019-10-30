@@ -1,5 +1,6 @@
 // Main ReactJS libraries
 import React, { Component } from "react"
+import { Switch, Redirect, withRouter } from "react-router-dom"
 
 // Material UI libraries
 import { withStyles } from "@material-ui/styles"
@@ -13,6 +14,19 @@ import CardBody from "../../components/Card/CardBody"
 import styles from "../../assets/jss/views/projectCardStyle"
 
 class ProjectCard extends Component {
+    constructor(props) {
+        super(props)
+        this.openProposalPage = this.openProposalPage.bind(this)
+    }
+
+    openProposalPage() {
+        const dataValue = JSON.stringify(this.props.data)
+        console.log(dataValue)
+        return(
+            <Redirect from="/main/projectlist" to="/main/projectlist/proposalpage" />
+        )
+    }
+
     render() {
         const { classes } = this.props
         const {
@@ -27,7 +41,6 @@ class ProjectCard extends Component {
                 <img
                     className={classes.cardImgTop}
                     alt="Provided for a Card."
-                    style={{ height: "180px", width: "100%", display: "block", objectFit: "cover" }}
                     src={images[0]}
                     data-holder-rendered="true"
                 />
@@ -36,9 +49,20 @@ class ProjectCard extends Component {
                     <h4 className={classes.h4}>{organisation}</h4>
                     <h5 className={classes.h5}>{status}</h5>
                     <p>{shortDescription}</p>
-                    <div>
-                        <Button color="primary" style={{ marginRight: "10px" }}>{"Learn More"}</Button>
-                        <Button color="primary">{"Select Proposal"}</Button>
+                    <div className={classes.buttonDiv}>
+                        <Button 
+                            color="primary" 
+                            className={classes.learnMoreButton}
+                            onClick={this.openProposalPage}
+                        >
+                            Learn More
+                        </Button>
+                        <Button 
+                            color="primary" 
+                            className={classes.selectProposalButton}
+                        >
+                            Select Proposal
+                        </Button>
                     </div>
                 </CardBody>
             </Card>
@@ -46,4 +70,4 @@ class ProjectCard extends Component {
     }
 }
 
-export default withStyles(styles)(ProjectCard)
+export default withRouter(withStyles(styles)(ProjectCard))

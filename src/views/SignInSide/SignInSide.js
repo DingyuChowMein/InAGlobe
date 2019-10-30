@@ -1,7 +1,6 @@
 // Main ReactJS libraries
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
-import { Router, Switch, Route, Redirect, withRouter } from "react-router-dom"
+import { withRouter } from "react-router-dom"
 
 // Material UI libraries
 import Avatar from '@material-ui/core/Avatar'
@@ -48,24 +47,11 @@ class SignInSide extends Component {
     loginPressed() {
         // You can authenticate here
         user = userService.login(this.state.email, this.state.password);
-
-        
-        const hist = this.props.history;
-        return (
-            ReactDOM.render(
-                <Router history={hist}>
-                    <Switch>
-                        <Route path="/main" component={MainPage}/>
-                        <Redirect from="/login/signin" to="/main" />
-                    </Switch>
-                </Router>,
-                document.querySelector('#root'),
-            )
-        )
+        this.props.history.push("/main")
     }
 
     render() {
-        const { classes } = this.props
+        const { classes } = this.props;
         
         return (
             <div>

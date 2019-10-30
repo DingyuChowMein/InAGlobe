@@ -1,20 +1,47 @@
-// Main ReactJS libraries
-import React, { Component } from 'react'
+import React, { Component } from "react"
 
-// Material UI libraries
-import { withStyles } from '@material-ui/core'
+import { withStyles } from "@material-ui/styles"
 
-// Imports of different components in project
-import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer'
+import ResponsiveDrawer from "../../components/ResponsiveDrawer/ResponsiveDrawer"
 
-// Importing class's stylesheet
 import styles from "../../assets/jss/views/proposalPageStyle"
 
 class ProposalPage extends Component {
     render() {
+        const { classes, data, children } = this.props
         return (
             <ResponsiveDrawer name={"Proposal Page"}>
-                <h1>Hello, World!</h1>
+                <div className={classes.container}>
+                    <h1>{data.title}</h1>
+                </div>
+                <div className={classes.container}>
+                    <h2>{data.organisation}</h2>
+                </div>
+                <div className={classes.imagesContainer}>
+                    <img 
+                        alt={data.organisation} 
+                        src={data.organisationLogo}
+                        className={classes.projectImages}/>
+                </div>
+                <div className={classes.container}>
+                    <h3>{data.status}</h3>
+                </div>
+                <div className={classes.container}>
+                    <h4>{data.location}</h4>
+                </div>
+                <div className={classes.container}>
+                    <h5>{data.detailedDescription}</h5>
+                </div>
+                {data.images.map(image => (
+                    <div className={classes.imagesContainer}>
+                        <img 
+                            alt={data.title}
+                            src={image} 
+                            className={classes.projectImages}
+                        />
+                    </div>
+                ))}
+                {children}
             </ResponsiveDrawer>
         )
     }
