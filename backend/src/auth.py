@@ -21,7 +21,7 @@ def verify_password(email, password):
 # TODO create error handler
 @basic_auth.error_handler
 def basic_auth_error():
-    return '', 204
+    return '{}', 204
 
 
 @token_auth.verify_token
@@ -32,7 +32,7 @@ def verify_token(token):
 
 @token_auth.error_handler
 def token_error_handler():
-    return '', 204
+    return '{}', 204
 
 
 def no_user_error():

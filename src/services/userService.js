@@ -1,32 +1,38 @@
-import config from 'config';
-import {authHeader} from '../helpers';
+import config from './config';
+import {authHeader} from '../helpers/auth-header';
+
+
+// const apiUrl = 'http://localhost:5000';
+// const apiUrl = 'https://inaglobe-api.herokuapp.com';
 
 export const userService = {
-    login,
-    logout,
-    getAll
+    login
 };
 
 function login(email, password) {
+    console.log(config.apiUrl + '/users/tokens/');
+
     const requestOptions = {
         method: 'GET',
         headers: {
-            'Authorization': 'Basic ' + base64.encode(email + ":" + password),
+            'Authorization': 'Basic ' + window.btoa(email + ":" + password)
         }
     };
 
-    return fetch(`${config.apiUrl}/users/tokens/`, requestOptions)
+    return fetch(config.apiUrl + '/users/tokens/', requestOptions)
         .then(response => response.json())
-        .then(user => {
+        .then(token => {
             // login successful if there's a user in the response
-            if (user) {
                 // store user details and basic auth credentials in local storage
                 // to keep user logged in between page refreshes
                 // user.authdata = window.btoa(email + ':' + password);
-                localStorage.setItem('user', user.token);
+            if (token === '') {
+                localStorage.setItem('token', '');
+                return token;
             }
 
-            return user;
+            localStorage.setItem('token', token.token);
+            return token;
         });
 }
 

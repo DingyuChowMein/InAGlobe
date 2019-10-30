@@ -22,7 +22,7 @@ class HomePage extends Component {
 
     componentDidMount() {
         this.setState({
-            user: JSON.parse(localStorage.getItem('user')),
+            user: localStorage.getItem('user'),
         });
     }
 

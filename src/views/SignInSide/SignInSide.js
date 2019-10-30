@@ -23,7 +23,7 @@ import MainPage from '../../layouts/MainPage/MainPage'
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/signInSideStyle"
 
-import userService from "../../services/userService";
+import {userService} from "../../services/userService";
 
 class SignInSide extends Component {
 
@@ -46,7 +46,7 @@ class SignInSide extends Component {
 
     loginPressed() {
         // You can authenticate here
-        user = userService.login(this.state.email, this.state.password);
+        var user = userService.login(this.state.email, this.state.password);
         this.props.history.push("/main")
     }
 
