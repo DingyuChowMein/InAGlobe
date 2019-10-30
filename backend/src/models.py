@@ -59,10 +59,10 @@ class File(Model, db.Model):
 #     STUDENT = 3
 
 USER_TYPE = {
-    'ADMIN' : 0,
-    'HUMANITARIAN' : 1,
-    'ACADEMIC' : 2,
-    'STUDENT' : 3
+    'ADMIN': 0,
+    'HUMANITARIAN': 1,
+    'ACADEMIC': 2,
+    'STUDENT': 3
 }
 
 class User(Model, db.Model):
@@ -74,14 +74,7 @@ class User(Model, db.Model):
     password_hash = db.Column(db.String(256), nullable=False)
     token = db.Column(db.String(32), index=True, unique=True)
     token_expiration = db.Column(db.DateTime)
-    user_type = db.Column(db.Integer)
-
-    def set_permissions(self, t):
-        self.user_type = USER_TYPE[t]
-
-    def get_permissions(self, type):
-
-        return
+    user_type = db.Column(db.Integer, default=USER_TYPE['STUDENT'])
 
     def hash_password(self, password):
         self.password_hash = generate_password_hash(password, method='sha256')
@@ -102,6 +95,19 @@ class User(Model, db.Model):
 
     def revoke_token(self):
         self.token_expiration = datetime.utcnow() - timedelta(seconds=1)
+
+    def set_permissions(self, t):
+        if not t is None:
+            self.user_type = USER_TYPE[t]
+
+    def has_permission(self, permission):
+        return self.user_type == permission
+
+    def get_permission(self):
+        return 0
+
+    def is_admin(self):
+        return self.user_type == USER_TYPE['ADMIN']
 
     @staticmethod
     def check_token(token):

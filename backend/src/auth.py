@@ -39,7 +39,8 @@ def permission_required(permission):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            if not g.current_user.has_permission(permission):
+            user = g.current_user
+            if not user.has_permission(permission) or not user.is_admin():
                 permissions_error_handler(permission)
             return f(*args, **kwargs)
         return decorated_function
