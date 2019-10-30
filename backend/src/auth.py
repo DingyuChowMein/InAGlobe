@@ -8,7 +8,6 @@ basic_auth = HTTPBasicAuth()
 # token_auth uses bearer tokens
 token_auth = HTTPTokenAuth()
 
-
 @basic_auth.verify_password
 def verify_password(email, password):
     # email unique so there can only be one

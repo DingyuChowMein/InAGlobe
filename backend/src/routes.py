@@ -1,5 +1,6 @@
-from .auth import token_auth, requires_role
-from .models import Project, File, User, Comment, USER_TYPE
+from .auth import token_auth
+from .models import Project, File, User, Comment
+from collections import defaultdict
 
 
 # helper functions
@@ -7,10 +8,16 @@ from .models import Project, File, User, Comment, USER_TYPE
 @token_auth.login_required
 def get_projects():
     projects = Project.query.all()
+    files = File.query.all()
+
     projects_json = []
+
+    fileMap = defaultdict(list)
+    for f in files:
+        fileMap[f.project_id].append(f.link)
+    
     for project in projects:
-        project_files = File.query.filter_by(project_id=project.id).all()
-        project_file_links = [file.link for file in project_files]
+        project_file_links = fileMap[project.id]
         project_fields_json = {
             "Title": project.title,
             "ShortDescription": project.short_description,
@@ -42,25 +49,24 @@ def process_upload(data):
     return {'message': 'Project added to db!'}
 
 
-# @token_auth.login_required
-@requires_role(USER_TYPE['ADMIN'])
+@token_auth.login_required
 def get_users():
     # TODO: only admins should be able to see the list of users
     users = User.query.all()
     users_json = []
     for user in users:
         # TODO: refactor this
-        _u = {'Id': user.id, 'Email': user.email, 'PasswordHash': user.password_hash, 'Type': user.user_type}
+        _u = {'Id': user.id, 'Email': user.email, 'PasswordHash': user.password_hash}
         users_json.append(_u)
     return {'users': users_json}
 
 
 def create_user(data):
     new_user = User(
-        email=data['Email']
+        email=data['Email'],
+        password_hash=data['Password']
     )
     new_user.hash_password(data['Password'])
-    new_user.set_permissions(data['Type'])
     new_user.save()
     return {'message': 'User created!'}
 
