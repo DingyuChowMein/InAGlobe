@@ -1,5 +1,5 @@
 from .auth import token_auth, permission_required
-from .models import Project, File, User, Comment, USER_TYPE
+from .models import Project, File, User, Comment, USER_TYPE, FILE_TYPE
 from collections import defaultdict
 
 
@@ -12,12 +12,19 @@ def get_projects():
 
     projects_json = []
 
-    fileMap = defaultdict(list)
+    documents_map = defaultdict(list)
+    images_map = defaultdict(list)
     for f in files:
-        fileMap[f.project_id].append(f.link)
-    
+        if f.type == FILE_TYPE['DOCUMENT']:
+            documents_map[f.project_id].append(f.link)
+        elif f.type == FILE_TYPE['IMAGE']:
+            images_map[f.project_id].append(f.link)
+
     for project in projects:
-        documents = fileMap[project.id]
+
+        documents = documents_map[project.id]
+        images = images_map[project.id]
+
         project_fields_json = {
             "id": project.id,
             "title": project.title,
@@ -26,10 +33,10 @@ def get_projects():
             "location": project.location,
             "projectOwner": project.project_owner,
             "documents": documents,
-            "organisation": "",
-            "organisationLogo": "",
-            "status": "",
-            "images": [],
+            "organisationName": project.organisation_name,
+            "organisationLogo": project.organisation_logo,
+            "status": project.status,
+            "images": images,
         }
 
         projects_json.append(project_fields_json)
@@ -45,15 +52,21 @@ def process_upload(data):
         title=data['title'],
         short_description=data['shortDescription'],
         long_description=data['detailedDescription'],
+        status=data['status'],
         location=data['location'],
-        project_owner=data['projectOwner']
+        project_owner=data['projectOwner'],
+        organisation_name=data['organisationName'],
+        organisation_logo=data['organisationLogo']
     )
     project.save()
     if data.get("documents") is not None:
         for link in data['documents']:
-            file = File(project_id=project.id, link=link)
+            file = File(project_id=project.id, link=link, type=FILE_TYPE['DOCUMENT'])
             file.save()
-
+        for link in data['images']:
+            file = File(project_id=project.id, link=link, type=FILE_TYPE['IMAGE'])
+            file.save()
+            
     return {'message': 'Project added to db!'}
 
 

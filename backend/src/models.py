@@ -7,6 +7,14 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from . import db
 
+# TODO: update field length values
+TITLE_FIELD_LENGTH = 124
+SHORT_FIELD_LENGTH = 256
+LONG_FIELD_LENGTH = 1024
+LOCATION_FIELD_LENGTH = 64
+OWNER_FIELD_LENGTH = 64
+LINK_FIELD_LENGTH = 256
+
 
 class Model:
     __table_args__ = {'extend_existing': True}
@@ -29,19 +37,28 @@ class Model:
 class Project(Model, db.Model):
     __tablename__ = 'Projects'
 
-    title = db.Column(db.String(32), nullable=False)
-    short_description = db.Column(db.String(100), nullable=False)
-    long_description = db.Column(db.String(256), nullable=False)
-    location = db.Column(db.String(100), nullable=False)
-    project_owner = db.Column(db.String(32), nullable=False)
+    title = db.Column(db.String(TITLE_FIELD_LENGTH), nullable=False)
+    short_description = db.Column(db.String(SHORT_FIELD_LENGTH), nullable=False)
+    long_description = db.Column(db.String(LONG_FIELD_LENGTH), nullable=False)
+    location = db.Column(db.String(LOCATION_FIELD_LENGTH), nullable=False)
+    project_owner = db.Column(db.String(OWNER_FIELD_LENGTH), nullable=False)
+    organisation_name = db.Column(db.String(OWNER_FIELD_LENGTH), nullable=False)
+    organisation_logo = db.Column(db.String(LINK_FIELD_LENGTH))
+    status = db.Column(db.String(SHORT_FIELD_LENGTH), nullable=False)
+
+
+FILE_TYPE = {
+    'DOCUMENT': 0,
+    'IMAGE': 0
+}
 
 
 class File(Model, db.Model):
     __tablename__ = 'Files'
 
     project_id = db.Column(db.Integer, ForeignKey(Project.id))
-    link = db.Column(db.String(64), nullable=False)
-
+    link = db.Column(db.String(LINK_FIELD_LENGTH), nullable=False)
+    type = db.Column(db.Integer, default=FILE_TYPE['DOCUMENT'])
 
 # class USER_TYPE(Enum):
 #     ADMIN = 0,
@@ -59,11 +76,11 @@ USER_TYPE = {
 class User(Model, db.Model):
     __tablename__ = 'Users'
 
-    email = db.Column(db.String(32), unique=True)
-    first_name = db.Column(db.String(32), nullable=False)
-    last_name = db.Column(db.String(32), nullable=False)
-    password_hash = db.Column(db.String(256), nullable=False)
-    token = db.Column(db.String(32), index=True, unique=True)
+    email = db.Column(db.String(OWNER_FIELD_LENGTH), unique=True)
+    first_name = db.Column(db.String(OWNER_FIELD_LENGTH), nullable=False)
+    last_name = db.Column(db.String(OWNER_FIELD_LENGTH), nullable=False)
+    password_hash = db.Column(db.String(SHORT_FIELD_LENGTH), nullable=False)
+    token = db.Column(db.String(SHORT_FIELD_LENGTH), index=True, unique=True)
     token_expiration = db.Column(db.DateTime)
     user_type = db.Column(db.Integer, default=USER_TYPE['STUDENT'])
 

@@ -6,8 +6,28 @@ import {authHeader} from '../helpers/auth-header';
 // const apiUrl = 'https://inaglobe-api.herokuapp.com';
 
 export const userService = {
-    login
+    login, signUp
 };
+
+function signUp(firstName, lastName, email, password) {
+    console.log(config.apiUrl + '/users/');
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json'
+        },
+        body: JSON.stringify({
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            password: password
+        })
+    };
+
+    return fetch(config.apiUrl + '/users/', requestOptions)
+        .then(response => console.log(response))
+        .catch(err => console.log(err))
+}
 
 function login(email, password) {
     console.log(config.apiUrl + '/users/tokens/');
