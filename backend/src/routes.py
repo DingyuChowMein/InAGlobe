@@ -75,8 +75,8 @@ def get_users():
 def create_user(data):
     new_user = User(
         email=data['email'],
-        password_hash=data['password']
-        first_name=data['firstName']
+        password_hash=data['password'],
+        first_name=data['firstName'],
         last_name=data['lastName']
     )
     new_user.hash_password(data['password'])
