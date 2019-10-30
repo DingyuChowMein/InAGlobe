@@ -1,8 +1,9 @@
 import base64
 import os
 from datetime import datetime, timedelta
+from enum import Enum
 
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, DateTime
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from . import db
@@ -51,6 +52,19 @@ class File(Model, db.Model):
     link = db.Column(db.String(LINK_FIELD_LENGTH), nullable=False)
 
 
+# class USER_TYPE(Enum):
+#     ADMIN = 0,
+#     HUMANITARIAN = 1,
+#     ACADEMIC = 2,
+#     STUDENT = 3
+
+USER_TYPE = {
+    'ADMIN' : 0,
+    'HUMANITARIAN' : 1,
+    'ACADEMIC' : 2,
+    'STUDENT' : 3
+}
+
 class User(Model, db.Model):
     __tablename__ = 'Users'
 
@@ -58,6 +72,14 @@ class User(Model, db.Model):
     password_hash = db.Column(db.String(256), nullable=False)
     token = db.Column(db.String(32), index=True, unique=True)
     token_expiration = db.Column(db.DateTime)
+    user_type = db.Column(db.Integer)
+
+    def set_permissions(self, t):
+        self.user_type = USER_TYPE[t]
+
+    def get_permissions(self, type):
+
+        return
 
     def hash_password(self, password):
         self.password_hash = generate_password_hash(password, method='sha256')
@@ -85,3 +107,16 @@ class User(Model, db.Model):
         if user is None or user.token_expiration < datetime.utcnow():
             return None
         return user
+
+
+class Comment(Model, db.Model):
+    __tablename__ = 'Comments'
+
+    project_id = db.Column(db.Integer, ForeignKey(Project.id))
+    owner_id = db.Column(db.Integer, nullable=False)
+    date_time = db.Column(db.DateTime, default=datetime.now())
+    text = db.Column(db.String(100), nullable=False)
+
+    @staticmethod
+    def get_all_comments_for_project_id(proj_id):
+        return File.query.filter_by(project_id=proj_id).all()

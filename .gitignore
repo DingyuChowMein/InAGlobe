@@ -27,10 +27,10 @@ npm-debug.log
 .env
 .DS_Store
 config.py
-/__pycache__
-/venv
-/migrations
-/.pytest_cache
+__pycache__/
+venv/
+migrations/
+.pytest_cache/
 test.json
 .coverage
 

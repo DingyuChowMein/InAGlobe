@@ -1,5 +1,5 @@
-from .auth import token_auth
-from .models import Project, File, User
+from .auth import token_auth, requires_role
+from .models import Project, File, User, Comment, USER_TYPE
 
 
 # helper functions
@@ -26,7 +26,6 @@ def get_projects():
 @token_auth.login_required
 def process_upload(data):
     # TODO: error handling (around saving to db)
-    # TODO: check for duplication
     project = Project(
         title=data['Title'],
         short_description=data['ShortDescription'],
@@ -35,20 +34,23 @@ def process_upload(data):
         project_owner=data['ProjectOwner']
     )
     project.save()
-    for link in data['FileLinks']:
-        file = File(project_id=project.id, link=link)
-        file.save()
+    if data.get("FileLinks") is not None:
+        for link in data['FileLinks']:
+            file = File(project_id=project.id, link=link)
+            file.save()
 
     return {'message': 'Project added to db!'}
 
 
-@token_auth.login_required
+# @token_auth.login_required
+@requires_role(USER_TYPE['ADMIN'])
 def get_users():
+    # TODO: only admins should be able to see the list of users
     users = User.query.all()
     users_json = []
     for user in users:
         # TODO: refactor this
-        _u = {'Id': user.id, 'Email': user.email, 'PasswordHash': user.password_hash}
+        _u = {'Id': user.id, 'Email': user.email, 'PasswordHash': user.password_hash, 'Type': user.user_type}
         users_json.append(_u)
     return {'users': users_json}
 
@@ -58,5 +60,32 @@ def create_user(data):
         email=data['Email']
     )
     new_user.hash_password(data['Password'])
+    new_user.set_permissions(data['Type'])
     new_user.save()
     return {'message': 'User created!'}
+
+
+@token_auth.login_required
+def add_comment(data):
+    comment = Comment(
+        project_id=data['ProjectId'],
+        owner_id=data['OwnerId'],
+        text=data['Text']
+    )
+
+    comment.save()
+    return {'message': 'Comment added!'}
+
+
+@token_auth.login_required
+def get_comments(data):
+    project_comments = Comment.query.filter_by(project_id=data['ProjectId']).all()
+    comments_json = []
+    for comment in project_comments:
+        comments_json.append({
+            "CommentId": comment.id,
+            "Text": comment.text,
+            "OwnerId": comment.owner_id,
+            "Date": comment.date_time.strftime("%Y-%m-%d %H:%M:%S")
+        })
+    return {"Comments": comments_json}
