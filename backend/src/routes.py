@@ -1,5 +1,5 @@
 from .auth import token_auth, permission_required
-from .models import Project, File, User, Comment
+from .models import Project, File, User, Comment, USER_TYPE
 from collections import defaultdict
 
 
