@@ -10,9 +10,6 @@ const styles = theme => ({
 		flexDirection: 'column',
 		alignItems: 'center',
 	},
-	formControl: {
-		minWidth: "100%"
-	},
 	avatar: {
 		margin: theme.spacing(1),
 		backgroundColor: theme.palette.secondary.main,

@@ -1,5 +1,6 @@
 // Main ReactJS libraries
 import React, { Component } from 'react'
+import { confirmAlert } from 'react-confirm-alert'
 
 // Material UI libraries
 import Avatar from '@material-ui/core/Avatar'
@@ -22,7 +23,7 @@ import Copyright from "../../components/Copyright/Copyright"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/signUpStyle"
-import {userService} from "../../services/userService";
+import { userService } from "../../services/userService"
 
 class SignUp extends Component {
 
@@ -34,12 +35,12 @@ class SignUp extends Component {
             firstName: "",
             lastName: "",
             signUpFailed: false,
-            userType: "STUDENT"
+            userType: "",
+            labelWidth: 0
         }
-
+        this.inputLabel = null
         this.handleFormChange = this.handleFormChange.bind(this)
         this.signUpPressed = this.signUpPressed.bind(this)
-        this.modifyUserType = this.modifyUserType.bind(this)
     }
 
     handleFormChange(e) {
@@ -55,17 +56,27 @@ class SignUp extends Component {
             this.state.firstName,
             this.state.lastName,
             this.state.email,
-            this.state.password)
+            this.state.password,
+            this.state.userType)
             .then(response => {
-                console.log(response);
+                console.log(response)
+                confirmAlert({
+                    title: "Response",
+                    message: response["message"],
+                    buttons: [
+                        {
+                            label: "Ok",
+                            onClick: () => this.props.history.push("/login")
+                        }
+                    ]
+                })
             }
         )
     }
 
-    modifyUserType(event) {
-        console.log(event.target.value)
+    componentDidMount() {
         this.setState({
-            userType: event.target.value
+            labelWidth: this.inputLabel.offsetWidth
         })
     }
 
@@ -135,13 +146,19 @@ class SignUp extends Component {
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <FormControl className={classes.formControl}>
-                                    <InputLabel id="userTypeLabel">Select User Type</InputLabel>
+                                <FormControl 
+                                    variant="outlined"
+                                    required
+                                    fullWidth
+                                >
+                                    <InputLabel ref={(inputRef) => { this.inputLabel = inputRef }} id="userTypeLabel">Select User Type</InputLabel>
                                     <Select
                                         labelId="userTypeLabel"
                                         id="userType"
+                                        name="userType"
                                         value={this.state.userType}
-                                        onChange={this.modifyUserType}
+                                        onChange={this.handleFormChange}
+                                        labelWidth={this.state.labelWidth}
                                     >
                                         <MenuItem value={"HUMANITARIAN"}>Humanitarian</MenuItem>
                                         <MenuItem value={"ACADEMIC"}>Academic</MenuItem>

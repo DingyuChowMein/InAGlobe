@@ -50,20 +50,18 @@ class SignInSide extends Component {
         // You can authenticate here
         userService.login(this.state.email, this.state.password).then(token => {
             console.log(token)
-                if (token === "") {
-                    this.setState({
-                        loginFailed: true
-                    })
-                    alert('INVALID')
-                } else {
-                    this.props.history.push("/main");
-                    this.setState({
-                        loginFailed: false
-                    })
-                }
+            if (token === "") {
+                this.setState({
+                    loginFailed: true
+                })
+                alert('INVALID')
+            } else {
+                this.props.history.push("/main")
+                this.setState({
+                    loginFailed: false
+                })
             }
-        );
-
+        })
     }
 
     render() {

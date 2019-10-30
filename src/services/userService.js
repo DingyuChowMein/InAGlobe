@@ -9,7 +9,7 @@ export const userService = {
     login, signUp
 };
 
-function signUp(firstName, lastName, email, password) {
+function signUp(firstName, lastName, email, password, userType) {
     console.log(config.apiUrl + '/users/');
     const requestOptions = {
         method: 'POST',
@@ -20,7 +20,8 @@ function signUp(firstName, lastName, email, password) {
             firstName: firstName,
             lastName: lastName,
             email: email,
-            password: password
+            password: password,
+            userType: userType
         })
     };
 
