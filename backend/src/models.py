@@ -1,6 +1,7 @@
 import base64
 import os
 from datetime import datetime, timedelta
+from enum import Enum
 
 from sqlalchemy import ForeignKey, DateTime
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -67,7 +68,9 @@ USER_TYPE = {
 class User(Model, db.Model):
     __tablename__ = 'Users'
 
-    email = db.Column(db.String(32), unique=True)
+    email = db.Column(db.String(32), unique=True))
+    first_name = db.Column(db.String(32), nullable=False))
+    last_name = db.Column(db.String(32), nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
     token = db.Column(db.String(32), index=True, unique=True)
     token_expiration = db.Column(db.DateTime)
