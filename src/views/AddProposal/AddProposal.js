@@ -60,7 +60,10 @@ class AddProposal extends Component {
                 'Content-type': 'application/json'
             },
             body: JSON.stringify(this.state),
-        }).catch((err) => {console.log(err)});
+        }).then((response) => {
+            // Redirect here based on response
+        })
+            .catch((err) => {console.log(err)});
     }
 
     onDropPictures(pictureFiles) {
