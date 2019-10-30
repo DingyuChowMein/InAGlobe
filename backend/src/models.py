@@ -1,9 +1,8 @@
 import base64
 import os
 from datetime import datetime, timedelta
-from enum import Enum
 
-from sqlalchemy import ForeignKey, DateTime
+from sqlalchemy import ForeignKey
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from . import db
@@ -60,7 +59,6 @@ class File(Model, db.Model):
     link = db.Column(db.String(LINK_FIELD_LENGTH), nullable=False)
     type = db.Column(db.Integer, default=FILE_TYPE['DOCUMENT'])
 
-
 # class USER_TYPE(Enum):
 #     ADMIN = 0,
 #     HUMANITARIAN = 1,
@@ -77,11 +75,11 @@ USER_TYPE = {
 class User(Model, db.Model):
     __tablename__ = 'Users'
 
-    email = db.Column(db.String(32), unique=True)
-    first_name = db.Column(db.String(32), nullable=False)
-    last_name = db.Column(db.String(32), nullable=False)
-    password_hash = db.Column(db.String(256), nullable=False)
-    token = db.Column(db.String(32), index=True, unique=True)
+    email = db.Column(db.String(OWNER_FIELD_LENGTH), unique=True)
+    first_name = db.Column(db.String(OWNER_FIELD_LENGTH), nullable=False)
+    last_name = db.Column(db.String(OWNER_FIELD_LENGTH), nullable=False)
+    password_hash = db.Column(db.String(SHORT_FIELD_LENGTH), nullable=False)
+    token = db.Column(db.String(SHORT_FIELD_LENGTH), index=True, unique=True)
     token_expiration = db.Column(db.DateTime)
     user_type = db.Column(db.Integer, default=USER_TYPE['STUDENT'])
 
@@ -112,8 +110,8 @@ class User(Model, db.Model):
     def has_permission(self, permission):
         return self.user_type == permission
 
-    def get_permission(self):
-        return 0
+    def get_permissions(self):
+        return self.user_type
 
     def is_admin(self):
         return self.user_type == USER_TYPE['ADMIN']
