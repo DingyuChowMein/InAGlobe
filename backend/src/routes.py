@@ -48,7 +48,6 @@ def get_projects():
 @permission_required(USER_TYPE['HUMANITARIAN'])
 def process_upload(data):
     # TODO: error handling (around saving to db)
-    print(data)
     project = Project(
         title=data['title'],
         short_description=data['shortDescription'],
@@ -59,10 +58,7 @@ def process_upload(data):
         organisation_name=data['organisationName'],
         organisation_logo=data['organisationLogo']
     )
-    print(project.title)
-    print(project.project_owner)
     project.save()
-    print("SAVED")
     if data.get("documents") is not None:
         for link in data['documents']:
             file = File(project_id=project.id, link=link, type=FILE_TYPE['DOCUMENT'])
