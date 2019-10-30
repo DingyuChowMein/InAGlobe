@@ -8,7 +8,6 @@ basic_auth = HTTPBasicAuth()
 # token_auth uses bearer tokens
 token_auth = HTTPTokenAuth()
 
-
 @basic_auth.verify_password
 def verify_password(email, password):
     # email unique so there can only be one
@@ -22,7 +21,7 @@ def verify_password(email, password):
 # TODO create error handler
 @basic_auth.error_handler
 def basic_auth_error():
-    return '', 204
+    return '{}', 204
 
 
 @token_auth.verify_token
@@ -33,7 +32,7 @@ def verify_token(token):
 
 @token_auth.error_handler
 def token_error_handler():
-    return '', 204
+    return '{}', 204
 
 
 def permission_required(permission):

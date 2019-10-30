@@ -11,6 +11,21 @@ import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer
 import styles from "../../assets/jss/views/homePageStyle"
 
 class HomePage extends Component {
+    constructor(props){
+        super(props);
+
+        this.state = {
+            user: {},
+        }
+
+    }
+
+    componentDidMount() {
+        this.setState({
+            user: localStorage.getItem('user'),
+        });
+    }
+
     render() {
         return (
             <ResponsiveDrawer name={"Dashboard"}>
