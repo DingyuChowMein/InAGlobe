@@ -1,20 +1,11 @@
 import base64
 import os
 from datetime import datetime, timedelta
-from enum import Enum
 
-from sqlalchemy import ForeignKey, DateTime
+from sqlalchemy import ForeignKey
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from . import db
-
-# TODO: update field length values
-TITLE_FIELD_LENGTH = 16
-SHORT_FIELD_LENGTH = 16
-LONG_FIELD_LENGTH = 32
-LOCATION_FIELD_LENGTH = 16
-OWNER_FIELD_LENGTH = 16
-LINK_FIELD_LENGTH = 32
 
 
 class Model:
@@ -38,18 +29,18 @@ class Model:
 class Project(Model, db.Model):
     __tablename__ = 'Projects'
 
-    title = db.Column(db.String(TITLE_FIELD_LENGTH), nullable=False)
-    short_description = db.Column(db.String(SHORT_FIELD_LENGTH), nullable=False)
-    long_description = db.Column(db.String(LONG_FIELD_LENGTH), nullable=False)
-    location = db.Column(db.String(LOCATION_FIELD_LENGTH), nullable=False)
-    project_owner = db.Column(db.String(OWNER_FIELD_LENGTH), nullable=False)
+    title = db.Column(db.String(32), nullable=False)
+    short_description = db.Column(db.String(100), nullable=False)
+    long_description = db.Column(db.String(256), nullable=False)
+    location = db.Column(db.String(100), nullable=False)
+    project_owner = db.Column(db.String(32), nullable=False)
 
 
 class File(Model, db.Model):
     __tablename__ = 'Files'
 
     project_id = db.Column(db.Integer, ForeignKey(Project.id))
-    link = db.Column(db.String(LINK_FIELD_LENGTH), nullable=False)
+    link = db.Column(db.String(64), nullable=False)
 
 
 # class USER_TYPE(Enum):
@@ -103,8 +94,8 @@ class User(Model, db.Model):
     def has_permission(self, permission):
         return self.user_type == permission
 
-    def get_permission(self):
-        return 0
+    def get_permissions(self):
+        return self.user_type
 
     def is_admin(self):
         return self.user_type == USER_TYPE['ADMIN']
