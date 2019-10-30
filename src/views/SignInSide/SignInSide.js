@@ -1,6 +1,6 @@
 // Main ReactJS libraries
-import React, { Component } from 'react'
-import { withRouter } from "react-router-dom"
+import React, {Component} from 'react'
+import {withRouter} from "react-router-dom"
 
 // Material UI libraries
 import Avatar from '@material-ui/core/Avatar'
@@ -14,7 +14,7 @@ import Paper from '@material-ui/core/Paper'
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
-import { withStyles } from '@material-ui/core'
+import {withStyles} from '@material-ui/core'
 
 // Imports of different components and layouts in project
 import Copyright from '../../components/Copyright/Copyright'
@@ -31,7 +31,8 @@ class SignInSide extends Component {
         super(props);
         this.state = {
             email: "",
-            password: ""
+            password: "",
+            loginFailed: false
         };
 
         this.handleFormChange = this.handleFormChange.bind(this);
@@ -40,28 +41,38 @@ class SignInSide extends Component {
 
 
     handleFormChange(e) {
-        const { name, value } = e.target;
-        this.setState({ [name]: value });
+        const {name, value} = e.target;
+        this.setState({[name]: value});
     }
 
     loginPressed() {
         // You can authenticate here
-        var user = userService.login(this.state.email, this.state.password);
-        this.props.history.push("/main")
+        userService.login(this.state.email, this.state.password).then(token => {
+            console.log(token);
+                if (token === "") {
+                    this.state.loginFailed = true;
+                    alert('INVALID');
+                } else {
+                    this.props.history.push("/main");
+                    this.state.loginFailed = false;
+                }
+            }
+        );
+
     }
 
     render() {
-        const { classes } = this.props;
-        
+        const {classes} = this.props;
+
         return (
             <div>
                 <Grid container component="main" className={classes.root}>
-                    <CssBaseline />
-                    <Grid item xs={false} sm={4} md={7} className={classes.image} />
+                    <CssBaseline/>
+                    <Grid item xs={false} sm={4} md={7} className={classes.image}/>
                     <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
                         <div className={classes.paper}>
                             <Avatar className={classes.avatar}>
-                                <this.props.icon />
+                                <this.props.icon/>
                             </Avatar>
                             <Typography component="h1" variant="h5">
                                 Sign in
@@ -92,7 +103,7 @@ class SignInSide extends Component {
                                     onChange={this.handleFormChange}
                                 />
                                 <FormControlLabel
-                                    control={<Checkbox value="remember" color="primary" />}
+                                    control={<Checkbox value="remember" color="primary"/>}
                                     label="Remember me"
                                 />
                                 <Button
@@ -118,13 +129,13 @@ class SignInSide extends Component {
                                     </Grid>
                                 </Grid>
                                 <Box mt={5}>
-                                    <Copyright />
+                                    <Copyright/>
                                 </Box>
                             </form>
                         </div>
                     </Grid>
                 </Grid>
-                
+
             </div>
         )
     }

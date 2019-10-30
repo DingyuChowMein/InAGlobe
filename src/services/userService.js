@@ -26,13 +26,13 @@ function login(email, password) {
                 // store user details and basic auth credentials in local storage
                 // to keep user logged in between page refreshes
                 // user.authdata = window.btoa(email + ':' + password);
-            if (token === '') {
+            if (Object.keys(token).length === 0) {
                 localStorage.setItem('token', '');
-                return token;
+                return '';
             }
 
             localStorage.setItem('token', token.token);
-            return token;
+            return token.token;
         });
 }
 
