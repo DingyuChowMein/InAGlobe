@@ -42,6 +42,7 @@ class Project(Model, db.Model):
     long_description = db.Column(db.String(LONG_FIELD_LENGTH), nullable=False)
     location = db.Column(db.String(LOCATION_FIELD_LENGTH), nullable=False)
     project_owner = db.Column(db.String(OWNER_FIELD_LENGTH), nullable=False)
+    organisation_name = db.Column(db.String(OWNER_FIELD_LENGTH), nullable=False)
     organisation_logo = db.Column(db.String(LINK_FIELD_LENGTH))
     status = db.Column(db.String(SHORT_FIELD_LENGTH), nullable=False)
 

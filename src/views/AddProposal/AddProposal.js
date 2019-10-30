@@ -30,11 +30,11 @@ class AddProposal extends Component {
             shortDescription: "",
             detailedDescription: "",
             location: "",
-            projectOwner: "a",
+            projectOwner: "NaN",
             documents: [],
-            organisation: "",
+            organisationName: "",
             organisationLogo: "",
-            status: "",
+            status: "Needs approval",
             images: [],
         };
 

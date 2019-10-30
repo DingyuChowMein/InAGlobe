@@ -33,7 +33,7 @@ def get_projects():
             "location": project.location,
             "projectOwner": project.project_owner,
             "documents": documents,
-            "organisation": project.project_owner,
+            "organisationName": project.organisation_name,
             "organisationLogo": project.organisation_logo,
             "status": project.status,
             "images": images,
@@ -56,6 +56,7 @@ def process_upload(data):
         status=data['status'],
         location=data['location'],
         project_owner=data['projectOwner'],
+        organisation_name=data['organisationName'],
         organisation_logo=data['organisationLogo']
     )
     print(project.title)
@@ -63,10 +64,13 @@ def process_upload(data):
     project.save()
     print("SAVED")
     if data.get("documents") is not None:
-        for f in data['documents']:
-            file = File(project_id=project.id, link=f['link'], type=f['type'])
+        for link in data['documents']:
+            file = File(project_id=project.id, link=link, type=FILE_TYPE['DOCUMENT'])
             file.save()
-
+        for link in data['images']:
+            file = File(project_id=project.id, link=link, type=FILE_TYPE['IMAGE'])
+            file.save()
+            
     return {'message': 'Project added to db!'}
 
 
