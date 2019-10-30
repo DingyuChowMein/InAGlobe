@@ -2,23 +2,26 @@ import React, { Component } from "react"
 
 import { withStyles } from "@material-ui/styles"
 
+import ResponsiveDrawer from "../../components/ResponsiveDrawer/ResponsiveDrawer"
+
 import styles from "../../assets/jss/views/proposalPageStyle"
-import cardData from "../../assets/data/ProjectData"
 
 class ProposalPage extends Component {
     render() {
-        const { classes } = this.props
-        const data = cardData[0]
+        const { classes, data, children } = this.props
         return (
-            <div>
+            <ResponsiveDrawer name={"Proposal Page"}>
                 <div className={classes.container}>
                     <h1>{data.title}</h1>
                 </div>
                 <div className={classes.container}>
                     <h2>{data.organisation}</h2>
                 </div>
-                <div className={classes.container}>
-                    <img src={data.organisationLogo}/>
+                <div className={classes.imagesContainer}>
+                    <img 
+                        alt={data.organisation} 
+                        src={data.organisationLogo}
+                        className={classes.projectImages}/>
                 </div>
                 <div className={classes.container}>
                     <h3>{data.status}</h3>
@@ -27,23 +30,19 @@ class ProposalPage extends Component {
                     <h4>{data.location}</h4>
                 </div>
                 <div className={classes.container}>
-                    <p>{data.detailedDescription}</p>
+                    <h5>{data.detailedDescription}</h5>
                 </div>
                 {data.images.map(image => (
-                    <div className={classes.container}>
+                    <div className={classes.imagesContainer}>
                         <img 
+                            alt={data.title}
                             src={image} 
-                            style={{ 
-                                height: "80%", 
-                                width: "80%", 
-                                display: "block", 
-                                objectFit: "cover", 
-                                marginBottom: "40px"
-                            }}
+                            className={classes.projectImages}
                         />
                     </div>
                 ))}
-            </div>
+                {children}
+            </ResponsiveDrawer>
         )
     }
 }

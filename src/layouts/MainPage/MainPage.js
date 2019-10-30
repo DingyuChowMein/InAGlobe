@@ -13,21 +13,20 @@ import styles from "../../assets/jss/layouts/mainPageStyle"
 
 class MainPage extends Component {
     render() {
+        const { path } = this.props.match
         return (
             <Switch>
                 {drawerRoutes.map((prop, key) => {
-                    if (prop.layout === "/main") {
-                        return (
-                            <Route 
-                                path={prop.layout + prop.path}
-                                component={prop.component}
-                                key={key}
-                            />
-                        )
-                    }
-                    return null
+                    return (
+                        <Route 
+                            path={path + prop.path}
+                            key={key}
+                            component={prop.component}
+                        />
+                        
+                    )
                 })}
-                <Redirect from="/main" to="/main/home" />
+                <Redirect strict from="/main" to="/main/home" />
             </Switch>
         )
     }

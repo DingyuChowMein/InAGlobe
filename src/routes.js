@@ -5,6 +5,7 @@ import HomePage from "./views/Home/HomePage"
 import ProjectList from "./views/ProjectList/ProjectList"
 import AddProposal from "./views/AddProposal/AddProposal"
 import ProposalMainPage from "./views/ProposalPage/ProposalMainPage"
+import ProposalPreviewPage from './views/ProposalPage/ProposalPreviewPage'
 
 // Importing icons from Drawer
 import Person from '@material-ui/icons/Person'
@@ -12,8 +13,6 @@ import PersonAdd from "@material-ui/icons/PersonAdd"
 import Home from "@material-ui/icons/Home"
 import List from "@material-ui/icons/List"
 import Subject from "@material-ui/icons/Subject"
-import ProposalPreviewPage from './views/ProposalPage/ProposalPreviewPage'
-import ProposalPage from './views/ProposalPage/ProposalPage'
 
 const loginRoutes = [
     {
@@ -29,6 +28,23 @@ const loginRoutes = [
         icon: PersonAdd,
         component: SignUp,
         layout: "/login"
+    }
+]
+
+const proposalRoutes = [
+    {
+        path: "/preview",
+        name: "Preview",
+        component: ProposalPreviewPage,
+        icon: null,
+        layout: "/main/addproposal"
+    },
+    {
+        path: "/proposalpage",
+        name: "Proposal Page",
+        component: ProposalMainPage,
+        icon: null,
+        layout: "/main/projectlist"
     }
 ]
 
@@ -48,34 +64,13 @@ const drawerRoutes = [
         layout: "/main"
     },
     {
-        path: "/addproject",
+        path: "/addproposal",
         name: "Add Proposal",
         icon: Subject,
         component: AddProposal,
         layout: "/main"
     },
-    {
-        path: "/proposalpage",
-        name: "Proposal Page",
-        icon: Subject,
-        component: ProposalPage,
-        layout: "/main"
-    }
-]
-
-const proposalRoutes = [
-    {
-        path: "/preview",
-        name: "Preview",
-        component: ProposalPreviewPage,
-        layout: "/main/addproposal"
-    },
-    {
-        path: "/proposalpage",
-        name: "Proposal Page",
-        component: ProposalMainPage,
-        layout: "/main/projectlist"
-    }
+    ...proposalRoutes
 ]
 
 const routes = {

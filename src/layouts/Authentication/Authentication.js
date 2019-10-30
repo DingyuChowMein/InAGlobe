@@ -13,23 +13,22 @@ import styles from "../../assets/jss/layouts/authenticationStyle"
 
 
 class Authentication extends Component {
+
     render() {
         // const { classes } = this.props
+        const { path } = this.props.match
         return (
             <Switch>
                 {loginRoutes.map((prop, key) => {
-                    if (prop.layout === "/login") {
-                        return (
-                            <Route 
-                                path={prop.layout + prop.path}
-                                key={key}
-                                render={(props) => <prop.component {...props} icon={prop.icon} />}
-                            />
-                        )
-                    }
-                    return null
+                    return (
+                        <Route 
+                            path={path + prop.path}
+                            key={key}
+                            render={(props) => <prop.component {...props} icon={prop.icon} />}
+                        />
+                    )
                 })}
-                <Redirect from="/" to="/login/signin" />
+                <Redirect strict from="/login" to="/login/signin" />
             </Switch>
         )
     }
