@@ -1,5 +1,5 @@
 const config = {
-    apiUrl: 'http://localhost:5000',
+    apiUrl: process.env.REACT_APP_API_URL
     // apiUrl = 'https://inaglobe-api.herokuapp.com'
 };
 
