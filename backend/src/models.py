@@ -1,6 +1,7 @@
 import base64
 import os
 from datetime import datetime, timedelta
+from enum import Enum
 
 from sqlalchemy import ForeignKey, DateTime
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -68,10 +69,19 @@ class User(Model, db.Model):
     __tablename__ = 'Users'
 
     email = db.Column(db.String(32), unique=True)
+    first_name = db.Column(db.String(32), nullable=False)
+    last_name = db.Column(db.String(32), nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
     token = db.Column(db.String(32), index=True, unique=True)
     token_expiration = db.Column(db.DateTime)
     user_type = db.Column(db.Integer)
+
+    def set_permissions(self, t):
+        self.user_type = USER_TYPE[t]
+
+    def get_permissions(self, type):
+
+        return
 
     def hash_password(self, password):
         self.password_hash = generate_password_hash(password, method='sha256')
@@ -92,12 +102,6 @@ class User(Model, db.Model):
 
     def revoke_token(self):
         self.token_expiration = datetime.utcnow() - timedelta(seconds=1)
-
-    def set_permissions(self, t):
-        self.user_type = USER_TYPE[t]
-
-    def has_permission(self, permission):
-        return self.user_type == permission
 
     @staticmethod
     def check_token(token):

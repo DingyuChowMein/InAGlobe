@@ -1,5 +1,5 @@
-from .auth import token_auth, permission_required
-from .models import Project, File, User, Comment, USER_TYPE
+from .auth import token_auth
+from .models import Project, File, User, Comment
 from collections import defaultdict
 
 
@@ -61,7 +61,6 @@ def process_upload(data):
 
 
 @token_auth.login_required
-@permission_required(USER_TYPE['ADMIN'])
 def get_users():
     # TODO: only admins should be able to see the list of users
     users = User.query.all()
@@ -75,10 +74,12 @@ def get_users():
 
 def create_user(data):
     new_user = User(
-        email=data['Email'],
-        password_hash=data['Password']
+        email=data['email'],
+        password_hash=data['password']
+        first_name=data['firstName']
+        last_name=data['lastName']
     )
-    new_user.hash_password(data['Password'])
+    new_user.hash_password(data['password'])
     new_user.save()
     return {'message': 'User created!'}
 
