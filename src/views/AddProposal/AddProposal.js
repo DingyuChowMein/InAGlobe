@@ -32,7 +32,7 @@ class AddProposal extends Component {
             shortDescription: "",
             detailedDescription: "",
             location: "",
-            projectOwner: "NaN",
+            projectOwner: "",
             documents: [],
             organisationName: "",
             organisationLogo: "",

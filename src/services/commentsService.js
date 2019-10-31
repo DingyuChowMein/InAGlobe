@@ -10,7 +10,6 @@ export const commentsService = {
 };
 
 function getComments(projectId){
-    console.log(config.apiUrl + '/comments/' + projectId.toString());
     var token = localStorage.getItem('token');
     var bearer = 'Bearer ' + token;
     const requestOptions = {
@@ -20,9 +19,6 @@ function getComments(projectId){
         },
     };
 
-    return fetch(config.apiUrl + '/comments/' + projectId.toString(), requestOptions)
-        .then(response => response.json())
-        .catch(err => console.log(err))
-        .then(json => console.log(json))
+    return fetch(config.apiUrl + '/comments/' + projectId.toString() + '/', requestOptions);
 }
 

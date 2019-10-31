@@ -9,6 +9,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import Avatar from '@material-ui/core/Avatar'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
+import config from "../../config";
 
 import styles from "../../assets/jss/components/commentsStyle"
 
@@ -38,10 +39,8 @@ class Comments extends Component {
             date: `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()}`
         })
         var bearer = 'Bearer ' + localStorage.getItem('token')
-        console.log(bearer)
-        console.log(this.state)
 
-        fetch(config.apiUrl + `/comments/${this.state.projectId}/`, {
+        fetch(config.apiUrl + `/comments/${this.props.projectId}/`, {
             method: 'post',
             headers: {
                 'Authorization': bearer,
@@ -51,13 +50,12 @@ class Comments extends Component {
         }).then(response => {
             // Redirect here based on response
             console.log(response)
-            location.reload()
+            window.location.reload()
         }).catch(err => console.log(err))
     }
 
     render() {
         const { classes, comments } = this.props
-        console.log(comments);
         return (
             <div className={classes.root}>
                 <List>
@@ -65,13 +63,13 @@ class Comments extends Component {
                         <div className={classes.root}>
                             <ListItem alignItems="flex-start">
                                 <ListItemAvatar>
-                                    <Avatar 
-                                        alt="Profile Picture" 
+                                    <Avatar
+                                        alt="Profile Picture"
                                         src="https://picsum.photos/128"
                                     />
                                 </ListItemAvatar>
                                 <ListItemText
-                                    primary={comment.ownerName}
+                                    primary={comment.ownerFirstName + " " + comment.ownerLastName}
                                     secondary={
                                         <React.Fragment>
                                             <Typography
@@ -94,7 +92,7 @@ class Comments extends Component {
                 <Grid container spacing={3}>
                     <Grid item xs={11}>
                         <TextField
-                            id="outlined-bare"
+                            id="text"
                             className={classes.textField}
                             placeholder="Enter your comment here..."
                             margin="normal"

@@ -35,11 +35,15 @@ class ProposalMainPage extends Component {
         console.log(this.state.buttonDisabled);
     }
 
-    componentDidMount(){
-        commentsService.getComments(this.state.projectData.id).then((c) =>
-        this.setState({
-            comments: c
-        }));
+    componentDidMount() {
+        commentsService.getComments(this.state.projectData.id)
+            .then(c => c.json())
+            .then(json => {
+                console.log(json)
+                this.setState({
+                    comments: json.comments
+                })
+            }).catch(err => console.log(err));
     }
 
     actionButtonClicked() {
@@ -87,7 +91,6 @@ class ProposalMainPage extends Component {
     render() {
         const { classes, match } = this.props
         const proposalData = JSON.parse(localStorage.getItem(`proposalPage/${match.params.id}`))
-        // const commentsList = [] // TODO: Enter the comments here
         return (
             <ProposalPage {...this.props} data={proposalData}>
                 <div className={classes.buttonsDiv}>
@@ -100,7 +103,7 @@ class ProposalMainPage extends Component {
                         </RegularButton>
                 </div>
                 <div className={classes.commentsDiv}>
-                    <Comments comments={this.state.comments}/>
+                    <Comments comments={this.state.comments} projectId={this.state.projectData.id}/>
                 </div>
             </ProposalPage>
         )
