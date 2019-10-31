@@ -38,6 +38,7 @@ class ProjectList extends Component {
             .then(res => res.json())
             .then(data => {
                 console.log(data)
+                data.projects.forEach(project => project.status = (project.status === 0 ? "Needs Approval" : "Approved"))
                 this.setState({
                     projects: data.projects
                 })

@@ -52,7 +52,6 @@ def process_upload(data):
         title=data['title'],
         short_description=data['shortDescription'],
         long_description=data['detailedDescription'],
-        status=data['status'],
         location=data['location'],
         project_owner=data['projectOwner'],
         organisation_name=data['organisationName'],
