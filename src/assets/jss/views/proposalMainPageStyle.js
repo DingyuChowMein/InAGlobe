@@ -13,13 +13,11 @@ const styles = {
     commentsDiv: {
         width: "100%",
         textAlign: "center",
-        alignItems: "center",
         justifyContent: "center"
     },
     buttonsDiv: {
         width: "100%",
         textAlign: "center",
-        alignItems: "center",
         justifyContent: "center",
         paddingBottom: "2%"
     }
