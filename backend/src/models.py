@@ -55,7 +55,7 @@ class Project(Model, db.Model):
 
 FILE_TYPE = {
     'DOCUMENT': 0,
-    'IMAGE': 0
+    'IMAGE': 1
 }
 
 
@@ -121,6 +121,9 @@ class User(Model, db.Model):
 
     def get_permissions(self):
         return self.user_type
+
+    def get_id(self):
+        return self.id
 
     def is_admin(self):
         return self.user_type == USER_TYPE['ADMIN']
