@@ -40,7 +40,6 @@ class ProjectCard extends Component {
                     className={classes.cardImgTop}
                     alt="Provided for a Card."
                     src={images[0]}
-                    data-holder-rendered="true"
                 />
                 <CardBody>
                     <h3 className={classes.h3}>{title}</h3>

@@ -49,7 +49,7 @@ class Project(Model, db.Model):
 
 FILE_TYPE = {
     'DOCUMENT': 0,
-    'IMAGE': 0
+    'IMAGE': 1
 }
 
 

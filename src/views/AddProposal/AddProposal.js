@@ -19,6 +19,8 @@ import upload from "../../s3"
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/addProposalStyle"
 import config from "../../config";
+import {generateId} from "../../helpers/utils"
+
 
 class AddProposal extends Component {
 
@@ -52,6 +54,10 @@ class AddProposal extends Component {
         var token = localStorage.getItem('token');
         var bearer = 'Bearer ' + token;
         console.log(bearer);
+        const id = generateId()
+        this.state.documents = upload(this.state.documents, id + '/Documents');
+        this.state.images = upload(this.state.images, id + '/Images');
+        console.log(this.state);
 
         fetch(config.apiUrl + '/projects/', {
             method: 'post',
@@ -68,15 +74,11 @@ class AddProposal extends Component {
     }
 
     onDropPictures(pictureFiles) {
-        this.setState({
-            images: this.state.pictures.concat(pictureFiles)
-        })
+        this.setState({['images']: pictureFiles});
     }
     
     onDropDocuments(documentFiles) {
-        this.setState({
-            documents: this.state.documents.concat(documentFiles)
-        });
+        this.setState({['documents']: documentFiles});
     }
 
     render() {
@@ -150,7 +152,7 @@ class AddProposal extends Component {
                         buttonText='Choose images'
                         onChange={this.onDropPictures}
                         withPreview={true}
-                        imgExtension={['.jpg', '.gif', '.png']}
+                        imgExtension={['.jpg', '.jpeg', '.gif', '.png']}
                         label="Max file size: 10mb. Accepted: .jpg/.gif/.png"
                         maxFileSize={10485760}
                     />
@@ -166,7 +168,10 @@ class AddProposal extends Component {
                         defaultImage={Description}
                     />
                     <div className={classes.cardButtonDiv}>
-                        <Button color="primary" className={classes.previewButton}>
+                        <Button
+                            color="primary"
+                            className={classes.previewButton}
+                        >
                             {"Preview"}
                         </Button>
                         <Button 
