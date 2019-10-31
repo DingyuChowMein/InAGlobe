@@ -35,7 +35,7 @@ class SignUp extends Component {
             firstName: "",
             lastName: "",
             signUpFailed: false,
-            userType: "",
+            userType: "STUDENT",
             labelWidth: 0
         }
         this.inputLabel = null
@@ -97,7 +97,6 @@ class SignUp extends Component {
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={6}>
                                 <TextField
-                                    autoComplete="fname"
                                     name="firstName"
                                     onChange={this.handleFormChange}
                                     variant="outlined"
@@ -105,6 +104,7 @@ class SignUp extends Component {
                                     fullWidth
                                     id="firstName"
                                     label="First Name"
+                                    autoComplete="fname"
                                     autoFocus
                                 />
                             </Grid>
@@ -151,7 +151,7 @@ class SignUp extends Component {
                                     required
                                     fullWidth
                                 >
-                                    <InputLabel ref={(inputRef) => { this.inputLabel = inputRef }} id="userTypeLabel">Select User Type</InputLabel>
+                                    <InputLabel ref={inputLabel => { this.inputLabel = inputLabel }} id="userTypeLabel">Select User Type</InputLabel>
                                     <Select
                                         labelId="userTypeLabel"
                                         id="userType"

@@ -133,7 +133,6 @@ class SignInSide extends Component {
                         </div>
                     </Grid>
                 </Grid>
-
             </div>
         )
     }
