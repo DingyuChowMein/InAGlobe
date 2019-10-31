@@ -102,10 +102,9 @@ def get_users():
     users_json = []
     for user in users:
         # TODO: refactor this
-        _u = {'Id': user.id, 'Email': user.email}
+        _u = {'Id': user.id, 'Email': user.email, 'UserType': user.user_type}
         users_json.append(_u)
     return {'users': users_json}, 200
-
 
 
 def create_user(data):
@@ -121,7 +120,6 @@ def create_user(data):
 
 
 @token_auth.login_required
-@permission_required(USER_TYPE['STUDENT'])
 def add_comment(data):
     comment = Comment(
         project_id=data['projectId'],
