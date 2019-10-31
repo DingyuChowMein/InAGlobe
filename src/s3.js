@@ -5,20 +5,36 @@ const s3 = new AWS.S3({
     secretAccessKey: process.env.REACT_APP_AWS_SECRET_KEY
 });
 
-export default function upload(file) {
-    const params = {
-        Bucket: process.env.REACT_APP_BUCKET,
-        Key: 'test.pdf', // File name you want to save as in S3
-        Body: file[0]
-    };
 
-    s3.upload(params, function(err, data) {
-        if (err) {
-            throw err;
-        }
-        console.log(`File uploaded successfully. ${data.Location}`);
+
+export default function upload(files, dir) {
+    const links = [];
+    console.log(files);
+
+    files.forEach(function (f) {
+        const name = dir + '/' + f.name;
+        const params = {
+            Bucket: process.env.REACT_APP_BUCKET,
+            Key: name,
+            Body: f
+        };
+
+        links.push(name);
+        console.log(name);
+
+
+        s3.upload(params, function (err, data) {
+            if (err) {
+                throw err;
+            }
+            console.log(`File uploaded successfully. ${data.Location}`);
+            return data.Location;
+        });
+
     });
-};
+
+    return links
+} ;
 
 /*
 **
