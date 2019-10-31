@@ -6,21 +6,28 @@ import { withStyles } from '@material-ui/core'
 
 // Imports of different components in project
 import ProposalPage from "./ProposalPage"
+import RegularButton from '../../components/CustomButtons/RegularButton'
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/proposalMainPageStyle"
-import RegularButton from '../../components/CustomButtons/RegularButton'
+import Comments from '../../components/Comments/Comments'
 
 class ProposalMainPage extends Component {
 
     render() {
-        const { match } = this.props
+        const { classes, match } = this.props
         const proposalData = JSON.parse(localStorage.getItem(`proposalPage/${match.params.id}`))
+        const commentsList = [] // TODO: Enter the comments here
         return (
             <ProposalPage {...this.props} data={proposalData}>
-                <RegularButton>
-                    Approve
-                </RegularButton>
+                <div>
+                    <div className={classes.buttonsDiv}>
+                        <RegularButton color="primary">Approve</RegularButton>
+                    </div>
+                    <div className={classes.commentsDiv}>
+                        <Comments comments={commentsList}/>
+                    </div>
+                </div>
             </ProposalPage>
         )
     }
