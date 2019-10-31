@@ -1,6 +1,5 @@
 // Main ReactJS libraries
 import React, { Component } from 'react'
-import { confirmAlert } from 'react-confirm-alert'
 
 // Material UI libraries
 import Avatar from '@material-ui/core/Avatar'
@@ -60,8 +59,8 @@ class SignUp extends Component {
             this.state.password,
             this.state.userType)
             .then(response => {
-                console.log(response);
-                this.props.history.push('/login');
+                console.log(response)
+                this.props.history.push("/login")
             }
         )
     }
