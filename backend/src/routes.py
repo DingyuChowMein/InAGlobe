@@ -123,7 +123,7 @@ def create_user(data):
 def add_comment(data, project_id):
     comment = Comment(
         project_id=project_id,
-        owner_id=data['ownerId'],
+        owner_id=g.current_user.get_id(),
         text=data['text'],
         owner_first_name=g.current_user.first_name,
         owner_last_name=g.current_user.last_name
