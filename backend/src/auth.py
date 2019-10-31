@@ -31,7 +31,7 @@ def verify_token(token):
 
 @token_auth.error_handler
 def token_error_handler():
-    return abort(404, 'User does not exist!')
+    return abort(401, 'User does not exist!')
 
 
 def permission_required(permission):
@@ -39,9 +39,10 @@ def permission_required(permission):
         @wraps(f)
         def decorated_function(*args, **kwargs):
             user = g.current_user
-            if not user.has_permission(permission) or not user.is_admin():
-                permissions_error_handler()
-            return f(*args, **kwargs)
+            if user.has_permission(permission) or user.is_admin():
+                return f(*args, **kwargs)
+            else:
+                return permissions_error_handler()
         return decorated_function
     return decorator
 

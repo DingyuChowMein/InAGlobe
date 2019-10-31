@@ -2,6 +2,7 @@ from flask import g
 from .auth import token_auth, permission_required
 from .models import Project, File, User, Comment, USER_TYPE, FILE_TYPE, PROJECT_STATUS
 from collections import defaultdict
+from sqlalchemy import or_
 
 
 # helper functions
@@ -14,12 +15,15 @@ def get_projects():
     if user_type == USER_TYPE['ADMIN']:
         projects = Project.query.all()
     elif user_type == USER_TYPE['HUMANITARIAN']:
-        projects = Project.query.filter(
-            Project.status == PROJECT_STATUS['APPROVED'] or Project.project_owner == user_id
-        ).all()
+        print('mark')
+        projects = Project.query.filter(or_(
+            Project.status == PROJECT_STATUS['APPROVED'],
+            Project.project_owner == user_id
+        )).all()
     else:
         projects = Project.query.filter(Project.status == PROJECT_STATUS['APPROVED']).all()
 
+    print(projects)
     files = File.query.all()
 
     projects_json = []
@@ -64,7 +68,7 @@ def process_upload(data):
         short_description=data['shortDescription'],
         long_description=data['detailedDescription'],
         location=data['location'],
-        project_owner=data['projectOwner'],
+        project_owner=g.current_user.get_id(),
         organisation_name=data['organisationName'],
         organisation_logo=data['organisationLogo']
     )
