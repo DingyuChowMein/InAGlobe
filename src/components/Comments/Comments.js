@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+import ReactDOM from 'react-dom'
 import { FixedSizeList } from "react-window"
 
 import { withStyles } from "@material-ui/core"
@@ -12,23 +13,22 @@ import Typography from '@material-ui/core/Typography'
 
 import styles from "../../assets/jss/components/commentsStyle"
 
-// import comments from "../../assets/data/CommentData"
+import comments from "../../assets/data/CommentData"
 
 class Comment extends Component {
     render() {
         const { data, index, style } = this.props
-        console.log(this.props);
-
+        console.log(this.props)
         return (
                 <ListItem alignItems="flex-start">
                     <ListItemAvatar>
-                        <Avatar 
-                            alt="Profile Picture" 
+                        <Avatar
+                            alt="Profile Picture"
                             src="https://picsum.photos/128"
                         />
                     </ListItemAvatar>
                     <ListItemText
-                        primary={data[index].ownerFirstName + " " + data[index].ownerLastName}
+                        primary={data[index].ownerName}
                         secondary={
                             <React.Fragment>
                                 <Typography
@@ -44,7 +44,7 @@ class Comment extends Component {
                         }
                     />
                     {/* <Divider variant="inset" component="li" /> */}
-                </ListItem> 
+                </ListItem>
         )
     }
 }
@@ -52,17 +52,16 @@ class Comment extends Component {
 class Comments extends Component {
 
     render() {
-        const { classes, comments } = this.props
-        console.log(comments);
+        const { classes } = this.props
+        // event.srcElement.body.preventDefault()
         return (
-            <FixedSizeList 
+            <FixedSizeList
                 height={500}
-                itemSize={46} 
+                itemSize={46}
                 itemCount={comments.length}
                 itemData={comments}
-                onScroll={this.handleScroll}
+                // onScroll={this.handleScroll}
                 className={classes.root}
-
             >
                 {withStyles(styles)(Comment)}
             </FixedSizeList>

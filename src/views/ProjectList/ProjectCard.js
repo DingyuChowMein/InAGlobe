@@ -18,6 +18,7 @@ class ProjectCard extends Component {
     constructor(props) {
         super(props)
         this.openProposalPage = this.openProposalPage.bind(this)
+        this.markAsSelected = this.markAsSelected.bind(this)
     }
 
     openProposalPage() {
@@ -26,15 +27,19 @@ class ProjectCard extends Component {
         this.props.history.push(`/main/projectlist/proposalpage/${this.props.data.id}`)
     }
 
+    markAsSelected() {
+        // set some value to show its selected
+    }
+
     render() {
         const { classes } = this.props
         const {
-            title, 
-            organisation, 
-            status, 
-            shortDescription, 
+            title,
+            organisation,
+            status,
+            shortDescription,
             images } = this.props.data
-    
+
         return (
             <Card>
                 <img
@@ -48,16 +53,17 @@ class ProjectCard extends Component {
                     <h5 className={classes.h5}>{status}</h5>
                     <p>{shortDescription}</p>
                     <div className={classes.buttonDiv}>
-                        <RegularButton 
-                            color="primary" 
+                        <RegularButton
+                            color="primary"
                             className={classes.learnMoreButton}
                             onClick={this.openProposalPage}
                         >
                             Learn More
                         </RegularButton>
-                        <RegularButton 
-                            color="primary" 
+                        <RegularButton
+                            color="primary"
                             className={classes.selectProposalButton}
+                            onClick={this.markAsSelected}
                         >
                             Select Proposal
                         </RegularButton>
