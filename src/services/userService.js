@@ -11,10 +11,23 @@ export const userService = {
 
 function logout(){
     console.log("Logged out");
-    localStorage.setItem('token', '');
+    const token = localStorage.getItem('token')
     localStorage.removeItem('firstname');
     localStorage.removeItem('lastname');
     localStorage.removeItem('permissions');
+    localStorage.setItem('token', '');
+    if (token !== '') {
+        const bearer = 'Bearer ' + localStorage.getItem('token')
+        const requestOptions = {
+            method: 'DELETE',
+            headers: {
+                'Authorization': bearer
+            }
+        }
+        console.log(config.apiUrl + '/users/tokens/')
+        fetch(config.apiUrl + '/users/tokens/', requestOptions)
+            .then(response => console.log(response))
+    }
 }
 
 function signUp(firstName, lastName, email, password, userType) {
