@@ -13,7 +13,7 @@ SHORT_FIELD_LENGTH = 256
 LONG_FIELD_LENGTH = 1024
 LOCATION_FIELD_LENGTH = 64
 OWNER_FIELD_LENGTH = 64
-LINK_FIELD_LENGTH = 256
+LINK_FIELD_LENGTH = 512
 
 
 class Model:
@@ -34,6 +34,12 @@ class Model:
         return '<id {}>'.format(self.id)
 
 
+PROJECT_STATUS = {
+    'NEEDS_APPROVAL': 0,
+    'APPROVED': 1,
+}
+
+
 class Project(Model, db.Model):
     __tablename__ = 'Projects'
 
@@ -41,10 +47,10 @@ class Project(Model, db.Model):
     short_description = db.Column(db.String(SHORT_FIELD_LENGTH), nullable=False)
     long_description = db.Column(db.String(LONG_FIELD_LENGTH), nullable=False)
     location = db.Column(db.String(LOCATION_FIELD_LENGTH), nullable=False)
-    project_owner = db.Column(db.String(OWNER_FIELD_LENGTH), nullable=False)
+    project_owner = db.Column(db.Integer, nullable=False)
     organisation_name = db.Column(db.String(OWNER_FIELD_LENGTH), nullable=False)
     organisation_logo = db.Column(db.String(LINK_FIELD_LENGTH))
-    status = db.Column(db.String(SHORT_FIELD_LENGTH), nullable=False)
+    status = db.Column(db.Integer, default=PROJECT_STATUS['NEEDS_APPROVAL'])
 
 
 FILE_TYPE = {
@@ -60,6 +66,7 @@ class File(Model, db.Model):
     link = db.Column(db.String(LINK_FIELD_LENGTH), nullable=False)
     type = db.Column(db.Integer, default=FILE_TYPE['DOCUMENT'])
 
+
 # class USER_TYPE(Enum):
 #     ADMIN = 0,
 #     HUMANITARIAN = 1,
@@ -72,6 +79,7 @@ USER_TYPE = {
     'ACADEMIC': 2,
     'STUDENT': 3
 }
+
 
 class User(Model, db.Model):
     __tablename__ = 'Users'
@@ -113,6 +121,9 @@ class User(Model, db.Model):
 
     def get_permissions(self):
         return self.user_type
+
+    def get_id(self):
+        return self.id
 
     def is_admin(self):
         return self.user_type == USER_TYPE['ADMIN']

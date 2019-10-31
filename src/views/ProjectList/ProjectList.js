@@ -33,11 +33,12 @@ class ProjectList extends Component {
             method: 'get',
             headers: {
                 'Authorization': bearer
-            }
+            },
         })
             .then(res => res.json())
             .then(data => {
                 console.log(data)
+                data.projects.forEach(project => project.status = (project.status === 0 ? "Needs Approval" : "Approved"))
                 this.setState({
                     projects: data.projects
                 })

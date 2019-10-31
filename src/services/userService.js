@@ -63,6 +63,7 @@ function login(email, password) {
             localStorage.setItem('firstname', user.firstname);
             localStorage.setItem('lastname', user.lastname);
             localStorage.setItem('permissions', user.permissions);
+            localStorage.setItem('userid', user.userid);
             console.log(localStorage);
             return user.token;
         });

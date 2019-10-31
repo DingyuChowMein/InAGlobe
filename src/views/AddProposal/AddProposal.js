@@ -36,7 +36,7 @@ class AddProposal extends Component {
             documents: [],
             organisationName: "",
             organisationLogo: "",
-            status: "Needs approval",
+            status: "",
             images: [],
         };
 

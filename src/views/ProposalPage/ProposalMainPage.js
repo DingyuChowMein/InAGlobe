@@ -19,7 +19,7 @@ class ProposalMainPage extends Component {
         return (
             <ProposalPage {...this.props} data={proposalData}>
                 <RegularButton>
-                    Approve
+                    {proposalData.status}
                 </RegularButton>
             </ProposalPage>
         )
