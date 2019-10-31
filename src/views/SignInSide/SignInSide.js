@@ -27,7 +27,8 @@ import { userService } from "../../services/userService";
 class SignInSide extends Component {
 
     constructor(props) {
-        super(props)
+        super(props);
+        userService.logout();
         this.state = {
             email: "",
             password: "",

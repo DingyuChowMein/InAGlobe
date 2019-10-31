@@ -6,7 +6,15 @@ import { authHeader } from '../helpers/auth-header'
 // const apiUrl = 'https://inaglobe-api.herokuapp.com';
 
 export const userService = {
-    login, signUp
+    login, signUp, logout
+}
+
+function logout(){
+    console.log("Logged out");
+    localStorage.setItem('token', '');
+    localStorage.removeItem('firstname');
+    localStorage.removeItem('lastname');
+    localStorage.removeItem('permissions');
 }
 
 function signUp(firstName, lastName, email, password, userType) {

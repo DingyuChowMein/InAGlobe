@@ -12,8 +12,12 @@ import { drawerRoutes } from "../../routes"
 import styles from "../../assets/jss/layouts/mainPageStyle"
 
 class MainPage extends Component {
+    constructor(props){
+        super(props);
+    }
+
     render() {
-        console.log(localStorage.getItem("token"));
+        console.log(localStorage.getItem("token").length);
         const { path } = this.props.match
         return (
             <Switch>
@@ -24,7 +28,7 @@ class MainPage extends Component {
                             key={key}
                             component={prop.component}
                         />
-                        
+
                     )
                 })}
                 {localStorage.getItem("token").length !== 0 ?

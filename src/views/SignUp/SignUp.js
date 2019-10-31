@@ -29,6 +29,7 @@ class SignUp extends Component {
 
     constructor(props) {
         super(props);
+        userService.logout();
         this.state = {
             email: "",
             password: "",
