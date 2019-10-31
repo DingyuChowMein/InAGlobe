@@ -19,15 +19,15 @@ import config from '../../config'
 
 class ProjectList extends Component {
     constructor(props) {
-        super();
+        super(props)
         this.state = {
             projects: []
         }
     }
 
     componentDidMount() {
-        var token = localStorage.getItem('token');
-        var bearer = 'Bearer ' + token;
+        var token = localStorage.getItem('token')
+        var bearer = 'Bearer ' + token
 
         fetch(config.apiUrl + '/projects/', {
             method: 'get',
@@ -36,15 +36,17 @@ class ProjectList extends Component {
             }
         })
             .then(res => res.json())
-            .then((data) => {
-                console.log(data);
-                this.setState({projects: data.projects})
+            .then(data => {
+                console.log(data)
+                this.setState({
+                    projects: data.projects
+                })
             })
             .catch(console.log)
     }
 
     render() {
-        const {classes} = this.props
+        const { classes } = this.props
         return (
             <ResponsiveDrawer name={"Project List"}>
                 <div className={classes.root}>

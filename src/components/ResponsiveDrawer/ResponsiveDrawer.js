@@ -33,8 +33,9 @@ class ResponsiveDrawer extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            mobileOpen: false
-        }
+            mobileOpen: false,
+            userPermissions: localStorage.getItem('permissions')
+        };
         this.handleDrawerToggle = this.handleDrawerToggle.bind(this)
         this.redirectTo = this.redirectTo.bind(this)
     }
@@ -66,7 +67,7 @@ class ResponsiveDrawer extends Component {
                 <Divider />
                 <List>
                     {drawerRoutes.map(route => (
-                        route.icon !== null 
+                        route.icon !== null && route.userLevel >= this.state.userPermissions
                         ?
                         <ListItem 
                             button 

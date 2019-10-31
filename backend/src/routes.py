@@ -86,7 +86,8 @@ def create_user(data):
     new_user = User(
         email=data['email'],
         first_name=data['firstName'],
-        last_name=data['lastName']
+        last_name=data['lastName'],
+        user_type=USER_TYPE[data['userType']]
     )
     new_user.hash_password(data['password'])
     new_user.save()

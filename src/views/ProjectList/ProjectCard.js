@@ -21,8 +21,9 @@ class ProjectCard extends Component {
 
     openProposalPage() {
         const dataValue = JSON.stringify(this.props.data)
+        localStorage.setItem("proposalPage", dataValue)
         console.log(dataValue)
-        return(
+        return (
             <Redirect from="/main/projectlist" to="/main/projectlist/proposalpage" />
         )
     }

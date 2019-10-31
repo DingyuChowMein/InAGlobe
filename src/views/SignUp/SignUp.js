@@ -1,13 +1,16 @@
 // Main ReactJS libraries
 import React, { Component } from 'react'
+import { confirmAlert } from 'react-confirm-alert'
 
 // Material UI libraries
 import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import TextField from '@material-ui/core/TextField'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
+import InputLabel from '@material-ui/core/InputLabel'
+import MenuItem from '@material-ui/core/MenuItem'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
 import Link from '@material-ui/core/Link'
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
@@ -20,7 +23,7 @@ import Copyright from "../../components/Copyright/Copyright"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/signUpStyle"
-import {userService} from "../../services/userService";
+import { userService } from "../../services/userService"
 
 class SignUp extends Component {
 
@@ -31,16 +34,20 @@ class SignUp extends Component {
             password: "",
             firstName: "",
             lastName: "",
-            signUpFailed: false
-        };
-
-        this.handleFormChange = this.handleFormChange.bind(this);
-        this.signUpPressed = this.signUpPressed.bind(this);
+            signUpFailed: false,
+            userType: "STUDENT",
+            labelWidth: 0
+        }
+        this.inputLabel = null
+        this.handleFormChange = this.handleFormChange.bind(this)
+        this.signUpPressed = this.signUpPressed.bind(this)
     }
 
     handleFormChange(e) {
-        const {name, value} = e.target;
-        this.setState({[name]: value});
+        const { name, value } = e.target
+        this.setState({
+            [name]: value
+        })
     }
 
     signUpPressed() {
@@ -49,12 +56,19 @@ class SignUp extends Component {
             this.state.firstName,
             this.state.lastName,
             this.state.email,
-            this.state.password)
+            this.state.password,
+            this.state.userType)
             .then(response => {
                 console.log(response);
-                this.props.history.push("/login")
-            })
+                this.props.history.push('/login');
+            }
+        )
+    }
 
+    componentDidMount() {
+        this.setState({
+            labelWidth: this.inputLabel.offsetWidth
+        })
     }
 
     render() {
@@ -74,7 +88,6 @@ class SignUp extends Component {
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={6}>
                                 <TextField
-                                    autoComplete="fname"
                                     name="firstName"
                                     onChange={this.handleFormChange}
                                     variant="outlined"
@@ -82,6 +95,7 @@ class SignUp extends Component {
                                     fullWidth
                                     id="firstName"
                                     label="First Name"
+                                    autoComplete="fname"
                                     autoFocus
                                 />
                             </Grid>
@@ -123,10 +137,25 @@ class SignUp extends Component {
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <FormControlLabel
-                                    control={<Checkbox value="allowExtraEmails" color="primary" />}
-                                    label="I want to receive inspiration, marketing promotions and updates via email."
-                                />
+                                <FormControl 
+                                    variant="outlined"
+                                    required
+                                    fullWidth
+                                >
+                                    <InputLabel ref={inputLabel => { this.inputLabel = inputLabel }} id="userTypeLabel">Select User Type</InputLabel>
+                                    <Select
+                                        labelId="userTypeLabel"
+                                        id="userType"
+                                        name="userType"
+                                        value={this.state.userType}
+                                        onChange={this.handleFormChange}
+                                        labelWidth={this.state.labelWidth}
+                                    >
+                                        <MenuItem value={"HUMANITARIAN"}>Humanitarian</MenuItem>
+                                        <MenuItem value={"ACADEMIC"}>Academic</MenuItem>
+                                        <MenuItem value={"STUDENT"}>Student</MenuItem>
+                                    </Select>
+                                </FormControl>
                             </Grid>
                         </Grid>
                         <Button

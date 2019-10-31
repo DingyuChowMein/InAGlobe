@@ -13,19 +13,17 @@ import styles from "../../assets/jss/views/proposalMainPageStyle"
 
 class ProposalMainPage extends Component {
 
-    componentDidMount() {
-        console.log("Hello there!")
+    // componentDidMount() {
+    //     console.log("Hello there!")
         // console.log(this.props.location.state.data)
-    }
+    // }
 
     render() {
         console.log("Print something!")
+        const proposalData = JSON.parse(localStorage.getItem("proposalPage"))
         return (
-            <h1>Hello World!</h1>
+            <ProposalPage {...this.props} data={proposalData} />
         )
-        // return (
-        //     <ProposalPage {...this.props} data={this.props.location.state.data} />
-        // )
     }
 }
 

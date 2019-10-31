@@ -1,5 +1,5 @@
-import config from '../config';
-import {authHeader} from '../helpers/auth-header';
+import config from '../config'
+import { authHeader } from '../helpers/auth-header'
 
 
 // const apiUrl = 'http://localhost:5000';
@@ -7,10 +7,10 @@ import {authHeader} from '../helpers/auth-header';
 
 export const userService = {
     login, signUp
-};
+}
 
-function signUp(firstName, lastName, email, password) {
-    console.log(config.apiUrl + '/users/');
+function signUp(firstName, lastName, email, password, userType) {
+    console.log(config.apiUrl + '/users/')
     const requestOptions = {
         method: 'POST',
         headers: {
@@ -20,9 +20,10 @@ function signUp(firstName, lastName, email, password) {
             firstName: firstName,
             lastName: lastName,
             email: email,
-            password: password
+            password: password,
+            userType: userType
         })
-    };
+    }
 
     return fetch(config.apiUrl + '/users/', requestOptions)
         .then(response => console.log(response))
@@ -30,14 +31,14 @@ function signUp(firstName, lastName, email, password) {
 }
 
 function login(email, password) {
-    console.log(config.apiUrl + '/users/tokens/');
+    console.log(config.apiUrl + '/users/tokens/')
 
     const requestOptions = {
         method: 'GET',
         headers: {
             'Authorization': 'Basic ' + window.btoa(email + ":" + password)
         }
-    };
+    }
 
     return fetch(config.apiUrl + '/users/tokens/', requestOptions)
         .then(response => response.json())
