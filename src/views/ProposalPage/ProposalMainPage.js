@@ -1,6 +1,5 @@
 // Main ReactJS libraries
 import React, { Component } from 'react'
-import { withRouter } from "react-router-dom"
 
 // Material UI libraries
 import { withStyles } from '@material-ui/core'
@@ -10,21 +9,21 @@ import ProposalPage from "./ProposalPage"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/proposalMainPageStyle"
+import RegularButton from '../../components/CustomButtons/RegularButton'
 
 class ProposalMainPage extends Component {
 
-    // componentDidMount() {
-    //     console.log("Hello there!")
-        // console.log(this.props.location.state.data)
-    // }
-
     render() {
-        console.log("Print something!")
-        const proposalData = JSON.parse(localStorage.getItem("proposalPage"))
+        const { match } = this.props
+        const proposalData = JSON.parse(localStorage.getItem(`proposalPage/${match.params.id}`))
         return (
-            <ProposalPage {...this.props} data={proposalData} />
+            <ProposalPage {...this.props} data={proposalData}>
+                <RegularButton>
+                    Approve
+                </RegularButton>
+            </ProposalPage>
         )
     }
 }
 
-export default withRouter(withStyles(styles)(ProposalMainPage))
+export default withStyles(styles)(ProposalMainPage)

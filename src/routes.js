@@ -37,14 +37,16 @@ const proposalRoutes = [
         name: "Preview",
         component: ProposalPreviewPage,
         icon: null,
-        layout: "/main/addproposal"
+        layout: "/main/addproposal",
+        userLevel: 2
     },
     {
-        path: "/proposalpage",
+        path: "/proposalpage/:id",
         name: "Proposal Page",
         component: ProposalMainPage,
         icon: null,
-        layout: "/main/projectlist"
+        layout: "/main/projectlist",
+        userLevel: 3
     }
 ]
 
@@ -72,9 +74,10 @@ const drawerRoutes = [
         component: AddProposal,
         layout: "/main",
         userLevel: 2
-    },
-    ...proposalRoutes
+    }
 ]
+
+const mainRoutes = [...drawerRoutes, ...proposalRoutes]
 
 const routes = {
     auth: loginRoutes,
@@ -85,5 +88,6 @@ const routes = {
 export default routes
 export {
     loginRoutes,
-    drawerRoutes
+    drawerRoutes,
+    mainRoutes
 }
