@@ -41,18 +41,22 @@ function login(email, password) {
 
     return fetch(config.apiUrl + '/users/tokens/', requestOptions)
         .then(response => response.json())
-        .then(token => {
+        .then(user => {
             // login successful if there's a user in the response
                 // store user details and basic auth credentials in local storage
                 // to keep user logged in between page refreshes
                 // user.authdata = window.btoa(email + ':' + password);
-            if (Object.keys(token).length === 0) {
-                localStorage.setItem('token', '')
-                return ''
+            if (Object.keys(user).length === 0) {
+                localStorage.setItem('token', '');
+                return '';
             }
 
-            localStorage.setItem('token', token.token)
-            return token.token
+            localStorage.setItem('token', user.token);
+            localStorage.setItem('firstname', user.firstname);
+            localStorage.setItem('lastname', user.lastname);
+            localStorage.setItem('permissions', user.permissions);
+            console.log(localStorage);
+            return user.token;
         });
 }
 

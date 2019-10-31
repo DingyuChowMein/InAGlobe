@@ -13,7 +13,7 @@ import styles from "../../assets/jss/layouts/mainPageStyle"
 
 class MainPage extends Component {
     render() {
-        console.log(localStorage.getItem("token"))
+        console.log(localStorage.getItem("token"));
         const { path } = this.props.match
         return (
             <Switch>
@@ -28,8 +28,8 @@ class MainPage extends Component {
                     )
                 })}
                 {localStorage.getItem("token").length !== 0 ?
-                    (<Redirect strict from="/main" to="/login" />) :
-                    (<Redirect strict from="/main" to="/main/home" />)
+                    (<Redirect strict from="/main" to="/main/home" />) :
+                    (<Redirect strict from="/main" to="/login" />)
                 }
             </Switch>
         )

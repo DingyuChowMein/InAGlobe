@@ -54,21 +54,24 @@ const drawerRoutes = [
         name: "Home Page",
         icon: Home,
         component: HomePage,
-        layout: "/main"
+        layout: "/main",
+        userLevel: 3
     },
     {
         path: "/projectlist",
         name: "Project List",
         icon: List,
         component: ProjectList,
-        layout: "/main"
+        layout: "/main",
+        userLevel: 3,
     },
     {
         path: "/addproposal",
         name: "Add Proposal",
         icon: Subject,
         component: AddProposal,
-        layout: "/main"
+        layout: "/main",
+        userLevel: 2
     },
     ...proposalRoutes
 ]
