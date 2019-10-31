@@ -19,7 +19,7 @@ def create_app():
     api = Api(app)
 
     from .routes import get_projects, process_upload, get_users, create_user, add_comment, get_comments
-    from .tokens import get_token
+    from .tokens import get_token, revoke_token
 
     # Override pre-flight request to fix CORS issue
     class CORS(object):
@@ -57,6 +57,9 @@ def create_app():
     class Tokens(Resource, CORS):
         def get(self):
             return new_response(get_token(), 200)
+
+        def delete(self):
+            return new_response(revoke_token(), 200)
 
     # Route classes to paths
     api.add_resource(Projects, '/projects/')
