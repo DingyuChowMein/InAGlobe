@@ -14,11 +14,11 @@ def get_token():
         'lastname': g.current_user.last_name,
         'permissions': g.current_user.get_permissions(),
         'userid': g.current_user.get_id()
-    }
+    }, 200
 
 
 @token_auth.login_required
 def revoke_token():
     g.current_user.revoke_token()
     db.session.commit()
-    return {'message': 'user removed'}
+    return {'message': 'user removed'}, 200
