@@ -60,7 +60,7 @@ class ProposalMainPage extends Component {
                     'Authorization': bearer,
                     'Content-type': 'application/json'
                 },
-                body: JSON.stringify({"ProjectId": this.state.projectData.id}),
+                body: JSON.stringify({"projectId": this.state.projectData.id}),
             }).then((response) => {
                 // Redirect here based on response
                 console.log(response)

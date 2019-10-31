@@ -51,21 +51,21 @@ def create_app():
             response, code = approve_project(request.get_json())
             return new_response(response, code)
 
-    class Comments(Resource, CORS):
-        def get(self):
-            response, code = get_comments(request.get_json())
-            return new_response(response, code)
-
-        def post(self):
-            response, code = add_comment(request.get_json())
-            return new_response(response, code)
-
+    class Comments(Resource):
         def options(self, project_id):
             response = make_response()
             response.headers.add("Access-Control-Allow-Origin", "*")
             response.headers.add('Access-Control-Allow-Headers', "*")
             response.headers.add('Access-Control-Allow-Methods', "*")
             return response
+        
+        def get(self, project_id):
+            response, code = get_comments(project_id)
+            return new_response(response, code)
+
+        def post(self, project_id):
+            response, code = add_comment(request.get_json(), project_id)
+            return new_response(response, code)
 
     class Users(Resource, CORS):
         def get(self):
