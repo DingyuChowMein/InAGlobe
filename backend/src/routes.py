@@ -15,8 +15,10 @@ def get_projects():
     if user_type == USER_TYPE['ADMIN']:
         projects = Project.query.all()
     elif user_type == USER_TYPE['HUMANITARIAN']:
-        projects = Project.query.filter(Project.status == PROJECT_STATUS['APPROVED'] or Project.project_owner == user_id).all()
-    elif user_type == USER_TYPE['ACADEMIC'] or user_id == USER_TYPE['ACADEMIC']:
+        projects = Project.query.filter(
+            Project.status == PROJECT_STATUS['APPROVED'] or Project.project_owner == user_id
+        ).all()
+    else:
         projects = Project.query.filter(Project.status == PROJECT_STATUS['APPROVED']).all()
 
     files = File.query.all()
@@ -91,6 +93,25 @@ def get_users():
     return {'users': users_json}
 
 
+@token_auth.login_required
+def approve_project(data):
+    user_type = g.current_user.get_permissions()
+
+    message = "Not enough permissions" 
+    if user_type == USER_TYPE['ADMIN']:
+        project = Project.query.filter_by(id = data['ProjectId']).first()
+        if project.status == PROJECT_STATUS['APPROVED']: 
+            project.status = PROJECT_STATUS['NEEDS_APPROVAL']
+            message = "Project disapproved"
+        else:
+            project.status = PROJECT_STATUS['APPROVED']
+            message = "Project approved"
+        project.save()
+
+    return {"message": message}
+
+
+
 def create_user(data):
     new_user = User(
         email=data['email'],
@@ -120,10 +141,9 @@ def add_comment(data):
 
 @token_auth.login_required
 def get_comments(data):
-    project_comments = Comment.query.filter_by(project_id=data['ProjectId']).all()
+    project_comments = Comment.query.filter_by(project_id=data['projectId']).all()
     comments_json = []
     for comment in project_comments:
-
         comments_json.append({
             "CommentId": comment.id,
             "Text": comment.text,

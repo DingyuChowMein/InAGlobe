@@ -18,7 +18,7 @@ def create_app():
     db.init_app(app)
     api = Api(app)
 
-    from .routes import get_projects, process_upload, get_users, create_user, add_comment, get_comments
+    from .routes import get_projects, process_upload, get_users, create_user, add_comment, get_comments, approve_project
     from .tokens import get_token, revoke_token
 
     # Override pre-flight request to fix CORS issue
@@ -31,6 +31,10 @@ def create_app():
             return response
 
     # Define api
+    class Approvals(Resource, CORS):
+        def post(self):
+            return new_response(approve_project(request.get_json()), 200)
+
     class Projects(Resource, CORS):
         def get(self):
             return new_response(get_projects(), 200)
@@ -66,5 +70,6 @@ def create_app():
     api.add_resource(Comments, '/comments/')
     api.add_resource(Users, '/users/')
     api.add_resource(Tokens, '/users/tokens/')
+    api.add_resource(Approvals, '/approve/')
 
     return app
