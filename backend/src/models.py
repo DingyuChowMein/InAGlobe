@@ -67,12 +67,6 @@ class File(Model, db.Model):
     type = db.Column(db.Integer, default=FILE_TYPE['DOCUMENT'])
 
 
-# class USER_TYPE(Enum):
-#     ADMIN = 0,
-#     HUMANITARIAN = 1,
-#     ACADEMIC = 2,
-#     STUDENT = 3
-
 USER_TYPE = {
     'ADMIN': 0,
     'HUMANITARIAN': 1,

@@ -15,7 +15,9 @@ def get_projects():
     if user_type == USER_TYPE['ADMIN']:
         projects = Project.query.all()
     elif user_type == USER_TYPE['HUMANITARIAN']:
-        projects = Project.query.filter(Project.status == PROJECT_STATUS['APPROVED'] or Project.project_owner == user_id).all()
+        projects = Project.query.filter(
+            Project.status == PROJECT_STATUS['APPROVED'] or Project.project_owner == user_id
+        ).all()
     else:
         projects = Project.query.filter(Project.status == PROJECT_STATUS['APPROVED']).all()
 
@@ -126,9 +128,9 @@ def create_user(data):
 @permission_required(USER_TYPE['STUDENT'])
 def add_comment(data):
     comment = Comment(
-        project_id=data['ProjectId'],
-        owner_id=data['OwnerId'],
-        text=data['Text']
+        project_id=data['projectId'],
+        owner_id=data['ownerId'],
+        text=data['text']
     )
 
     comment.save()
@@ -137,13 +139,13 @@ def add_comment(data):
 
 @token_auth.login_required
 def get_comments(data):
-    project_comments = Comment.query.filter_by(project_id=data['ProjectId']).all()
+    project_comments = Comment.query.filter_by(project_id=data['projectId']).all()
     comments_json = []
     for comment in project_comments:
         comments_json.append({
-            "CommentId": comment.id,
-            "Text": comment.text,
-            "OwnerId": comment.owner_id,
-            "Date": comment.date_time.strftime("%Y-%m-%d %H:%M:%S")
+            "commentId": comment.id,
+            "text": comment.text,
+            "ownerId": comment.owner_id,
+            "date": comment.date_time.strftime("%Y-%m-%d %H:%M:%S")
         })
     return {"Comments": comments_json}
