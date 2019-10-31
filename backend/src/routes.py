@@ -109,7 +109,9 @@ def add_comment(data):
     comment = Comment(
         project_id=data['ProjectId'],
         owner_id=data['OwnerId'],
-        text=data['Text']
+        text=data['Text'],
+        owner_first_name=g.current_user.first_name,
+        owner_last_name=g.current_user.last_name
     )
 
     comment.save()
@@ -121,10 +123,13 @@ def get_comments(data):
     project_comments = Comment.query.filter_by(project_id=data['ProjectId']).all()
     comments_json = []
     for comment in project_comments:
+
         comments_json.append({
             "CommentId": comment.id,
             "Text": comment.text,
             "OwnerId": comment.owner_id,
+            "OwnerFirstName": comment.owner_first_name,
+            "OwnerLastName": comment.owner_last_name,
             "Date": comment.date_time.strftime("%Y-%m-%d %H:%M:%S")
         })
     return {"Comments": comments_json}
