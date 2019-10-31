@@ -62,6 +62,7 @@ class AddProposal extends Component {
             body: JSON.stringify(this.state),
         }).then((response) => {
             // Redirect here based on response
+            this.props.history.push("/main/projectlist")
         })
             .catch((err) => {console.log(err)});
     }
