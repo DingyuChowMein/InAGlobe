@@ -12,6 +12,7 @@ import CardBody from "../../components/Card/CardBody"
 
 // Import class's stylesheet
 import styles from "../../assets/jss/views/projectCardStyle"
+import config from "../../config";
 
 class ProjectCard extends Component {
     constructor(props) {
@@ -39,7 +40,7 @@ class ProjectCard extends Component {
                 <img
                     className={classes.cardImgTop}
                     alt="Provided for a Card."
-                    src={images[0]}
+                    src={config.s3Bucket + images[0]}
                 />
                 <CardBody>
                     <h3 className={classes.h3}>{title}</h3>
