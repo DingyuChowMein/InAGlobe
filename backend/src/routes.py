@@ -10,7 +10,6 @@ from collections import defaultdict
 def get_projects():
     user_id = g.current_user.get_id()
     user_type = g.current_user.get_permissions()
-    projects = []
 
     if user_type == USER_TYPE['ADMIN']:
         projects = Project.query.all()
@@ -53,7 +52,7 @@ def get_projects():
 
         projects_json.append(project_fields_json)
 
-    return {'projects': projects_json}
+    return {'projects': projects_json}, 200
 
 
 @token_auth.login_required
@@ -78,37 +77,34 @@ def process_upload(data):
             file = File(project_id=project.id, link=link, type=FILE_TYPE['IMAGE'])
             file.save()
 
-    return {'message': 'Project added to db!'}
+    return {'message': 'Project added to db!'}, 201
 
 
 @token_auth.login_required
+@permission_required(USER_TYPE['ADMIN'])
+def approve_project(data):
+    project = Project.query.filter_by(id=data['projectId']).first()
+    if project.status == PROJECT_STATUS['APPROVED']:
+        project.status = PROJECT_STATUS['NEEDS_APPROVAL']
+        message = "Project disapproved"
+    else:
+        project.status = PROJECT_STATUS['APPROVED']
+        message = "Project approved"
+    project.save()
+
+    return {"message": message}, 200
+
+
+@token_auth.login_required
+@permission_required(USER_TYPE['ADMIN'])
 def get_users():
-    # TODO: only admins should be able to see the list of users
     users = User.query.all()
     users_json = []
     for user in users:
         # TODO: refactor this
-        _u = {'Id': user.id, 'Email': user.email, 'PasswordHash': user.password_hash}
+        _u = {'Id': user.id, 'Email': user.email}
         users_json.append(_u)
-    return {'users': users_json}
-
-
-@token_auth.login_required
-def approve_project(data):
-    user_type = g.current_user.get_permissions()
-
-    message = "Not enough permissions" 
-    if user_type == USER_TYPE['ADMIN']:
-        project = Project.query.filter_by(id = data['ProjectId']).first()
-        if project.status == PROJECT_STATUS['APPROVED']: 
-            project.status = PROJECT_STATUS['NEEDS_APPROVAL']
-            message = "Project disapproved"
-        else:
-            project.status = PROJECT_STATUS['APPROVED']
-            message = "Project approved"
-        project.save()
-
-    return {"message": message}
+    return {'users': users_json}, 200
 
 
 
@@ -121,7 +117,7 @@ def create_user(data):
     )
     new_user.hash_password(data['password'])
     new_user.save()
-    return {'message': 'User created!'}
+    return {'message': 'User created!'}, 201
 
 
 @token_auth.login_required
@@ -136,7 +132,7 @@ def add_comment(data):
     )
 
     comment.save()
-    return {'message': 'Comment added!'}
+    return {'message': 'Comment added!'}, 201
 
 
 @token_auth.login_required
@@ -152,4 +148,4 @@ def get_comments(data):
             "ownerLastName": comment.owner_last_name,
             "date": comment.date_time.strftime("%Y-%m-%d %H:%M:%S")
         })
-    return {"comments": comments_json}
+    return {"comments": comments_json}, 200

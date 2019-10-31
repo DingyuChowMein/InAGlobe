@@ -1,4 +1,4 @@
-from flask import g, request
+from flask import g, request, abort
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from functools import wraps
 
@@ -18,10 +18,9 @@ def verify_password(email, password):
     return user.verify_password(password)
 
 
-# TODO create error handler
 @basic_auth.error_handler
 def basic_auth_error():
-    return '{}', 204
+    return abort(404, 'User does not exist!')
 
 
 @token_auth.verify_token
@@ -32,7 +31,7 @@ def verify_token(token):
 
 @token_auth.error_handler
 def token_error_handler():
-    return '{}', 204
+    return abort(404, 'User does not exist!')
 
 
 def permission_required(permission):
@@ -41,18 +40,18 @@ def permission_required(permission):
         def decorated_function(*args, **kwargs):
             user = g.current_user
             if not user.has_permission(permission) or not user.is_admin():
-                permissions_error_handler(permission)
+                permissions_error_handler()
             return f(*args, **kwargs)
         return decorated_function
     return decorator
 
 
 def no_user_error():
-    return "No user found", 204
+    return abort(404, "User not found!")
 
 
-def permissions_error_handler(permission):
-    return "Insufficient permissions: need user type {}".format(permission), 204
+def permissions_error_handler():
+    return abort(403, "Insufficient permissions!")
 
 # decorator
 def requires_role(type):
@@ -68,7 +67,7 @@ def requires_role(type):
             if user.user_type == type:
                 return func(*args, **kwargs)
             else:
-                return permissions_error_handler(type)
+                return permissions_error_handler()
         return decorated
     return decorator
 
