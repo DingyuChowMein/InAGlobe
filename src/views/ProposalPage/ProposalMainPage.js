@@ -13,7 +13,7 @@ import styles from "../../assets/jss/views/proposalMainPageStyle"
 
 import Comments from '../../components/Comments/Comments'
 import config from "../../config";
-import {commentsService} from "../../services/commentsService";
+import { commentsService } from "../../services/commentsService";
 
 class ProposalMainPage extends Component {
 
@@ -85,22 +85,22 @@ class ProposalMainPage extends Component {
     }
 
     render() {
-        const {classes, match} = this.props
-        const proposalData = this.state.projectData;
+        const { classes, match } = this.props
+        const proposalData = JSON.parse(localStorage.getItem(`proposalPage/${match.params.id}`))
+        // const commentsList = [] // TODO: Enter the comments here
         return (
             <ProposalPage {...this.props} data={proposalData}>
-                <div>
-                    <div className={classes.buttonsDiv}>
-                        <RegularButton color="primary"
+                <div className={classes.buttonsDiv}>
+                        <RegularButton 
+                            color="primary"
                             onClick={this.actionButtonClicked}
-                            disabled={this.state.buttonDisabled}>
+                            disabled={this.state.buttonDisabled}
+                        >
                             {this.state.buttonMessage}
-                            </RegularButton>
-                    </div>
-
-                    <div className={classes.commentsDiv}>
-                        <Comments comments={[]}/>
-                    </div>
+                        </RegularButton>
+                </div>
+                <div className={classes.commentsDiv}>
+                    <Comments comments={this.state.comments}/>
                 </div>
             </ProposalPage>
         )

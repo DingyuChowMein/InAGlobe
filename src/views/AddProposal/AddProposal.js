@@ -19,7 +19,7 @@ import upload from "../../s3"
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/addProposalStyle"
 import config from "../../config";
-import {generateId} from "../../helpers/utils"
+import { generateId } from "../../helpers/utils"
 
 
 class AddProposal extends Component {
