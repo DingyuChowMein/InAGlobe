@@ -128,9 +128,9 @@ def create_user(data):
 @permission_required(USER_TYPE['STUDENT'])
 def add_comment(data):
     comment = Comment(
-        project_id=data['ProjectId'],
-        owner_id=data['OwnerId'],
-        text=data['Text'],
+        project_id=data['projectId'],
+        owner_id=data['ownerId'],
+        text=data['text'],
         owner_first_name=g.current_user.first_name,
         owner_last_name=g.current_user.last_name
     )
@@ -145,11 +145,11 @@ def get_comments(data):
     comments_json = []
     for comment in project_comments:
         comments_json.append({
-            "CommentId": comment.id,
-            "Text": comment.text,
-            "OwnerId": comment.owner_id,
-            "OwnerFirstName": comment.owner_first_name,
-            "OwnerLastName": comment.owner_last_name,
-            "Date": comment.date_time.strftime("%Y-%m-%d %H:%M:%S")
+            "commentId": comment.id,
+            "text": comment.text,
+            "ownerId": comment.owner_id,
+            "ownerFirstName": comment.owner_first_name,
+            "ownerLastName": comment.owner_last_name,
+            "date": comment.date_time.strftime("%Y-%m-%d %H:%M:%S")
         })
-    return {"Comments": comments_json}
+    return {"comments": comments_json}
