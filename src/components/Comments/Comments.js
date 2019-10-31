@@ -17,7 +17,6 @@ import styles from "../../assets/jss/components/commentsStyle"
 class Comment extends Component {
     render() {
         const { data, index, style } = this.props
-        console.log(this.props);
 
         return (
                 <ListItem alignItems="flex-start">
@@ -53,6 +52,7 @@ class Comments extends Component {
 
     render() {
         const { classes, comments } = this.props
+        console.log("Comments component");
         console.log(comments);
         return (
             <FixedSizeList 

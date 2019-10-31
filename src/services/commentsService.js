@@ -20,9 +20,9 @@ function getComments(projectId){
         },
     };
 
-    return fetch(config.apiUrl + '/comments/' + projectId.toString(), requestOptions)
-        .then(response => response.json())
-        .catch(err => console.log(err))
-        .then(json => console.log(json))
+    return fetch(config.apiUrl + '/comments/' + projectId.toString(), requestOptions);
+        // .then(response => response.json())
+        // .catch(err => console.log(err))
+        // .then(json => console.log(json));
 }
 

@@ -35,11 +35,15 @@ class ProposalMainPage extends Component {
         console.log(this.state.buttonDisabled);
     }
 
-    componentDidMount(){
-        commentsService.getComments(this.state.projectData.id).then((c) =>
-        this.setState({
-            comments: c
-        }));
+    componentDidMount() {
+        commentsService.getComments(this.state.projectData.id)
+            .then(c => c.json())
+            .then(json => {
+                console.log(json)
+                this.setState({
+                    comments: json
+                })
+            }).catch(err => console.log(err));
     }
 
     actionButtonClicked() {
@@ -99,7 +103,7 @@ class ProposalMainPage extends Component {
                     </div>
 
                     <div className={classes.commentsDiv}>
-                        <Comments comments={[]}/>
+                        <Comments comments={this.state.comments}/>
                     </div>
                 </div>
             </ProposalPage>
