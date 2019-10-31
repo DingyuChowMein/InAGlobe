@@ -33,7 +33,7 @@ class ProjectList extends Component {
             method: 'get',
             headers: {
                 'Authorization': bearer
-            }
+            },
         })
             .then(res => res.json())
             .then(data => {

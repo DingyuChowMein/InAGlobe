@@ -1,5 +1,6 @@
+from flask import g
 from .auth import token_auth, permission_required
-from .models import Project, File, User, Comment, USER_TYPE, FILE_TYPE
+from .models import Project, File, User, Comment, USER_TYPE, FILE_TYPE, PROJECT_STATUS
 from collections import defaultdict
 
 
@@ -7,7 +8,17 @@ from collections import defaultdict
 
 @token_auth.login_required
 def get_projects():
-    projects = Project.query.all()
+    user_id = g.current_user.get_id()
+    user_type = g.current_user.get_permissions()
+    projects = []
+
+    if user_type == USER_TYPE['ADMIN']:
+        projects = Project.query.all()
+    elif user_type == USER_TYPE['HUMANITARIAN']:
+        projects = Project.query.filter(Project.status == PROJECT_STATUS['APPROVED'] or Project.project_owner == user_id).all()
+    elif user_type == USER_TYPE['ACADEMIC'] or user_id == USER_TYPE['ACADEMIC']:
+        projects = Project.query.filter(Project.status == PROJECT_STATUS['APPROVED']).all()
+
     files = File.query.all()
 
     projects_json = []
@@ -21,7 +32,6 @@ def get_projects():
             images_map[f.project_id].append(f.link)
 
     for project in projects:
-
         documents = documents_map[project.id]
         images = images_map[project.id]
 
@@ -65,7 +75,7 @@ def process_upload(data):
         for link in data['images']:
             file = File(project_id=project.id, link=link, type=FILE_TYPE['IMAGE'])
             file.save()
-            
+
     return {'message': 'Project added to db!'}
 
 
