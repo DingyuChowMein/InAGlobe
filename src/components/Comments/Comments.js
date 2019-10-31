@@ -12,7 +12,7 @@ import TextField from '@material-ui/core/TextField'
 
 import styles from "../../assets/jss/components/commentsStyle"
 
-import comments from "../../assets/data/CommentData"
+// import comments from "../../assets/data/CommentData"
 import RegularButton from "../CustomButtons/RegularButton"
 
 class Comments extends Component {
@@ -56,7 +56,8 @@ class Comments extends Component {
     }
 
     render() {
-        const { classes } = this.props
+        const { classes, comments } = this.props
+        console.log(comments);
         return (
             <div className={classes.root}>
                 <List>

@@ -33,41 +33,62 @@ def create_app():
     # Define api
     class Approvals(Resource, CORS):
         def post(self):
-            return new_response(approve_project(request.get_json()), 200)
+            response, code = approve_project(request.get_json())
+            return new_response(response, code)
 
     class Projects(Resource, CORS):
         def get(self):
-            return new_response(get_projects(), 200)
+            response, code = get_projects()
+            return new_response(response, code)
 
         def post(self):
-            print("IN POST \n \n")
-            print(request.get_json())
-            return new_response(process_upload(request.get_json()), 201)
+            response, code = process_upload(request.get_json())
+            # print("IN POST \n \n")
+            # print(request.get_json())
+            return new_response(response, code)
+
+        def patch(self):
+            response, code = approve_project(request.get_json())
+            return new_response(response, code)
 
     class Comments(Resource, CORS):
         def get(self):
-            return new_response(get_comments(request.get_json()), 200)
+            response, code = get_comments(request.get_json())
+            return new_response(response, code)
 
         def post(self):
-            return new_response(add_comment(request.get_json()), 201)
+            response, code = add_comment(request.get_json())
+            return new_response(response, code)
+
+        def options(self, project_id):
+            response = make_response()
+            response.headers.add("Access-Control-Allow-Origin", "*")
+            response.headers.add('Access-Control-Allow-Headers', "*")
+            response.headers.add('Access-Control-Allow-Methods', "*")
+            return response
 
     class Users(Resource, CORS):
         def get(self):
-            return new_response(get_users(), 200)
+            response, code = get_users()
+            return new_response(response, code)
 
         def post(self):
-            return new_response(create_user(request.get_json()), 201)
+            response, code = create_user(request.get_json())
+            return new_response(response, code)
 
     class Tokens(Resource, CORS):
         def get(self):
-            return new_response(get_token(), 200)
+            response, code = get_token()
+            return new_response(response, code)
 
         def delete(self):
-            return new_response(revoke_token(), 200)
+            response, code = revoke_token()
+            return new_response(response, code)
+
 
     # Route classes to paths
     api.add_resource(Projects, '/projects/')
-    api.add_resource(Comments, '/comments/')
+    api.add_resource(Comments, '/comments/', '/comments/<int:project_id>')
     api.add_resource(Users, '/users/')
     api.add_resource(Tokens, '/users/tokens/')
     api.add_resource(Approvals, '/approve/')
