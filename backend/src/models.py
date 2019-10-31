@@ -143,6 +143,8 @@ class Comment(Model, db.Model):
     owner_id = db.Column(db.Integer, nullable=False)
     date_time = db.Column(db.DateTime, default=datetime.now())
     text = db.Column(db.String(100), nullable=False)
+    owner_first_name = db.Column(db.String(OWNER_FIELD_LENGTH), nullable=False)
+    owner_last_name = db.Column(db.String(OWNER_FIELD_LENGTH), nullable=False)
 
     @staticmethod
     def get_all_comments_for_project_id(proj_id):
