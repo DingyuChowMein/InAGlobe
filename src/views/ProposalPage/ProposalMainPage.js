@@ -22,7 +22,7 @@ class ProposalMainPage extends Component {
             <ProposalPage {...this.props} data={proposalData}>
                 <div>
                     <div className={classes.buttonsDiv}>
-                        <RegularButton color="primary">Approve</RegularButton>
+                        <RegularButton color="primary">{proposalData.status}</RegularButton>
                     </div>
                     <div className={classes.commentsDiv}>
                         <Comments comments={commentsList}/>

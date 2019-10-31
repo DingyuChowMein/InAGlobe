@@ -5,6 +5,7 @@ import { withStyles } from "@material-ui/styles"
 import ResponsiveDrawer from "../../components/ResponsiveDrawer/ResponsiveDrawer"
 
 import styles from "../../assets/jss/views/proposalPageStyle"
+import config from "../../config";
 
 class ProposalPage extends Component {
     render() {
@@ -31,6 +32,11 @@ class ProposalPage extends Component {
                 </div>
                 <div className={classes.container}>
                     <h5>{data.detailedDescription}</h5>
+                </div>
+                <div className={classes.container}>
+                    {data.documents.map(doc => (
+                        <a href={config.s3Bucket+doc}>doc</a>
+                    ))}
                 </div>
                 {data.images.map(image => (
                     <div className={classes.imagesContainer}>

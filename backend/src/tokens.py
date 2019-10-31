@@ -12,7 +12,8 @@ def get_token():
         'token': token,
         'firstname': g.current_user.first_name,
         'lastname': g.current_user.last_name,
-        'permissions': g.current_user.get_permissions()
+        'permissions': g.current_user.get_permissions(),
+        'userid': g.current_user.get_id()
     }
 
 
@@ -20,4 +21,4 @@ def get_token():
 def revoke_token():
     g.current_user.revoke_token()
     db.session.commit()
-    return '', 204
+    return {'message': 'user removed'}

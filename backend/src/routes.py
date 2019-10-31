@@ -1,5 +1,6 @@
+from flask import g
 from .auth import token_auth, permission_required
-from .models import Project, File, User, Comment, USER_TYPE, FILE_TYPE
+from .models import Project, File, User, Comment, USER_TYPE, FILE_TYPE, PROJECT_STATUS
 from collections import defaultdict
 
 
@@ -7,7 +8,19 @@ from collections import defaultdict
 
 @token_auth.login_required
 def get_projects():
-    projects = Project.query.all()
+    user_id = g.current_user.get_id()
+    user_type = g.current_user.get_permissions()
+    projects = []
+
+    if user_type == USER_TYPE['ADMIN']:
+        projects = Project.query.all()
+    elif user_type == USER_TYPE['HUMANITARIAN']:
+        projects = Project.query.filter(
+            Project.status == PROJECT_STATUS['APPROVED'] or Project.project_owner == user_id
+        ).all()
+    else:
+        projects = Project.query.filter(Project.status == PROJECT_STATUS['APPROVED']).all()
+
     files = File.query.all()
 
     projects_json = []
@@ -21,7 +34,6 @@ def get_projects():
             images_map[f.project_id].append(f.link)
 
     for project in projects:
-
         documents = documents_map[project.id]
         images = images_map[project.id]
 
@@ -52,7 +64,6 @@ def process_upload(data):
         title=data['title'],
         short_description=data['shortDescription'],
         long_description=data['detailedDescription'],
-        status=data['status'],
         location=data['location'],
         project_owner=data['projectOwner'],
         organisation_name=data['organisationName'],
@@ -66,7 +77,7 @@ def process_upload(data):
         for link in data['images']:
             file = File(project_id=project.id, link=link, type=FILE_TYPE['IMAGE'])
             file.save()
-            
+
     return {'message': 'Project added to db!'}
 
 
@@ -80,6 +91,25 @@ def get_users():
         _u = {'Id': user.id, 'Email': user.email, 'PasswordHash': user.password_hash}
         users_json.append(_u)
     return {'users': users_json}
+
+
+@token_auth.login_required
+def approve_project(data):
+    user_type = g.current_user.get_permissions()
+
+    message = "Not enough permissions" 
+    if user_type == USER_TYPE['ADMIN']:
+        project = Project.query.filter_by(id = data['ProjectId']).first()
+        if project.status == PROJECT_STATUS['APPROVED']: 
+            project.status = PROJECT_STATUS['NEEDS_APPROVAL']
+            message = "Project disapproved"
+        else:
+            project.status = PROJECT_STATUS['APPROVED']
+            message = "Project approved"
+        project.save()
+
+    return {"message": message}
+
 
 
 def create_user(data):
@@ -98,9 +128,11 @@ def create_user(data):
 @permission_required(USER_TYPE['STUDENT'])
 def add_comment(data):
     comment = Comment(
-        project_id=data['ProjectId'],
-        owner_id=data['OwnerId'],
-        text=data['Text']
+        project_id=data['projectId'],
+        owner_id=data['ownerId'],
+        text=data['text'],
+        owner_first_name=g.current_user.first_name,
+        owner_last_name=g.current_user.last_name
     )
 
     comment.save()
@@ -109,13 +141,15 @@ def add_comment(data):
 
 @token_auth.login_required
 def get_comments(data):
-    project_comments = Comment.query.filter_by(project_id=data['ProjectId']).all()
+    project_comments = Comment.query.filter_by(project_id=data['projectId']).all()
     comments_json = []
     for comment in project_comments:
         comments_json.append({
-            "CommentId": comment.id,
-            "Text": comment.text,
-            "OwnerId": comment.owner_id,
-            "Date": comment.date_time.strftime("%Y-%m-%d %H:%M:%S")
+            "commentId": comment.id,
+            "text": comment.text,
+            "ownerId": comment.owner_id,
+            "ownerFirstName": comment.owner_first_name,
+            "ownerLastName": comment.owner_last_name,
+            "date": comment.date_time.strftime("%Y-%m-%d %H:%M:%S")
         })
-    return {"Comments": comments_json}
+    return {"comments": comments_json}
