@@ -60,6 +60,13 @@ def create_app():
             response, code = add_comment(request.get_json())
             return new_response(response, code)
 
+        def options(self, project_id):
+            response = make_response()
+            response.headers.add("Access-Control-Allow-Origin", "*")
+            response.headers.add('Access-Control-Allow-Headers', "*")
+            response.headers.add('Access-Control-Allow-Methods', "*")
+            return response
+
     class Users(Resource, CORS):
         def get(self):
             response, code = get_users()
@@ -81,7 +88,7 @@ def create_app():
 
     # Route classes to paths
     api.add_resource(Projects, '/projects/')
-    api.add_resource(Comments, '/comments/')
+    api.add_resource(Comments, '/comments/', '/comments/<int:project_id>')
     api.add_resource(Users, '/users/')
     api.add_resource(Tokens, '/users/tokens/')
     api.add_resource(Approvals, '/approve/')

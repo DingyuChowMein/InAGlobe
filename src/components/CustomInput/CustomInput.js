@@ -11,7 +11,7 @@ import Check from "@material-ui/icons/Check"
 import { withStyles } from "@material-ui/styles"
 
 // Importing class's stylesheet
-import styles from "../../assets/jss/components/customInput"
+import styles from "../../assets/jss/components/customInputStyle"
 
 class CustomInput extends Component {
 

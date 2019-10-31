@@ -120,9 +120,9 @@ def create_user(data):
 
 
 @token_auth.login_required
-def add_comment(data):
+def add_comment(data, project_id):
     comment = Comment(
-        project_id=data['projectId'],
+        project_id=project_id,
         owner_id=data['ownerId'],
         text=data['text'],
         owner_first_name=g.current_user.first_name,
@@ -134,8 +134,10 @@ def add_comment(data):
 
 
 @token_auth.login_required
-def get_comments(data):
-    project_comments = Comment.query.filter_by(project_id=data['projectId']).all()
+def get_comments(project_id):
+    if not project_id:
+        return {'message': "No project id"}
+    project_comments = Comment.query.filter_by(project_id=project_id).all()
     comments_json = []
     for comment in project_comments:
         comments_json.append({
@@ -146,4 +148,5 @@ def get_comments(data):
             "ownerLastName": comment.owner_last_name,
             "date": comment.date_time.strftime("%Y-%m-%d %H:%M:%S")
         })
+    #print(comments_json)
     return {"comments": comments_json}, 200

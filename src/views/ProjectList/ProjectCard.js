@@ -6,7 +6,7 @@ import { Switch, Redirect, withRouter } from "react-router-dom"
 import { withStyles } from "@material-ui/styles"
 
 // Imports of different components in project
-import Button from "../../components/CustomButtons/RegularButton"
+import RegularButton from "../../components/CustomButtons/RegularButton"
 import Card from "../../components/Card/Card"
 import CardBody from "../../components/Card/CardBody"
 
@@ -48,19 +48,19 @@ class ProjectCard extends Component {
                     <h5 className={classes.h5}>{status}</h5>
                     <p>{shortDescription}</p>
                     <div className={classes.buttonDiv}>
-                        <Button 
+                        <RegularButton 
                             color="primary" 
                             className={classes.learnMoreButton}
                             onClick={this.openProposalPage}
                         >
                             Learn More
-                        </Button>
-                        <Button 
+                        </RegularButton>
+                        <RegularButton 
                             color="primary" 
                             className={classes.selectProposalButton}
                         >
                             Select Proposal
-                        </Button>
+                        </RegularButton>
                     </div>
                 </CardBody>
             </Card>

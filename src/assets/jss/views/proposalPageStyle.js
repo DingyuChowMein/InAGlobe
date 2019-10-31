@@ -21,7 +21,15 @@ const styles = {
         height: "80%", 
         width: "80%",
         maxWidth: "600px"
-    }
+    },
+    // bottomButtonDiv: {
+    //     width: "100%",
+    //     textAlign: "center"
+    // },
+    // commentsDiv: {
+    //     width: "100%",
+    //     textAlign: "center"
+    // }
 }
 
 export default styles
