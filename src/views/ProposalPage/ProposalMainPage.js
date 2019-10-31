@@ -13,6 +13,7 @@ import styles from "../../assets/jss/views/proposalMainPageStyle"
 
 import Comments from '../../components/Comments/Comments'
 import config from "../../config";
+import {commentsService} from "../../services/commentsService";
 
 class ProposalMainPage extends Component {
 
@@ -26,11 +27,19 @@ class ProposalMainPage extends Component {
             userType: userType,
             projectData: projectData,
             buttonDisabled: !(userType === "0" || (userType !== "1" && projectData.status === "Approved")),
-            buttonMessage: this.getButtonMessage(userType, projectData.status)
-        }
+            buttonMessage: this.getButtonMessage(userType, projectData.status),
+            comments: []
+        };
 
         console.log(this.state.userType);
         console.log(this.state.buttonDisabled);
+    }
+
+    componentDidMount(){
+        commentsService.getComments(this.state.projectData.id).then((c) =>
+        this.setState({
+            comments: c
+        }));
     }
 
     actionButtonClicked() {
@@ -77,7 +86,6 @@ class ProposalMainPage extends Component {
 
     render() {
         const {classes, match} = this.props
-        const commentsList = [] // TODO: Enter the comments here
         const proposalData = this.state.projectData;
         return (
             <ProposalPage {...this.props} data={proposalData}>
@@ -91,7 +99,7 @@ class ProposalMainPage extends Component {
                     </div>
 
                     <div className={classes.commentsDiv}>
-                        <Comments comments={commentsList}/>
+                        <Comments comments={[]}/>
                     </div>
                 </div>
             </ProposalPage>

@@ -45,11 +45,18 @@ def create_app():
             return new_response(process_upload(request.get_json()), 201)
 
     class Comments(Resource, CORS):
-        def get(self):
-            return new_response(get_comments(request.get_json()), 200)
+        def options(self, project_id):
+            response = make_response()
+            response.headers.add("Access-Control-Allow-Origin", "*")
+            response.headers.add('Access-Control-Allow-Headers', "*")
+            response.headers.add('Access-Control-Allow-Methods', "*")
+            return response
 
-        def post(self):
-            return new_response(add_comment(request.get_json()), 201)
+        def get(self, project_id):
+            return new_response(get_comments(project_id), 200)
+
+        def post(self, project_id):
+            return new_response(add_comment(request.get_json(), project_id), 201)
 
     class Users(Resource, CORS):
         def get(self):
@@ -67,7 +74,7 @@ def create_app():
 
     # Route classes to paths
     api.add_resource(Projects, '/projects/')
-    api.add_resource(Comments, '/comments/')
+    api.add_resource(Comments, '/comments/', '/comments/<int:project_id>')
     api.add_resource(Users, '/users/')
     api.add_resource(Tokens, '/users/tokens/')
     api.add_resource(Approvals, '/approve/')

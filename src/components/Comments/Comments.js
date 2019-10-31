@@ -17,7 +17,8 @@ import styles from "../../assets/jss/components/commentsStyle"
 class Comment extends Component {
     render() {
         const { data, index, style } = this.props
-        console.log(this.props)
+        console.log(this.props);
+
         return (
                 <ListItem alignItems="flex-start">
                     <ListItemAvatar>
@@ -27,7 +28,7 @@ class Comment extends Component {
                         />
                     </ListItemAvatar>
                     <ListItemText
-                        primary={data[index].ownerName}
+                        primary={data[index].ownerFirstName + " " + data[index].ownerLastName}
                         secondary={
                             <React.Fragment>
                                 <Typography
@@ -52,6 +53,7 @@ class Comments extends Component {
 
     render() {
         const { classes, comments } = this.props
+        console.log(comments);
         return (
             <FixedSizeList 
                 height={500}
