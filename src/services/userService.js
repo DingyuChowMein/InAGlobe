@@ -26,8 +26,7 @@ function signUp(firstName, lastName, email, password, userType) {
     }
 
     return fetch(config.apiUrl + '/users/', requestOptions)
-        .then(response => console.log(response))
-        .catch(err => console.log(err))
+        .then(response => response.statusText)
 }
 
 function login(email, password) {

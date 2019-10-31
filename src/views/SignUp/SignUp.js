@@ -1,6 +1,5 @@
 // Main ReactJS libraries
 import React, { Component } from 'react'
-import { confirmAlert } from 'react-confirm-alert'
 
 // Material UI libraries
 import Avatar from '@material-ui/core/Avatar'
@@ -60,16 +59,7 @@ class SignUp extends Component {
             this.state.userType)
             .then(response => {
                 console.log(response)
-                confirmAlert({
-                    title: "Response",
-                    message: response["message"],
-                    buttons: [
-                        {
-                            label: "Ok",
-                            onClick: () => this.props.history.push("/login")
-                        }
-                    ]
-                })
+                this.props.history.push("/login")
             }
         )
     }
