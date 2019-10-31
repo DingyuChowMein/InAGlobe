@@ -25,11 +25,6 @@ import styles from "../../assets/jss/views/addProposalStyle"
 
 class AddProposal extends Component {
 
-const onDropDocuments = documentFiles => {
-    documents.concat(documentFiles)
-}
-class AddProposal extends React.Component{
-
   constructor(props) {
     super(props);
     this.state = {
@@ -40,8 +35,6 @@ class AddProposal extends React.Component{
         long_des: '',
     };
 
-//    this.handleChange = this.handleChange.bind(this);
-//    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
     render() {
@@ -143,7 +136,7 @@ class AddProposal extends React.Component{
             pictures: this.state.pictures.concat(pictureFiles)
         })
     }
-    
+
     onDropDocuments(documentFiles) {
         this.setState({
             documents: this.state.documents.concat(documentFiles)
@@ -237,8 +230,8 @@ class AddProposal extends React.Component{
                         <Button color="primary" className={classes.previewButton}>
                             {"Preview"}
                         </Button>
-                        <Button 
-                            color="primary" 
+                        <Button
+                            color="primary"
                             // onClick={upload(this.state.documents[0])}
                             className={classes.submitButton}
                         >
@@ -291,7 +284,7 @@ class AddProposal extends Component {
             pictures: this.state.pictures.concat(pictureFiles)
         })
     }
-    
+
     onDropDocuments(documentFiles) {
         this.setState({
             documents: this.state.documents.concat(documentFiles)
@@ -385,8 +378,8 @@ class AddProposal extends Component {
                         <Button color="primary" className={classes.previewButton}>
                             {"Preview"}
                         </Button>
-                        <Button 
-                            color="primary" 
+                        <Button
+                            color="primary"
                             onClick={upload(this.state.documents[0])}
                             className={classes.submitButton}
                         >

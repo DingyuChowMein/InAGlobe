@@ -14,7 +14,7 @@ import GridItem from "../../components/Grid/GridItem.js"
 //To be removed on successful implementation of the upload function
     const cardData = [
         {
-            title: "Pill Organiser for Self-Medication",
+            title: "Pillll Organiser for Self-Medication",
             organisation: "Fundaćion Mozambique Sur",
             status: "Adopted (Department of Bioengineering)",
             description: "A pill organiser for orphans in Casa do Gaiato-Maputo to self medicate appropriately. Motivated by the poor disease management due to limited number of healthcare workers.",
