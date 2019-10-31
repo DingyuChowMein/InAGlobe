@@ -6,8 +6,10 @@ import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import TextField from '@material-ui/core/TextField'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
+import InputLabel from '@material-ui/core/InputLabel'
+import MenuItem from '@material-ui/core/MenuItem'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
 import Link from '@material-ui/core/Link'
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
@@ -20,10 +22,57 @@ import Copyright from "../../components/Copyright/Copyright"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/signUpStyle"
+import { userService } from "../../services/userService"
 
 class SignUp extends Component {
+
+    constructor(props) {
+        super(props);
+        userService.logout();
+        this.state = {
+            email: "",
+            password: "",
+            firstName: "",
+            lastName: "",
+            signUpFailed: false,
+            userType: "STUDENT",
+            labelWidth: 0
+        }
+        this.inputLabel = null
+        this.handleFormChange = this.handleFormChange.bind(this)
+        this.signUpPressed = this.signUpPressed.bind(this)
+    }
+
+    handleFormChange(e) {
+        const { name, value } = e.target
+        this.setState({
+            [name]: value
+        })
+    }
+
+    signUpPressed() {
+        // You can authenticate here
+        userService.signUp(
+            this.state.firstName,
+            this.state.lastName,
+            this.state.email,
+            this.state.password,
+            this.state.userType)
+            .then(response => {
+                console.log(response)
+                this.props.history.push("/login")
+            }
+        )
+    }
+
+    componentDidMount() {
+        this.setState({
+            labelWidth: this.inputLabel.offsetWidth
+        })
+    }
+
     render() {
-        const { classes } = this.props
+        const { classes } = this.props;
 
         return (
             <Container component="main" maxWidth="xs">
@@ -39,13 +88,14 @@ class SignUp extends Component {
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={6}>
                                 <TextField
-                                    autoComplete="fname"
                                     name="firstName"
+                                    onChange={this.handleFormChange}
                                     variant="outlined"
                                     required
                                     fullWidth
                                     id="firstName"
                                     label="First Name"
+                                    autoComplete="fname"
                                     autoFocus
                                 />
                             </Grid>
@@ -57,6 +107,7 @@ class SignUp extends Component {
                                     id="lastName"
                                     label="Last Name"
                                     name="lastName"
+                                    onChange={this.handleFormChange}
                                     autoComplete="lname"
                                 />
                             </Grid>
@@ -68,6 +119,7 @@ class SignUp extends Component {
                                     id="email"
                                     label="Email Address"
                                     name="email"
+                                    onChange={this.handleFormChange}
                                     autoComplete="email"
                                 />
                             </Grid>
@@ -77,6 +129,7 @@ class SignUp extends Component {
                                     required
                                     fullWidth
                                     name="password"
+                                    onChange={this.handleFormChange}
                                     label="Password"
                                     type="password"
                                     id="password"
@@ -84,24 +137,39 @@ class SignUp extends Component {
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <FormControlLabel
-                                    control={<Checkbox value="allowExtraEmails" color="primary" />}
-                                    label="I want to receive inspiration, marketing promotions and updates via email."
-                                />
+                                <FormControl 
+                                    variant="outlined"
+                                    required
+                                    fullWidth
+                                >
+                                    <InputLabel ref={inputLabel => { this.inputLabel = inputLabel }} id="userTypeLabel">Select User Type</InputLabel>
+                                    <Select
+                                        labelId="userTypeLabel"
+                                        id="userType"
+                                        name="userType"
+                                        value={this.state.userType}
+                                        onChange={this.handleFormChange}
+                                        labelWidth={this.state.labelWidth}
+                                    >
+                                        <MenuItem value={"HUMANITARIAN"}>Humanitarian</MenuItem>
+                                        <MenuItem value={"ACADEMIC"}>Academic</MenuItem>
+                                        <MenuItem value={"STUDENT"}>Student</MenuItem>
+                                    </Select>
+                                </FormControl>
                             </Grid>
                         </Grid>
                         <Button
-                            type="submit"
                             fullWidth
                             variant="contained"
                             color="primary"
+                            onClick={this.signUpPressed}
                             className={classes.submit}
                         >
                             Sign Up
                         </Button>
                         <Grid container justify="flex-end">
                             <Grid item>
-                                <Link href="/login/sigin" variant="body2">
+                                <Link href="/login/signin" variant="body2">
                                     Already have an account? Sign in
                                 </Link>
                             </Grid>

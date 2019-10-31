@@ -1,20 +1,19 @@
 import base64
 import os
 from datetime import datetime, timedelta
-from enum import Enum
 
-from sqlalchemy import ForeignKey, DateTime
+from sqlalchemy import ForeignKey
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from . import db
 
 # TODO: update field length values
-TITLE_FIELD_LENGTH = 16
-SHORT_FIELD_LENGTH = 16
-LONG_FIELD_LENGTH = 32
-LOCATION_FIELD_LENGTH = 16
-OWNER_FIELD_LENGTH = 16
-LINK_FIELD_LENGTH = 32
+TITLE_FIELD_LENGTH = 124
+SHORT_FIELD_LENGTH = 256
+LONG_FIELD_LENGTH = 1024
+LOCATION_FIELD_LENGTH = 64
+OWNER_FIELD_LENGTH = 64
+LINK_FIELD_LENGTH = 256
 
 
 class Model:
@@ -43,6 +42,15 @@ class Project(Model, db.Model):
     long_description = db.Column(db.String(LONG_FIELD_LENGTH), nullable=False)
     location = db.Column(db.String(LOCATION_FIELD_LENGTH), nullable=False)
     project_owner = db.Column(db.String(OWNER_FIELD_LENGTH), nullable=False)
+    organisation_name = db.Column(db.String(OWNER_FIELD_LENGTH), nullable=False)
+    organisation_logo = db.Column(db.String(LINK_FIELD_LENGTH))
+    status = db.Column(db.String(SHORT_FIELD_LENGTH), nullable=False)
+
+
+FILE_TYPE = {
+    'DOCUMENT': 0,
+    'IMAGE': 0
+}
 
 
 class File(Model, db.Model):
@@ -50,7 +58,7 @@ class File(Model, db.Model):
 
     project_id = db.Column(db.Integer, ForeignKey(Project.id))
     link = db.Column(db.String(LINK_FIELD_LENGTH), nullable=False)
-
+    type = db.Column(db.Integer, default=FILE_TYPE['DOCUMENT'])
 
 # class USER_TYPE(Enum):
 #     ADMIN = 0,
@@ -59,27 +67,22 @@ class File(Model, db.Model):
 #     STUDENT = 3
 
 USER_TYPE = {
-    'ADMIN' : 0,
-    'HUMANITARIAN' : 1,
-    'ACADEMIC' : 2,
-    'STUDENT' : 3
+    'ADMIN': 0,
+    'HUMANITARIAN': 1,
+    'ACADEMIC': 2,
+    'STUDENT': 3
 }
 
 class User(Model, db.Model):
     __tablename__ = 'Users'
 
-    email = db.Column(db.String(32), unique=True)
-    password_hash = db.Column(db.String(256), nullable=False)
-    token = db.Column(db.String(32), index=True, unique=True)
+    email = db.Column(db.String(OWNER_FIELD_LENGTH), unique=True)
+    first_name = db.Column(db.String(OWNER_FIELD_LENGTH), nullable=False)
+    last_name = db.Column(db.String(OWNER_FIELD_LENGTH), nullable=False)
+    password_hash = db.Column(db.String(SHORT_FIELD_LENGTH), nullable=False)
+    token = db.Column(db.String(SHORT_FIELD_LENGTH), index=True, unique=True)
     token_expiration = db.Column(db.DateTime)
-    user_type = db.Column(db.Integer)
-
-    def set_permissions(self, t):
-        self.user_type = USER_TYPE[t]
-
-    def get_permissions(self, type):
-
-        return
+    user_type = db.Column(db.Integer, default=USER_TYPE['STUDENT'])
 
     def hash_password(self, password):
         self.password_hash = generate_password_hash(password, method='sha256')
@@ -100,6 +103,19 @@ class User(Model, db.Model):
 
     def revoke_token(self):
         self.token_expiration = datetime.utcnow() - timedelta(seconds=1)
+
+    def set_permissions(self, t):
+        if not t is None:
+            self.user_type = USER_TYPE[t]
+
+    def has_permission(self, permission):
+        return self.user_type == permission
+
+    def get_permissions(self):
+        return self.user_type
+
+    def is_admin(self):
+        return self.user_type == USER_TYPE['ADMIN']
 
     @staticmethod
     def check_token(token):

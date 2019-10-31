@@ -4,7 +4,8 @@ import SignUp from "./views/SignUp/SignUp"
 import HomePage from "./views/Home/HomePage"
 import ProjectList from "./views/ProjectList/ProjectList"
 import AddProposal from "./views/AddProposal/AddProposal"
-import ProposalPage from "./views/ProposalPage/ProposalPage"
+import ProposalMainPage from "./views/ProposalPage/ProposalMainPage"
+import ProposalPreviewPage from './views/ProposalPage/ProposalPreviewPage'
 
 // Importing icons from Drawer
 import Person from '@material-ui/icons/Person'
@@ -30,44 +31,63 @@ const loginRoutes = [
     }
 ]
 
+const proposalRoutes = [
+    {
+        path: "/preview",
+        name: "Preview",
+        component: ProposalPreviewPage,
+        icon: null,
+        layout: "/main/addproposal",
+        userLevel: 2
+    },
+    {
+        path: "/proposalpage/:id",
+        name: "Proposal Page",
+        component: ProposalMainPage,
+        icon: null,
+        layout: "/main/projectlist",
+        userLevel: 3
+    }
+]
+
 const drawerRoutes = [
     {
         path: "/home",
         name: "Home Page",
         icon: Home,
         component: HomePage,
-        layout: "/main"
+        layout: "/main",
+        userLevel: 3
     },
     {
         path: "/projectlist",
         name: "Project List",
         icon: List,
         component: ProjectList,
-        layout: "/main"
+        layout: "/main",
+        userLevel: 3,
     },
     {
-        path: "/addproject",
+        path: "/addproposal",
         name: "Add Proposal",
         icon: Subject,
         component: AddProposal,
-        layout: "/main"
-    },
-    {
-        path: "/proposalpage",
-        name: "Proposal Page",
-        icon: null,
-        component: ProposalPage,
-        layout: "/main/projectlist"
+        layout: "/main",
+        userLevel: 2
     }
 ]
 
+const mainRoutes = [...drawerRoutes, ...proposalRoutes]
+
 const routes = {
     auth: loginRoutes,
-    drawer: drawerRoutes
+    drawer: drawerRoutes,
+    proposal: proposalRoutes
 }
 
 export default routes
 export {
     loginRoutes,
-    drawerRoutes
+    drawerRoutes,
+    mainRoutes
 }

@@ -1,4 +1,3 @@
-
 // Main ReactJS libraries
 import React, { Component } from 'react'
 import ImageUploader from "react-images-upload"
@@ -22,6 +21,7 @@ const pictures = []
 const documents = []
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/addProposalStyle"
+import config from "../../config";
 
 class AddProposal extends Component {
 
@@ -122,31 +122,64 @@ class AddProposal extends Component {
                 </div>
             </Grid>
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
-            pictures: [],
-            documents: []
-        }
+            id: "",
+            title: "",
+            shortDescription: "",
+            detailedDescription: "",
+            location: "",
+            projectOwner: "NaN",
+            documents: [],
+            organisationName: "",
+            organisationLogo: "",
+            status: "Needs approval",
+            images: [],
+        };
+
         this.onDropPictures = this.onDropPictures.bind(this)
         this.onDropDocuments = this.onDropDocuments.bind(this)
+        this.handleFormChange = this.handleFormChange.bind(this);
+        this.post = this.post.bind(this);
+    }
+
+    handleFormChange(e) {
+        this.setState({[e.target.id]: e.target.value});
+    }
+
+    post() {
+        var token = localStorage.getItem('token');
+        var bearer = 'Bearer ' + token;
+        console.log(bearer);
+
+        fetch(config.apiUrl + '/projects/', {
+            method: 'post',
+            headers: {
+                'Authorization': bearer,
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(this.state),
+        }).then((response) => {
+            // Redirect here based on response
+            this.props.history.push("/main/projectlist")
+        })
+            .catch((err) => {console.log(err)});
     }
 
     onDropPictures(pictureFiles) {
         this.setState({
-            pictures: this.state.pictures.concat(pictureFiles)
+            images: this.state.pictures.concat(pictureFiles)
         })
     }
 
     onDropDocuments(documentFiles) {
         this.setState({
             documents: this.state.documents.concat(documentFiles)
-        })
-        console.log(documentFiles)
-        console.log(this.state.documents)
+        });
     }
 
     render() {
-        const { classes } = this.props
+        const { classes } = this.props;
         return (
             <ResponsiveDrawer name={"Add Proposal"}>
                 <GridContainer>
@@ -154,6 +187,7 @@ class AddProposal extends Component {
                         <CustomInput
                             id="title"
                             labelText="Project Title"
+                            inputProps={{onChange: this.handleFormChange}}
                             formControlProps={{
                                 fullWidth: true
                             }}
@@ -161,8 +195,9 @@ class AddProposal extends Component {
                     </GridItem>
                     <GridItem xs={12} sm={12} md={12}>
                         <CustomInput
-                            id="organisation_name"
+                            id="organisation"
                             labelText="Name of Organisation"
+                            inputProps={{onChange: this.handleFormChange}}
                             formControlProps={{
                                 fullWidth: true
                             }}
@@ -172,6 +207,7 @@ class AddProposal extends Component {
                         <CustomInput
                             id="location"
                             labelText="Location"
+                            inputProps={{onChange: this.handleFormChange}}
                             formControlProps={{
                                 fullWidth: true
                             }}
@@ -179,28 +215,30 @@ class AddProposal extends Component {
                     </GridItem>
                     <GridItem xs={12} sm={12} md={12}>
                         <CustomInput
-                            id="short_des"
+                            id="shortDescription"
                             labelText="Short Description"
                             formControlProps={{
                                 fullWidth: true
                             }}
                             inputProps={{
                                 rows: 4,
-                                rowsMax: 6
+                                rowsMax: 6,
+                                onChange: this.handleFormChange
                             }}
                             extraLines={true}
                         />
                     </GridItem>
                     <GridItem xs={12} sm={12} md={12}>
                         <CustomInput
-                            id="detailed_des"
+                            id="detailedDescription"
                             labelText="Detailed Description"
                             formControlProps={{
                                 fullWidth: true
                             }}
                             inputProps={{
                                 rows: 6,
-                                rowsMax: 12
+                                rowsMax: 12,
+                                onChange: this.handleFormChange
                             }}
                             placeholder="Detailed Description"
                             extraLines={true}
@@ -230,9 +268,15 @@ class AddProposal extends Component {
                         <Button color="primary" className={classes.previewButton}>
                             {"Preview"}
                         </Button>
+<<<<<<< HEAD
                         <Button
                             color="primary"
                             // onClick={upload(this.state.documents[0])}
+=======
+                        <Button
+                            color="primary"
+                            onClick={this.post}
+>>>>>>> master
                             className={classes.submitButton}
                         >
                             {"Submit"}
@@ -244,6 +288,7 @@ class AddProposal extends Component {
     }
 }
 
+<<<<<<< HEAD
 export default AddProposal;
 
 // Main ReactJS libraries
@@ -391,4 +436,6 @@ class AddProposal extends Component {
         )
     }
 }
+=======
+>>>>>>> master
 export default withStyles(styles)(AddProposal)

@@ -8,7 +8,6 @@ basic_auth = HTTPBasicAuth()
 # token_auth uses bearer tokens
 token_auth = HTTPTokenAuth()
 
-
 @basic_auth.verify_password
 def verify_password(email, password):
     # email unique so there can only be one
@@ -22,7 +21,7 @@ def verify_password(email, password):
 # TODO create error handler
 @basic_auth.error_handler
 def basic_auth_error():
-    return '', 204
+    return '{}', 204
 
 
 @token_auth.verify_token
@@ -33,16 +32,27 @@ def verify_token(token):
 
 @token_auth.error_handler
 def token_error_handler():
-    return '', 204
+    return '{}', 204
+
+
+def permission_required(permission):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            user = g.current_user
+            if not user.has_permission(permission) or not user.is_admin():
+                permissions_error_handler(permission)
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
 
 
 def no_user_error():
     return "No user found", 204
 
 
-def permissions_error_handler(type):
-    return "Insufficient permissions: need user type {}".format(type), 204
-
+def permissions_error_handler(permission):
+    return "Insufficient permissions: need user type {}".format(permission), 204
 
 # decorator
 def requires_role(type):
@@ -61,3 +71,4 @@ def requires_role(type):
                 return permissions_error_handler(type)
         return decorated
     return decorator
+

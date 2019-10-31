@@ -3,11 +3,15 @@ import smokePicture from "../img/card_example2.png"
 import emissionPicture from "../img/card_example3.png"
 import mobilePicture from "../img/card_example4.png"
 
+import HelvetasLogo from "../img/HelvetasLogo.jpg"
+import MozSurLogo from "../img/MozSurLogo.jpg"
+
 const cardData = [
     {
         id: 1,
         title: "Pill Organiser for Self-Medication",
         organisation: "Fundaćion Mozambique Sur",
+        organisationLogo: MozSurLogo,
         status: "Adopted (Department of Bioengineering)",
         location: "Casa do Gaiato-Maputo, Boanne, Mozambique",
         shortDescription: "A pill organiser for orphans in Casa do Gaiato-Maputo to self medicate appropriately. Motivated by the poor disease management due to limited number of healthcare workers.",
@@ -19,6 +23,7 @@ const cardData = [
         id: 2,
         title: "Low-Smoke Cooking Environment",
         organisation: "Helvetas Swiss Intercooperation",
+        organisationLogo: HelvetasLogo,
         status: "Adopted (Engineering Change)",
         location: "Cabo Delgado, Mozambique",
         shortDescription: "Develop a low-cost stove that produced little or no smoke or an efficient extractor system that can be coupled to current cooking methods.",
@@ -30,6 +35,7 @@ const cardData = [
         id: 3,
         title: "Low Emission Cashew Nut Processor",
         organisation: "Helvetas Swiss Intercooperation",
+        organisationLogo: HelvetasLogo,
         status: "Adopted (Engineering Change)",
         location: "Cabo Delgado, Mozambique",
         shortDescription: "Develop a Cashew Nut processor with low CO2 emissions, as current technologies are highly polluting.",
@@ -41,6 +47,7 @@ const cardData = [
         id: 4,
         title: "Mobile Grain Network-Marketplace",
         organisation: "Helvetas Swiss Intercooperation",
+        organisationLogo: HelvetasLogo,
         status: "Unadopted",
         location: "Cabo Delgado, Mozambique",
         shortDescription: "Create a mobile phone application that informs of the fair local market price for different kinds of food productions.",

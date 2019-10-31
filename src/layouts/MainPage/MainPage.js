@@ -6,28 +6,34 @@ import { Switch, Route, Redirect } from "react-router-dom"
 import { withStyles } from "@material-ui/styles"
 
 // Importing webpath data for logins
-import { drawerRoutes } from "../../routes"
+import { mainRoutes } from "../../routes"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/layouts/mainPageStyle"
 
 class MainPage extends Component {
+    constructor(props){
+        super(props);
+    }
+
     render() {
+        console.log(localStorage.getItem("token").length);
+        const { path } = this.props.match;
+
         return (
             <Switch>
-                {drawerRoutes.map((prop, key) => {
-                    if (prop.layout === "/main") {
-                        return (
-                            <Route 
-                                path={prop.layout + prop.path}
-                                component={prop.component}
-                                key={key}
-                            />
-                        )
-                    }
-                    return null
+                {mainRoutes.map((prop, key) => {
+                    return (
+                        <Route 
+                            path={prop.layout + prop.path}
+                            key={key}
+                            exact
+                            component={prop.component}
+                        />
+
+                    )
                 })}
-                <Redirect from="/main" to="/main/home" />
+                <Redirect strict from="/main" to="/main/home" />
             </Switch>
         )
     }

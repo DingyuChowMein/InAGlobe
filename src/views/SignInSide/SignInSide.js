@@ -1,7 +1,6 @@
 // Main ReactJS libraries
-import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
-import { Router, Switch, Route, Redirect, withRouter } from "react-router-dom"
+import React, {Component} from 'react'
+import {withRouter} from "react-router-dom"
 
 // Material UI libraries
 import Avatar from '@material-ui/core/Avatar'
@@ -15,37 +14,51 @@ import Paper from '@material-ui/core/Paper'
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
-import { withStyles } from '@material-ui/core'
+import {withStyles} from '@material-ui/core'
 
 // Imports of different components and layouts in project
 import Copyright from '../../components/Copyright/Copyright'
-import MainPage from '../../layouts/MainPage/MainPage'
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/signInSideStyle"
 
+import { userService } from "../../services/userService";
+
 class SignInSide extends Component {
 
     constructor(props) {
-        super(props)
-        this.authenticate = this.authenticate.bind(this)
+        super(props);
+        userService.logout();
+        this.state = {
+            email: "",
+            password: "",
+            loginFailed: false
+        }
+
+        this.handleFormChange = this.handleFormChange.bind(this);
+        this.loginPressed = this.loginPressed.bind(this);
     }
 
-    authenticate() {
-        // You can authenticate here
 
-        const hist = this.props.history
-        return (
-            ReactDOM.render(
-                <Router history={hist}>
-                    <Switch>
-                        <Route path="/main" component={MainPage}/>
-                        <Redirect from="/login/signin" to="/main" />
-                    </Switch>
-                </Router>,
-                document.querySelector('#root'),
-            )
-        )
+    handleFormChange(e) {
+        const { name, value } = e.target
+        this.setState({
+            [name]: value
+        })
+    }
+
+    loginPressed() {
+        // You can authenticate here
+        userService.login(this.state.email, this.state.password).then(token => {
+            console.log(token)
+            if (token === "") {
+                this.state.loginFailed = true;
+                alert('INVALID')
+            } else {
+                this.props.history.push("/main")
+                this.state.loginFailed = false;
+            }
+        })
     }
 
     render() {
@@ -54,12 +67,12 @@ class SignInSide extends Component {
         return (
             <div>
                 <Grid container component="main" className={classes.root}>
-                    <CssBaseline />
-                    <Grid item xs={false} sm={4} md={7} className={classes.image} />
+                    <CssBaseline/>
+                    <Grid item xs={false} sm={4} md={7} className={classes.image}/>
                     <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
                         <div className={classes.paper}>
                             <Avatar className={classes.avatar}>
-                                <this.props.icon />
+                                <this.props.icon/>
                             </Avatar>
                             <Typography component="h1" variant="h5">
                                 Sign in
@@ -74,6 +87,7 @@ class SignInSide extends Component {
                                     label="Email Address"
                                     name="email"
                                     autoComplete="email"
+                                    onChange={this.handleFormChange}
                                     autoFocus
                                 />
                                 <TextField
@@ -86,9 +100,10 @@ class SignInSide extends Component {
                                     type="password"
                                     id="password"
                                     autoComplete="current-password"
+                                    onChange={this.handleFormChange}
                                 />
                                 <FormControlLabel
-                                    control={<Checkbox value="remember" color="primary" />}
+                                    control={<Checkbox value="remember" color="primary"/>}
                                     label="Remember me"
                                 />
                                 <Button
@@ -97,16 +112,11 @@ class SignInSide extends Component {
                                     variant="contained"
                                     color="primary"
                                     className={classes.submit}
-                                    onClick={this.authenticate}
+                                    onClick={this.loginPressed}
                                 >
                                     Sign In
                                 </Button>
                                 <Grid container>
-                                    <Grid item xs>
-                                        <Link href="/login/signup" variant="body2">
-                                            Forgot password?
-                                        </Link>
-                                    </Grid>
                                     <Grid item>
                                         <Link href="/login/signup" variant="body2">
                                             {"Don't have an account? Sign Up"}
@@ -114,16 +124,23 @@ class SignInSide extends Component {
                                     </Grid>
                                 </Grid>
                                 <Box mt={5}>
-                                    <Copyright />
+                                    <Copyright/>
                                 </Box>
                             </form>
                         </div>
                     </Grid>
                 </Grid>
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
             </div>
         )
     }
 }
 
+<<<<<<< HEAD
 export default withRouter(withStyles(styles)(SignInSide))
+=======
+export default withRouter(withStyles(styles)(SignInSide))
+>>>>>>> master

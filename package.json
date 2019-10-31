@@ -12,8 +12,9 @@
 		"react": "latest",
 		"react-dom": "latest",
 		"react-images-upload": "latest",
+		"react-popupbox": "latest",
 		"react-router-dom": "latest",
-		"react-scripts": "latest",
+		"react-scripts": "^2.1.8",
 		"serve": "latest"
 	},
 	"scripts": {
