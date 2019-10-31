@@ -18,27 +18,40 @@ class ProposalMainPage extends Component {
         super(props);
         this.actionButtonClicked = this.actionButtonClicked.bind(this);
         this.getButtonMessage = this.getButtonMessage.bind(this);
+        const userType = localStorage.getItem('permissions');
+        const projectData = JSON.parse(localStorage.getItem(`proposalPage/${this.props.match.params.id}`));
         this.state = {
-            buttonDisabled: true
+            userType: userType,
+            projectData: projectData,
+            buttonDisabled: !(userType === "0" || (userType !== "1"  && projectData.status === "Approved")),
+            buttonMessage: this.getButtonMessage(userType, projectData.status)
         }
+
+        console.log(this.state.userType);
+        console.log(this.state.buttonDisabled);
     }
 
     actionButtonClicked() {
-        var token = localStorage.getItem('token');
-        var bearer = 'Bearer ' + token;
-        const userType = localStorage.getItem('permissions');
+        const token = localStorage.getItem('token');
+        const bearer = 'Bearer ' + token;
 
-        if (userType === "0") {
-            fetch(config.apiUrl + '/projects/', {
+        if (this.state.userType === "0") {
+            var new_project_data = this.state.projectData;
+            new_project_data.status = new_project_data.status === "Approved" ? "Needs Approval" : "Approved";
+            this.setState({
+                projectData: new_project_data,
+                buttonMessage: this.getButtonMessage(this.state.userType, new_project_data.status)});
+
+            fetch(config.apiUrl + '/approve/', {
                 method: 'post',
                 headers: {
                     'Authorization': bearer,
                     'Content-type': 'application/json'
                 },
-                body: JSON.stringify(this.state),
+                body: JSON.stringify({"ProjectId": this.state.projectData.id}),
             }).then((response) => {
                 // Redirect here based on response
-                this.props.history.push("/main/projectlist")
+                console.log(response)
             })
                 .catch((err) => {
                     console.log(err)
@@ -46,40 +59,28 @@ class ProposalMainPage extends Component {
         }
     }
 
-    getButtonMessage(status) {
-        const userType = localStorage.getItem('permissions');
+    getButtonMessage(userType, status) {
         if (userType === "0") {
             if (status === "Needs Approval") {
-                this.setState({
-                    buttonDisabled: false
-                })
                 return "Approve"
             }
-            return "Approved"
+            return "Disapprove"
         } else if (userType === "1") {
             return status
         } else {
-            if (status === "Needs Approval") {
-                return status;
-            }
-            this.setState({
-                buttonDisabled: false
-            })
             return "Select project";
         }
     }
 
     render() {
-        const { match } = this.props
-        const proposalData = JSON.parse(localStorage.getItem(`proposalPage/${match.params.id}`))
-        const buttonMessage = this.getButtonMessage(proposalData.status)
+        const proposalData = this.state.projectData;
         return (
             <ProposalPage {...this.props} data={proposalData}>
                 <RegularButton
                     onClick={this.actionButtonClicked}
                     disabled={this.state.buttonDisabled}
                 >
-                    {buttonMessage}
+                    {this.state.buttonMessage}
                 </RegularButton>
             </ProposalPage>
         )
