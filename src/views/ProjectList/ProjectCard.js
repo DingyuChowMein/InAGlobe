@@ -20,41 +20,12 @@ class ProjectCard extends Component {
         this.openProposalPage = this.openProposalPage.bind(this)
         this.markAsSelected = this.markAsSelected.bind(this)
         const projectData = JSON.parse(localStorage.getItem(`proposalPage/${this.props.match.params.id}`));
-
-        // this.state = {
-        //     // userType: userType,
-        //     projectData: projectData,
-        //     // buttonDisabled: !(userType === "0" || (userType !== "1" && projectData.status === "Approved")),
-        //     // buttonMessage: this.getButtonMessage(userType, projectData.status),
-        //     // comments: []
-        // };
-
     }
 
     openProposalPage() {
         const dataValue = JSON.stringify(this.props.data)
         localStorage.setItem(`proposalPage/${this.props.data.id}`, dataValue)
         this.props.history.push(`/main/projectlist/proposalpage/${this.props.data.id}`)
-    }
-
-    markAsSelected() {
-      // const token = localStorage.getItem('token');
-      // const bearer = 'Bearer ' + token;
-      //
-      //     fetch(config.apiUrl + '/dashboard/', {
-      //         method: 'post',
-      //         headers: {
-      //             'Authorization': bearer,
-      //             'Content-type': 'application/json'
-      //         },
-      //         body: JSON.stringify({"ProjectId": this.state.projectData.id}),
-      //     }).then((response) => {
-      //         // Redirect here based on response
-      //         console.log(response)
-      //     })
-      //         .catch((err) => {
-      //             console.log(err)
-      //         });
     }
 
     render() {
@@ -86,13 +57,7 @@ class ProjectCard extends Component {
                         >
                             Learn More
                         </RegularButton>
-                        <RegularButton
-                            color="primary"
-                            className={classes.selectProposalButton}
-                            onClick={this.markAsSelected}
-                        >
-                            Select Proposal
-                        </RegularButton>
+
                     </div>
                 </CardBody>
             </Card>
