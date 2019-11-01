@@ -44,7 +44,7 @@ class ProposalPage extends Component {
                 </div>
                 <div className={classes.container}>
                     {data.documents.map(doc => (
-                        <a href={config.s3Bucket+doc}>{doc}{"\n"}</a>
+                        <a href={config.s3Bucket+doc}>{/[^/]*$/.exec(doc)[0]}{"\n"}</a>
                     ))}
                 </div>
 
