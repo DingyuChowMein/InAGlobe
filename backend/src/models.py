@@ -15,6 +15,22 @@ LOCATION_FIELD_LENGTH = 64
 OWNER_FIELD_LENGTH = 64
 LINK_FIELD_LENGTH = 512
 
+PROJECT_STATUS = {
+    'NEEDS_APPROVAL': 0,
+    'APPROVED': 1,
+}
+
+FILE_TYPE = {
+    'DOCUMENT': 0,
+    'IMAGE': 1
+}
+
+USER_TYPE = {
+    'ADMIN': 0,
+    'HUMANITARIAN': 1,
+    'ACADEMIC': 2,
+    'STUDENT': 3
+}
 
 class Model:
     __table_args__ = {'extend_existing': True}
@@ -34,10 +50,10 @@ class Model:
         return '<id {}>'.format(self.id)
 
 
-PROJECT_STATUS = {
-    'NEEDS_APPROVAL': 0,
-    'APPROVED': 1,
-}
+user_project_joining_table = db.Table('UserProjects', db.Model.metadata,
+    db.Column('user_id', db.Integer, ForeignKey('Users.id')),
+    db.Column('project_id', db.Integer, ForeignKey('Projects.id'))
+)
 
 
 class Project(Model, db.Model):
@@ -53,26 +69,12 @@ class Project(Model, db.Model):
     status = db.Column(db.Integer, default=PROJECT_STATUS['NEEDS_APPROVAL'])
 
 
-FILE_TYPE = {
-    'DOCUMENT': 0,
-    'IMAGE': 1
-}
-
-
 class File(Model, db.Model):
     __tablename__ = 'Files'
 
-    project_id = db.Column(db.Integer, ForeignKey(Project.id))
+    project_id = db.Column(db.Integer, ForeignKey('Projects.id'))
     link = db.Column(db.String(LINK_FIELD_LENGTH), nullable=False)
     type = db.Column(db.Integer, default=FILE_TYPE['DOCUMENT'])
-
-
-USER_TYPE = {
-    'ADMIN': 0,
-    'HUMANITARIAN': 1,
-    'ACADEMIC': 2,
-    'STUDENT': 3
-}
 
 
 class User(Model, db.Model):
@@ -85,6 +87,8 @@ class User(Model, db.Model):
     token = db.Column(db.String(SHORT_FIELD_LENGTH), index=True, unique=True)
     token_expiration = db.Column(db.DateTime)
     user_type = db.Column(db.Integer, default=USER_TYPE['STUDENT'])
+    projects = db.relationship('Project', secondary=user_project_joining_table,
+                               backref=db.backref('users', lazy='dynamic'))
 
     def hash_password(self, password):
         self.password_hash = generate_password_hash(password, method='sha256')
@@ -133,7 +137,7 @@ class User(Model, db.Model):
 class Comment(Model, db.Model):
     __tablename__ = 'Comments'
 
-    project_id = db.Column(db.Integer, ForeignKey(Project.id))
+    project_id = db.Column(db.Integer, ForeignKey('Projects.id'))
     owner_id = db.Column(db.Integer, nullable=False)
     date_time = db.Column(db.DateTime, default=datetime.now())
     text = db.Column(db.String(100), nullable=False)

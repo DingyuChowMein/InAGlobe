@@ -18,7 +18,12 @@ def create_app():
     db.init_app(app)
     api = Api(app)
 
-    from .routes import get_projects, process_upload, get_users, create_user, add_comment, get_comments, approve_project
+    from .routes import (
+        get_projects, upload_project, approve_project,
+        get_users, create_user,
+        add_comment, get_comments,
+        get_dashboard_projects, select_project
+    )
     from .tokens import get_token, revoke_token
 
     # Override pre-flight request to fix CORS issue
@@ -36,20 +41,29 @@ def create_app():
             response, code = approve_project(request.get_json())
             return new_response(response, code)
 
+    class Dashboard(Resource, CORS):
+        def get(self):
+            response, code = get_dashboard_projects()
+            return new_response(response, code)
+
+        def post(self):
+            response, code = select_project(request.get_json())
+            return new_response(response, code)
+
     class Projects(Resource, CORS):
         def get(self):
             response, code = get_projects()
             return new_response(response, code)
 
         def post(self):
-            response, code = process_upload(request.get_json())
+            response, code = upload_project(request.get_json())
             # print("IN POST \n \n")
             # print(request.get_json())
             return new_response(response, code)
 
-        def patch(self):
-            response, code = approve_project(request.get_json())
-            return new_response(response, code)
+        # def patch(self):
+        #     response, code = approve_project(request.get_json())
+        #     return new_response(response, code)
 
     class Comments(Resource):
         def options(self, project_id):
@@ -92,5 +106,6 @@ def create_app():
     api.add_resource(Users, '/users/')
     api.add_resource(Tokens, '/users/tokens/')
     api.add_resource(Approvals, '/approve/')
+    api.add_resource(Dashboard, '/dashboard/')
 
     return app
