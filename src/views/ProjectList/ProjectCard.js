@@ -29,12 +29,12 @@ class ProjectCard extends Component {
     render() {
         const { classes } = this.props
         const {
-            title, 
-            organisation, 
-            status, 
-            shortDescription, 
+            title,
+            organisation,
+            status,
+            shortDescription,
             images } = this.props.data
-    
+
         return (
             <Card>
                 <img
@@ -48,19 +48,14 @@ class ProjectCard extends Component {
                     <h5 className={classes.h5}>{status}</h5>
                     <p>{shortDescription}</p>
                     <div className={classes.buttonDiv}>
-                        <RegularButton 
-                            color="primary" 
+                        <RegularButton
+                            color="primary"
                             className={classes.learnMoreButton}
                             onClick={this.openProposalPage}
                         >
                             Learn More
                         </RegularButton>
-                        <RegularButton 
-                            color="primary" 
-                            className={classes.selectProposalButton}
-                        >
-                            Select Proposal
-                        </RegularButton>
+
                     </div>
                 </CardBody>
             </Card>
