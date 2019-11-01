@@ -19,7 +19,8 @@ const hist = createBrowserHistory()
 const theme = createMuiTheme({
 	palette: {
 		primary: {
-			main: "#f494a2"
+			main: "#f494a2",
+			contrastText: "#fff"
 		},
 		secondary: {
 			main: "#90D8F7"

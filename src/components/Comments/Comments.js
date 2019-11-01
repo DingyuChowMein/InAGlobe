@@ -89,30 +89,26 @@ class Comments extends Component {
                         </div>
                     ))}
                 </List>
-                <Grid container spacing={3}>
-                    <Grid item xs={11}>
-                        <TextField
-                            id="text"
-                            className={classes.textField}
-                            placeholder="Enter your comment here..."
-                            margin="normal"
-                            variant="outlined"
-                            inputProps={{ 
-                                'aria-label': 'bare',
-                                onChange: this.handleFormChange
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={1}>
-                        <RegularButton 
-                            color="primary" 
-                            className={classes.postButton}
-                            onClick={this.post}
-                        >
-                            {"Post"}
-                        </RegularButton>
-                    </Grid>
-                </Grid>
+                <div className={classes.commentsPostDiv}>
+                    <TextField
+                        id="text"
+                        className={classes.commentsPostText}
+                        placeholder="Enter your comment here..."
+                        margin="normal"
+                        variant="outlined"
+                        inputProps={{ 
+                            'aria-label': 'bare',
+                            onChange: this.handleFormChange
+                        }}
+                    />
+                    <RegularButton 
+                        color="primary" 
+                        className={classes.commentsPostButton}
+                        onClick={this.post}
+                    >
+                        {"Post"}
+                    </RegularButton>
+                </div>
             </div>
         )
     }

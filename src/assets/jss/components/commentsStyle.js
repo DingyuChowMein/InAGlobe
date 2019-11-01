@@ -6,14 +6,21 @@ const styles = theme => ({
     inline: {
         display: 'inline',
     },
-    textField: {
+    commentsPostDiv: {
         width: "100%",
-        paddingLeft: "30px"
+        textAlign: "center"
     },
-    postButton: { 
-        textAlign: "center",
-        marginTop: "25px",
-        marginRight: "20px",
+    commentsPostText: {
+        width: "80%",
+        marginBottom: "20px"
+    },
+    commentsPostButton: {
+        width: "10%",
+        maxWidth: "100px",
+        marginLeft: "2%",
+        marginTop: "15px",
+        paddingTop: "20px",
+        paddingBottom: "20px"
     }
 })
 
