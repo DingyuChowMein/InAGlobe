@@ -18,12 +18,21 @@ class ProposalPage extends Component {
                 <div className={classes.container}>
                     <h2>{data.organisation}</h2>
                 </div>
-                <div className={classes.imagesContainer}>
-                    <img 
-                        alt={data.organisation} 
-                        src={data.organisationLogo}
-                        className={classes.projectImages}/>
-                </div>
+                {data.images.map(image => (
+                    <div className={classes.imagesContainer}>
+                        <img
+                            alt={data.title}
+                            src={config.s3Bucket+image}
+                            className={classes.projectImages}
+                        />
+                    </div>
+                ))}
+                {/*<div className={classes.imagesContainer}>*/}
+                    {/*<img */}
+                        {/*alt={data.organisation} */}
+                        {/*src={data.organisationLogo}*/}
+                        {/*className={classes.projectImages}/>*/}
+                {/*</div>*/}
                 <div className={classes.container}>
                     <h3>{data.status}</h3>
                 </div>
@@ -35,18 +44,10 @@ class ProposalPage extends Component {
                 </div>
                 <div className={classes.container}>
                     {data.documents.map(doc => (
-                        <a href={config.s3Bucket+doc}>doc</a>
+                        <a href={config.s3Bucket+doc}>{doc}{"\n"}</a>
                     ))}
                 </div>
-                {data.images.map(image => (
-                    <div className={classes.imagesContainer}>
-                        <img 
-                            alt={data.title}
-                            src={image} 
-                            className={classes.projectImages}
-                        />
-                    </div>
-                ))}
+
                 {children}
             </ResponsiveDrawer>
         )
