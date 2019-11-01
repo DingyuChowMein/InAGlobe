@@ -4,10 +4,14 @@ const styles = {
         textAlign: "center"
     },
     previewButton: {
-        marginRight: "10%"
+        width: "40%",
+        maxWidth: "300px",
+        marginRight: "5%"
     },
     submitButton: {
-        marginLeft: "10%"
+        width: "40%",
+        maxWidth: "300px",
+        marginLeft: "5%"
     }
 }
 

@@ -4,7 +4,6 @@ import {withRouter} from "react-router-dom"
 
 // Material UI libraries
 import Avatar from '@material-ui/core/Avatar'
-import Button from '@material-ui/core/Button'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import TextField from '@material-ui/core/TextField'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -18,6 +17,7 @@ import {withStyles} from '@material-ui/core'
 
 // Imports of different components and layouts in project
 import Copyright from '../../components/Copyright/Copyright'
+import RegularButton from "../../components/CustomButtons/RegularButton"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/signInSideStyle"
@@ -106,7 +106,7 @@ class SignInSide extends Component {
                                     control={<Checkbox value="remember" color="primary"/>}
                                     label="Remember me"
                                 />
-                                <Button
+                                <RegularButton
                                     // type="submit"
                                     fullWidth
                                     variant="contained"
@@ -115,7 +115,7 @@ class SignInSide extends Component {
                                     onClick={this.loginPressed}
                                 >
                                     Sign In
-                                </Button>
+                                </RegularButton>
                                 <Grid container>
                                     <Grid item>
                                         <Link href="/login/signup" variant="body2">
