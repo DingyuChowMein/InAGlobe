@@ -11,32 +11,32 @@ import "./assets/css/material-dashboard-react.css?=1.8.0"
 import * as serviceWorker from "./serviceWorker"
 import Authentication from "./layouts/Authentication/Authentication"
 import MainPage from './layouts/MainPage/MainPage'
+import { createMuiTheme } from '@material-ui/core'
+import { ThemeProvider } from '@material-ui/styles'
 
 const hist = createBrowserHistory()
 
-// function IndexPage() {
-// 	if (localStorage.getItem("userToken") === null) {
-// 		return (
-// 			<Router history={hist}>
-// 				<Switch>
-// 					<Route path="/login" component={Authentication} />
-// 					<Route path="/main" component={MainPage} />
-// 					<Redirect to="/login" />
-// 				</Switch>
-// 			</Router>
-// 		)
-// 	} else if ()
-	
-// }
+const theme = createMuiTheme({
+	palette: {
+		primary: {
+			main: "#f494a2"
+		},
+		secondary: {
+			main: "#90D8F7"
+		}
+	}
+})
 
 ReactDOM.render(
-	<Router history={hist}>
-		<Switch>
-			<Route path="/login" component={Authentication} />
-			<Route path="/main" component={MainPage} />
-			<Redirect to="/login" />
-		</Switch>
-	</Router>,
+	<ThemeProvider theme={theme}>
+		<Router history={hist}>
+			<Switch>
+				<Route path="/login" component={Authentication} />
+				<Route path="/main" component={MainPage} />
+				<Redirect to="/login" />
+			</Switch>
+		</Router>
+	</ThemeProvider>,
 	document.getElementById("root"),
 )
 

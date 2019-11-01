@@ -1,25 +1,28 @@
 // Main ReactJS libraries
 import React, { Component } from 'react'
 import ImageUploader from "react-images-upload"
+import { FilePond, registerPlugin } from "react-filepond"
+import FilePondPluginImagePreview from "filepond-plugin-image-preview"
 
 // Material UI libraries
 import { withStyles } from "@material-ui/core"
-import Button from "@material-ui/core/Button"
-import Description from "@material-ui/icons/Description"
 
 // Imports of different components in project
 import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer'
 import GridItem from "../../components/Grid/GridItem"
 import GridContainer from "../../components/Grid/GridContainer"
 import CustomInput from '../../components/CustomInput/CustomInput'
+import RegularButton from "../../components/CustomButtons/RegularButton"
 
 // Importing the ability to upload to AWS
 import upload from "../../s3"
+import config from "../../config";
+import { generateId } from "../../helpers/utils"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/addProposalStyle"
-import config from "../../config";
-import { generateId } from "../../helpers/utils"
+import "filepond/dist/filepond.min.css"
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css'
 
 
 class AddProposal extends Component {
@@ -40,10 +43,9 @@ class AddProposal extends Component {
             images: [],
         };
 
-        this.onDropPictures = this.onDropPictures.bind(this)
-        this.onDropDocuments = this.onDropDocuments.bind(this)
         this.handleFormChange = this.handleFormChange.bind(this);
         this.post = this.post.bind(this);
+        registerPlugin(FilePondPluginImagePreview)
     }
 
     handleFormChange(e) {
@@ -71,14 +73,6 @@ class AddProposal extends Component {
             this.props.history.push("/main/projectlist")
         })
             .catch((err) => {console.log(err)});
-    }
-
-    onDropPictures(pictureFiles) {
-        this.setState({['images']: pictureFiles});
-    }
-    
-    onDropDocuments(documentFiles) {
-        this.setState({['documents']: documentFiles});
     }
 
     render() {
@@ -147,40 +141,48 @@ class AddProposal extends Component {
                             extraLines={true}
                         />
                     </GridItem>
-                    <ImageUploader
-                        withIcon={true}
-                        buttonText='Choose images'
-                        onChange={this.onDropPictures}
-                        withPreview={true}
-                        imgExtension={['.jpg', '.jpeg', '.gif', '.png']}
-                        label="Max file size: 10mb. Accepted: .jpg/.gif/.png"
-                        maxFileSize={10485760}
-                    />
-                    <ImageUploader
-                        withIcon={true}
-                        buttonText='Choose documents'
-                        onChange={this.onDropDocuments}
-                        imgExtension={['.docx', '.doc', '.pdf', '.odf']}
-                        label="Max file size: 10mb. Accepted: .docx/.doc/.pdf/.odf"
-                        maxFileSize={10485760}
-                        withPreview={true}
-                        accept="accept/file/*"
-                        defaultImage={Description}
-                    />
+                    <GridItem xs={12} sm={12} md={12}>
+                        <ImageUploader
+                            withIcon={true}
+                            buttonText='Choose images'
+                            onChange={pictureFiles => {
+                                this.setState({
+                                    images: pictureFiles
+                                })
+                                console.log(this.state.images)
+                            }}
+                            withPreview={true}
+                            imgExtension={['.jpg', '.jpeg', '.gif', '.png']}
+                            label="Max file size: 10mb. Accepted: .jpg/.gif/.png"
+                            maxFileSize={10485760}
+                        />
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={12}>
+                        <FilePond 
+                            allowMultiple={true}
+                            files={this.state.documents}
+                            onupdatefiles={fileItems => {
+                                this.setState({
+                                    documents: fileItems.map(fileItem => fileItem.file)
+                                })
+                                console.log(this.state.documents)
+                            }}
+                        />
+                    </GridItem>
                     <div className={classes.cardButtonDiv}>
-                        <Button
+                        <RegularButton
                             color="primary"
                             className={classes.previewButton}
                         >
                             {"Preview"}
-                        </Button>
-                        <Button 
+                        </RegularButton>
+                        <RegularButton 
                             color="primary"
                             onClick={this.post}
                             className={classes.submitButton}
                         >
                             {"Submit"}
-                        </Button>
+                        </RegularButton>
                     </div>
                 </GridContainer>
             </ResponsiveDrawer>
