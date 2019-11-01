@@ -52,7 +52,13 @@ const styles = theme => ({
         position: "absolute",
         verticalAlign: "middle",
         border: "0"
-    }
-})
+    },
+	logoutButton: {
+        bottom: "0",
+        position: "fixed",
+        paddingLeft: "20px",
+        paddingBottom: "20px"
+	}
+});
 
 export default styles
