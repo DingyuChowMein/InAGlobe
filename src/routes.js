@@ -1,7 +1,7 @@
 // Importing reference to all the different views
 import SignInSide from './views/SignInSide/SignInSide'
 import SignUp from "./views/SignUp/SignUp"
-import HomePage from "./views/Home/HomePage"
+import Dashboard from "./views/Home/Dashboard"
 import ProjectList from "./views/ProjectList/ProjectList"
 import AddProposal from "./views/AddProposal/AddProposal"
 import ProposalMainPage from "./views/ProposalPage/ProposalMainPage"
@@ -55,7 +55,7 @@ const drawerRoutes = [
         path: "/home",
         name: "Dashboard",
         icon: Home,
-        component: HomePage,
+        component: Dashboard,
         layout: "/main",
         userLevel: 3
     },
