@@ -26,6 +26,14 @@ const styles = theme => ({
 	drawerPaper: {
 		width: drawerWidth,
 	},
+	iconColor: {
+		color: 'white'
+	},
+	permanentDrawer: {
+		color: 'white',
+		background: "#5E92A8",
+		width: drawerWidth,
+	},
 	content: {
 		flexGrow: 1,
 		padding: theme.spacing(3),
