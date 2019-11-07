@@ -1,4 +1,6 @@
+import pytest
 import sys
+
 sys.path.append('.')
 import json
 
@@ -26,6 +28,21 @@ def test_create_user(app, auth):
                 db.session.query(User).filter(User.email == 'email').first()
                 is not None
         )
+
+@pytest.mark.parametrize(('email', 'password', 'first_name', 'last_name', 'user_type', 'message', 'code'), (
+        ('email', 'password', 'name', 'surname', 'ADMIN', b'User created!', 201),
+        ('email', 'password', 'name', 'surname', 'HUMANITARIAN', b'User created!', 201),
+        ('email', 'password', 'name', 'surname', 'ACADEMIC', b'User created!', 201),
+        ('', 'password', 'name', 'surname', 'STUDENT', b'No email provided!', 400),
+        ('email', '', 'name', 'surname', 'STUDENT', b'No password provided!', 400),
+        ('email', 'password', '', 'surname', 'STUDENT', b'No name provided!', 400),
+        ('email', 'password', 'name', '', 'STUDENT', b'No surname provided!', 400),
+        ('email', 'password', 'name', 'surname', '', b'User type not specified!', 400),
+))
+def test_bad_create_user(auth, email, password, first_name, last_name, user_type, message, code):
+    rv = auth.create_user(email, first_name, last_name, password, user_type)
+    assert code == rv.status_code
+    assert message in rv.data
 
 
 ########################################################################################################################
@@ -69,16 +86,16 @@ def test_login_multiple_users(auth):
     assert b'one' not in rv.data
     assert b'two' not in rv.data
 
-def test_login_invalid_password(auth):
-    auth.create_user()
-    rv = auth.login('email', 'wrong password')
-    assert rv.status_code == 401
-    assert b'Incorrect password!' in rv.data
 
-def test_login_unregistered_user(auth):
-    rv = auth.login('email', 'password')
-    assert rv.status_code == 404
-    assert b'User does not exist!' in rv.data
+@pytest.mark.parametrize(('email', 'password', 'message', 'code'), (
+        ('email', 'wrongpassword', b'Incorrect password!', 401),
+        ('wrong_email', 'password', b'User does not exist!', 404),
+))
+def test_login(auth, email, password, message, code):
+    auth.create_user()
+    rv = auth.login(email, password)
+    assert rv.status_code == code
+    assert message in rv.data
 
 
 ########################################################################################################################
@@ -96,4 +113,3 @@ def test_logout(app, auth):
     with app.app_context():
         # Check that the token has expired
         assert User.check_token(token) is None
-
