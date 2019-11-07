@@ -2,16 +2,15 @@ import React, { Component } from "react"
 
 import { withStyles } from "@material-ui/styles"
 
-import ResponsiveDrawer from "../../components/ResponsiveDrawer/ResponsiveDrawer"
-
 import styles from "../../assets/jss/views/proposalPageStyle"
 import config from "../../config";
 
 class ProposalPage extends Component {
     render() {
-        const { classes, data, children } = this.props
+        const { classes, data, children, isPreview } = this.props
+
         return (
-            <ResponsiveDrawer name={"Proposal Page"}>
+            <div>
                 <div className={classes.container}>
                     <h1>{data.title}</h1>
                 </div>
@@ -22,17 +21,11 @@ class ProposalPage extends Component {
                     <div className={classes.imagesContainer}>
                         <img
                             alt={data.title}
-                            src={config.s3Bucket+image}
+                            src={isPreview ? URL.createObjectURL(image) : config.s3Bucket + image}
                             className={classes.projectImages}
                         />
                     </div>
                 ))}
-                {/*<div className={classes.imagesContainer}>*/}
-                    {/*<img */}
-                        {/*alt={data.organisation} */}
-                        {/*src={data.organisationLogo}*/}
-                        {/*className={classes.projectImages}/>*/}
-                {/*</div>*/}
                 <div className={classes.container}>
                     <h3>{data.status}</h3>
                 </div>
@@ -44,12 +37,14 @@ class ProposalPage extends Component {
                 </div>
                 <div className={classes.container}>
                     {data.documents.map(doc => (
-                        <a href={config.s3Bucket+doc}>{doc}{"\n"}</a>
+                        <a href={isPreview ? URL.createObjectURL(doc) : config.s3Bucket + doc}>
+                            {isPreview ? doc["name"] : doc}{"\n"}
+                        </a>
                     ))}
                 </div>
 
                 {children}
-            </ResponsiveDrawer>
+            </div>
         )
     }
 }

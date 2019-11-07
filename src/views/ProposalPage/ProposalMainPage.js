@@ -14,6 +14,7 @@ import styles from "../../assets/jss/views/proposalMainPageStyle"
 import Comments from '../../components/Comments/Comments'
 import config from "../../config";
 import { commentsService } from "../../services/commentsService";
+import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer'
 
 class ProposalMainPage extends Component {
 
@@ -92,20 +93,22 @@ class ProposalMainPage extends Component {
         const { classes, match } = this.props
         const proposalData = JSON.parse(localStorage.getItem(`proposalPage/${match.params.id}`))
         return (
-            <ProposalPage {...this.props} data={proposalData}>
-                <div className={classes.buttonsDiv}>
-                        <RegularButton 
-                            color="primary"
-                            onClick={this.actionButtonClicked}
-                            disabled={this.state.buttonDisabled}
-                        >
-                            {this.state.buttonMessage}
-                        </RegularButton>
-                </div>
-                <div className={classes.commentsDiv}>
-                    <Comments comments={this.state.comments} projectId={this.state.projectData.id}/>
-                </div>
-            </ProposalPage>
+            <ResponsiveDrawer name={"Project Page"}>
+                <ProposalPage {...this.props} data={proposalData} isPreview={false}>
+                    <div className={classes.buttonsDiv}>
+                            <RegularButton 
+                                color="primary"
+                                onClick={this.actionButtonClicked}
+                                disabled={this.state.buttonDisabled}
+                            >
+                                {this.state.buttonMessage}
+                            </RegularButton>
+                    </div>
+                    <div className={classes.commentsDiv}>
+                        <Comments comments={this.state.comments} projectId={this.state.projectData.id}/>
+                    </div>
+                </ProposalPage>
+            </ResponsiveDrawer>
         )
     }
 }
