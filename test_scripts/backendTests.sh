@@ -1,6 +1,6 @@
 cd backend/
-coverage run --source src/ tests/test_backend.py
+coverage run --source src/ -m pytest
 check=$?
-coverage report -m
+coverage report
 cd ..
 exit $check
