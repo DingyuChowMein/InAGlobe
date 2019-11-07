@@ -24,10 +24,9 @@ def client():
     app = create_app()
 
     #create tables and yield client
-    with app.test_client() as client:
-        with app.app_context():
-            db.create_all()
-        yield client
+    with app.app_context():
+        db.create_all()
+    yield app.test_client()
 
 
     # teardown db
@@ -57,14 +56,3 @@ def login(client, email, password):
         'Authorization': 'Basic ' + credentials
     })
 
-def test_create_signin(client):
-    rv = create_user(client, 'email', 'name', 'surname', 'password', 'ADMIN')
-    print(rv.data)
-    print(rv.status_code)
-    assert b'User created!' in rv.data
-    assert 201 == rv.status_code
-    ru = login(client, 'email', 'password')
-    print(ru.data)
-    print(ru.status_code)
-    assert 200 == ru.status_code
-    assert b'token' in ru.data
