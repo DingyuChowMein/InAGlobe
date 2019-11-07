@@ -1,3 +1,11 @@
+// Importing icons from Drawer
+import Person from '@material-ui/icons/Person'
+import PersonAdd from "@material-ui/icons/PersonAdd"
+import Home from "@material-ui/icons/Home"
+import List from "@material-ui/icons/List"
+import Subject from "@material-ui/icons/Subject"
+import PersonOutline from '@material-ui/icons/PersonOutline'
+
 // Importing reference to all the different views
 import SignInSide from './views/SignInSide/SignInSide'
 import SignUp from "./views/SignUp/SignUp"
@@ -6,13 +14,7 @@ import ProjectList from "./views/ProjectList/ProjectList"
 import AddProposal from "./views/AddProposal/AddProposal"
 import ProposalMainPage from "./views/ProposalPage/ProposalMainPage"
 import ProposalPreviewPage from './views/ProposalPage/ProposalPreviewPage'
-
-// Importing icons from Drawer
-import Person from '@material-ui/icons/Person'
-import PersonAdd from "@material-ui/icons/PersonAdd"
-import Home from "@material-ui/icons/Home"
-import List from "@material-ui/icons/List"
-import Subject from "@material-ui/icons/Subject"
+import Profile from './views/UserProfile/Profile'
 
 const loginRoutes = [
     {
@@ -74,6 +76,14 @@ const drawerRoutes = [
         component: AddProposal,
         layout: "/main",
         userLevel: 2
+    },
+    {
+        path: "/userprofile",
+        name: "User Profile",
+        icon: PersonOutline,
+        component: Profile,
+        layout: "/main",
+        userLevel: 3
     }
 ]
 
