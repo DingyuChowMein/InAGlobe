@@ -56,3 +56,7 @@ def login(client, email, password):
         'Authorization': 'Basic ' + credentials
     })
 
+def logout(client, token):
+    return client.delete('/users/tokens/', headers={
+        'Authorization': 'Bearer ' + token
+    })

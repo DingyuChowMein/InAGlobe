@@ -21,4 +21,4 @@ def get_token():
 def revoke_token():
     g.current_user.revoke_token()
     db.session.commit()
-    return {'message': 'user removed'}, 200
+    return {'message': 'User removed!'}, 200

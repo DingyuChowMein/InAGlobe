@@ -10,28 +10,6 @@ from sqlalchemy import or_
 
 @token_auth.login_required
 def get_dashboard_projects():
-    # print(user_id.projects)
-    # projects = user_.query.with_parent(User.id == user_id.get_id()).all()
-    # projects = Project.query.join(user_id.projects)
-    # print(projects)
-    # projects = [Project.query.filter(Project.id == project_id).first() for project_id in user_id.projects]
-    # projects = []
-    # for project_id in user_id.projects:
-    #     print(project_id)
-    #     p = Project.query.filter(Project.id == project_id).first()
-    #     print(p)
-    #     projects.append(p)
-    # project_ids = UserProjects.db.query.filter(UserProjects.id == user_id).all()
-    # projects = []
-    # for project_id in project_ids:
-    #     project = Project.query.filter(Project.id == project_id).first()
-    #     projects.append(project)
-
-    # projects = Project.query.filter(Project.id.in_(user_id.projects)).all()
-
-    # projects = Project.query.has(Project.id.in_(user_id.projects)).all()
-    # projects = User.query.filter_by(id=user_id.id).first().projects
-    #     # print(projects)
     return get_projects_helper(g.current_user.projects)
 
 
