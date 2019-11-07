@@ -91,7 +91,7 @@ def test_login_multiple_users(auth):
         ('email', 'wrongpassword', b'Incorrect password!', 401),
         ('wrong_email', 'password', b'User does not exist!', 404),
 ))
-def test_login(auth, email, password, message, code):
+def test_bad_login(auth, email, password, message, code):
     auth.create_user()
     rv = auth.login(email, password)
     assert rv.status_code == code
