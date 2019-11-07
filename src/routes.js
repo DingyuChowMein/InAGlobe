@@ -53,7 +53,7 @@ const proposalRoutes = [
 const drawerRoutes = [
     {
         path: "/home",
-        name: "Home Page",
+        name: "Dashboard",
         icon: Home,
         component: HomePage,
         layout: "/main",

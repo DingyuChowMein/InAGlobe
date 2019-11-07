@@ -38,7 +38,7 @@ class ProposalPage extends Component {
                 <div className={classes.container}>
                     {data.documents.map(doc => (
                         <a href={isPreview ? URL.createObjectURL(doc) : config.s3Bucket + doc}>
-                            {isPreview ? doc["name"] : doc}{"\n"}
+                            {isPreview ? doc["name"] : /[^/]*$/.exec(doc)[0]}{"\n"}
                         </a>
                     ))}
                 </div>

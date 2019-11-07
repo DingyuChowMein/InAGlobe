@@ -27,6 +27,7 @@ import logo from '../../assets/img/logo.png'
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/components/responsiveDrawerStyle"
+import RegularButton from "../CustomButtons/RegularButton";
 
 class ResponsiveDrawer extends Component {
 
@@ -82,6 +83,9 @@ class ResponsiveDrawer extends Component {
                     ))}
                 </List>
                 <Divider />
+                <div className={classes.logoutButton}>
+                    <RegularButton onClick={() => this.props.history.push("/login")} color="primary">LogOut</RegularButton>
+                </div>
             </div>
         )
 
@@ -102,6 +106,7 @@ class ResponsiveDrawer extends Component {
                         <Typography variant="h6" noWrap>
                             {name}
                         </Typography>
+
                     </Toolbar>
                 </AppBar>
                 <nav className={classes.drawer} aria-label="mailbox folders">
@@ -136,6 +141,8 @@ class ResponsiveDrawer extends Component {
                         </Drawer>
                     </Hidden>
                 </nav>
+
+
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
                     {this.props.children}

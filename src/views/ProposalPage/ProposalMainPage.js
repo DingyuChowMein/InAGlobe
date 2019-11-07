@@ -73,6 +73,25 @@ class ProposalMainPage extends Component {
                 .catch((err) => {
                     console.log(err)
                 });
+        } else if (this.state.userType === "2" || this.state.userType === "3") {
+            const token = localStorage.getItem('token');
+            const bearer = 'Bearer ' + token;
+            console.log(this.state.projectData)
+
+                fetch(config.apiUrl + '/dashboard/', {
+                    method: 'post',
+                    headers: {
+                        'Authorization': bearer,
+                        'Content-type': 'application/json'
+                    },
+                    body: JSON.stringify({"projectId": this.state.projectData.id}),
+                }).then((response) => {
+                    // Redirect here based on response
+                    console.log(response)
+                })
+                    .catch((err) => {
+                        console.log(err)
+                    });
         }
     }
 
