@@ -1,4 +1,4 @@
-from flask import g, request, abort
+from flask import g, abort
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from functools import wraps
 
@@ -53,22 +53,4 @@ def no_user_error():
 
 def permissions_error_handler():
     return abort(403, "Insufficient permissions!")
-
-# decorator
-def requires_role(type):
-    def decorator(func):
-        @wraps(func)
-        def decorated(*args, **kwargs):
-            token = request.headers["Authorization"]
-            print(token)
-            user = User.query.filter_by(token=token).first()
-            if user is None:
-                return no_user_error()
-
-            if user.user_type == type:
-                return func(*args, **kwargs)
-            else:
-                return permissions_error_handler()
-        return decorated
-    return decorator
 
