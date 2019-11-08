@@ -1,5 +1,5 @@
 cd backend/
-coverage run --source src/ -m pytest
+coverage run --source src/ -m pytest -v
 check=$?
 coverage report
 cd ..
