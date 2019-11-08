@@ -1,12 +1,15 @@
-from flask import g
+from flask import g, url_for, render_template
 from . import db
 from .auth import token_auth, permission_required
 from .models import Project, File, User, Comment, USER_TYPE, FILE_TYPE, PROJECT_STATUS
+from .tokens import generate_confirmation_token, confirm_token
+from .emails import send_email
 from collections import defaultdict
 from sqlalchemy import or_
+from datetime import datetime
 
 
-########################################################################################################################
+###############################################################################
 
 @token_auth.login_required
 def get_dashboard_projects():
@@ -46,7 +49,7 @@ def select_project(data):
     db.session.commit()
     return {'message': 'Project selected!'}, 201
 
-########################################################################################################################
+###############################################################################
 
 @token_auth.login_required
 def get_projects():
@@ -109,7 +112,7 @@ def approve_project(data):
 
     return {"message": message}, 200
 
-########################################################################################################################
+###############################################################################
 
 @token_auth.login_required
 @permission_required(USER_TYPE['ADMIN'])
@@ -124,13 +127,37 @@ def create_user(data):
         email=data['email'],
         first_name=data['firstName'],
         last_name=data['lastName'],
-        user_type=USER_TYPE[data['userType']]
+        user_type=USER_TYPE[data['userType']],
+        confirmed=False
     )
     new_user.hash_password(data['password'])
     new_user.save()
+
+    token = generate_confirmation_token(new_user.email)
+    confirm_url = url_for('new_user.confirm_email', token=token, _external=True)
+    html = render_template('email_templates/confirm_email.html', confirm_url=confirm_url)
+    subject = "Please confirm your email for Inaglobe"
+    send_email(new_user.email, subject, html)
+
     return {'message': 'User created!'}, 201
 
-########################################################################################################################
+def confirm_email(token):
+    try:
+        email = confirm_token(token)
+    except:
+        return {'message': 'The confirmation link is invalid or has expired'}, 404
+
+    user = User.query.filter_by(email=email).first_or_404()
+    if user.confirmed:
+        return {'message': 'The confirmation link is invalid or has expired'}, 200
+    else:
+        user.confirmed = True
+        user.confirmed_on = datetime.now()
+        user.save()
+    return {'message': 'You have confirmed your account!'}, 200
+
+
+###############################################################################
 
 @token_auth.login_required
 def add_comment(data, project_id):
@@ -160,7 +187,7 @@ def get_comments(project_id):
     } for comment in project_comments]
     return {"comments": comments_json}, 200
 
-########################################################################################################################
+###############################################################################
 
 def get_projects_helper(projects):
     files = File.query.all()

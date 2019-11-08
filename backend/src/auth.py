@@ -12,7 +12,7 @@ token_auth = HTTPTokenAuth()
 def verify_password(email, password):
     # email unique so there can only be one
     user = User.query.filter_by(email=email).first()
-    if user is None:
+    if user is None or not user.confirmed:
         return False
     g.current_user = user
     return user.verify_password(password)
