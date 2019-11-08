@@ -38,6 +38,7 @@ def app():
         db.session.remove()
         db.drop_all()
 
+
 @pytest.fixture
 def client(app):
     return app.test_client()
@@ -56,7 +57,7 @@ class AuthActions(object):
             'password': password
         })
 
-    def login(self, email, password):
+    def login(self, email='email', password='password'):
         kv = '{0}:{1}'.format(email, password)
         credentials = b64encode(kv.encode('utf-8')).decode('utf-8')
         return self.client.get('/users/tokens/', headers={
@@ -67,6 +68,7 @@ class AuthActions(object):
         return self.client.delete('/users/tokens/', headers={
             'Authorization': 'Bearer ' + token
         })
+
 
 @pytest.fixture
 def auth(client):

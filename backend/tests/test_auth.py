@@ -113,3 +113,5 @@ def test_logout(app, auth):
     with app.app_context():
         # Check that the token has expired
         assert User.check_token(token) is None
+
+# TODO: add more logout tests
