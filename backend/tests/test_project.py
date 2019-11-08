@@ -13,9 +13,9 @@ class PermissionHandler(object):
     def __init__(self, auth):
         self.auth = auth
 
-    def set(self, permission):
-        self.auth.create_user(user_type=permission)
-        rv = self.auth.login('email', 'password')
+    def set(self, permission, email='email'):
+        self.auth.create_user(email=email, user_type=permission)
+        rv = self.auth.login(email=email)
         return json.loads(rv.data.decode('utf-8')).get('token')
 
 
@@ -119,15 +119,28 @@ def test_bad_project_upload(app, client, permission, file, user_type, message, c
 ########################################################################################################################
 # Get projects tests
 
-@pytest.mark.parametrize(('user_type', 'message', 'code'), (
-        ('STUDENT', b'projects', 200),
+# TODO: add more test cases for the get project api
+@pytest.mark.parametrize(('files', 'user_type', 'expected', 'code'), (
+        (['no_files.json'], 'ADMIN', [b'no files'], 200),
+        (['no_files.json', 'many_files.json'], 'ADMIN', [b'many documents many images', b'no files'], 200),
+        (['no_files.json', 'many_files.json'], 'STUDENT', [], 200),
 ))
-def test_get_project(client, permission, user_type, message, code):
+def test_get_project(client, permission, files, user_type, expected, code):
+    # Load up database with projects
+    token = permission.set('HUMANITARIAN', email='humanitarian@human.org')
+    for file in files:
+        json_file = load_json_file(file, 'project_test_files')
+        upload_project(client, token, json_file)
+
     token = permission.set(user_type)
     rv = get_projects(client, token)
     assert code == rv.status_code
-    assert message in rv.data
 
+    # Check that the response data has exactly the number of project files we expected on return
+    response_projects = json.loads(rv.data.decode('utf-8')).get('projects')
+    assert len(expected) == len(response_projects)
+    # and that these projects match the input
+    for message in expected:
+        assert message in rv.data
 
-
-
+# TODO: create tests for project approval and dashboard
