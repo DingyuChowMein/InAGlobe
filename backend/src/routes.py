@@ -1,7 +1,7 @@
 from flask import g
 from . import db
 from .auth import token_auth, permission_required
-from .models import Project, File, User, Comment, USER_TYPE, FILE_TYPE, PROJECT_STATUS
+from .models import Project, File, User, Comment, USER_TYPE, FILE_TYPE, PROJECT_STATUS, user_project_joining_table
 from collections import defaultdict
 from sqlalchemy import or_
 
@@ -32,19 +32,18 @@ def get_dashboard_projects():
     # projects = Project.query.has(Project.id.in_(user_id.projects)).all()
     # projects = User.query.filter_by(id=user_id.id).first().projects
     #     # print(projects)
-    return get_projects_helper(g.current_user.projects)
+    return get_projects_helper(g.current_user.projects, [])
 
 
 @token_auth.login_required
-@permission_required(USER_TYPE['STUDENT'])
 def select_project(data):
     project = Project.query.filter(Project.id == data['projectId']).first()
 
     g.current_user.projects.append(project)
-    # project.users.append(g.current_user)
 
     db.session.commit()
-    return {'message': 'Project selected!'}, 201
+    return {'message': 'Project selection requested!'}, 201
+
 
 ########################################################################################################################
 
@@ -52,6 +51,7 @@ def select_project(data):
 def get_projects():
     user_id = g.current_user.get_id()
     user_type = g.current_user.get_permissions()
+    join_relationship = []
 
     if user_type == USER_TYPE['ADMIN']:
         projects = Project.query.all()
@@ -62,8 +62,10 @@ def get_projects():
         )).all()
     else:
         projects = Project.query.filter(Project.status == PROJECT_STATUS['APPROVED']).all()
+        join_relationship = db.session.query(user_project_joining_table) \
+            .filter(user_project_joining_table.columns.user_id == user_id)
 
-    return get_projects_helper(projects)
+    return get_projects_helper(projects, join_relationship)
 
 
 @token_auth.login_required
@@ -88,7 +90,7 @@ def upload_project(data):
             file = File(project_id=project.id, link=link, type=FILE_TYPE['IMAGE'])
             file.save()
 
-    #Create dashboard link for humanitarians
+    # Create dashboard link for humanitarians
     g.current_user.projects.append(project)
     db.session.commit()
 
@@ -108,6 +110,7 @@ def approve_project(data):
     project.save()
 
     return {"message": message}, 200
+
 
 ########################################################################################################################
 
@@ -129,6 +132,7 @@ def create_user(data):
     new_user.hash_password(data['password'])
     new_user.save()
     return {'message': 'User created!'}, 201
+
 
 ########################################################################################################################
 
@@ -160,19 +164,27 @@ def get_comments(project_id):
     } for comment in project_comments]
     return {"comments": comments_json}, 200
 
+
 ########################################################################################################################
 
-def get_projects_helper(projects):
+def get_projects_helper(projects, join_relationship):
     files = File.query.all()
-
 
     documents_map = defaultdict(list)
     images_map = defaultdict(list)
+    joined_projects = {}
+
     for f in files:
         if f.type == FILE_TYPE['DOCUMENT']:
             documents_map[f.project_id].append(f.link)
         elif f.type == FILE_TYPE['IMAGE']:
             images_map[f.project_id].append(f.link)
+
+    for r in join_relationship:
+        if r.approved == 1:
+            joined_projects[r.project_id] = 2
+        else:
+            joined_projects[r.project_id] = 1
 
     projects_json = [{
         "id": project.id,
@@ -185,7 +197,9 @@ def get_projects_helper(projects):
         "organisationName": project.organisation_name,
         "organisationLogo": project.organisation_logo,
         "status": project.status,
+        # 0 = not requested, 1 = needs approval, 2 = approved
+        "joined": 0 if project.id not in joined_projects else joined_projects[project.id],
         "images": images_map[project.id],
-    }for project in projects]
+    } for project in projects]
 
     return {'projects': projects_json}, 200

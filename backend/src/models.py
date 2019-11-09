@@ -52,7 +52,8 @@ class Model:
 
 user_project_joining_table = db.Table('UserProjects', db.Model.metadata,
     db.Column('user_id', db.Integer, ForeignKey('Users.id')),
-    db.Column('project_id', db.Integer, ForeignKey('Projects.id'))
+    db.Column('project_id', db.Integer, ForeignKey('Projects.id')),
+    db.Column('approved', db.Integer, default=0)
 )
 
 
