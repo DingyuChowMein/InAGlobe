@@ -7,10 +7,12 @@ from flask_sqlalchemy import SQLAlchemy
 # initialise sql-alchemy
 db = SQLAlchemy()
 
+
 def new_response(json, status):
     response = make_response(json, status)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
+
 
 def create_app():
     app = Flask(__name__)
@@ -22,7 +24,8 @@ def create_app():
         get_projects, upload_project, approve_project,
         get_users, create_user,
         add_comment, get_comments,
-        get_dashboard_projects, select_project
+        get_dashboard_projects, select_project,
+        get_joining_requests, approve_project_join,
     )
     from .tokens import get_token, revoke_token
 
@@ -39,6 +42,15 @@ def create_app():
     class Approvals(Resource, CORS):
         def post(self):
             response, code = approve_project(request.get_json())
+            return new_response(response, code)
+
+    class JoiningApproval(Resource, CORS):
+        def get(self):
+            response, code = get_joining_requests()
+            return new_response(response, code)
+
+        def post(self):
+            response, code = approve_project_join(request.get_json())
             return new_response(response, code)
 
     class Dashboard(Resource, CORS):
@@ -72,7 +84,7 @@ def create_app():
             response.headers.add('Access-Control-Allow-Headers', "*")
             response.headers.add('Access-Control-Allow-Methods', "*")
             return response
-        
+
         def get(self, project_id):
             response, code = get_comments(project_id)
             return new_response(response, code)
@@ -99,13 +111,13 @@ def create_app():
             response, code = revoke_token()
             return new_response(response, code)
 
-
     # Route classes to paths
     api.add_resource(Projects, '/projects/')
     api.add_resource(Comments, '/comments/', '/comments/<int:project_id>/')
     api.add_resource(Users, '/users/')
     api.add_resource(Tokens, '/users/tokens/')
     api.add_resource(Approvals, '/approve/')
+    api.add_resource(JoiningApproval, '/joiningApprove/')
     api.add_resource(Dashboard, '/dashboard/')
 
     return app

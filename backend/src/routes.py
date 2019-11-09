@@ -3,7 +3,7 @@ from . import db
 from .auth import token_auth, permission_required
 from .models import Project, File, User, Comment, USER_TYPE, FILE_TYPE, PROJECT_STATUS, user_project_joining_table
 from collections import defaultdict
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 
 
 ########################################################################################################################
@@ -110,6 +110,38 @@ def approve_project(data):
     project.save()
 
     return {"message": message}, 200
+
+
+@token_auth.login_required
+@permission_required(USER_TYPE['ADMIN'])
+def approve_project_join(data):
+    request = db.session.query(user_project_joining_table).filter(
+        and_(user_project_joining_table.user_id == data['userId'],
+             user_project_joining_table.project_id == data['projectId'])).first()
+
+    if request.approved == 0:
+        request.approved = 1
+        message = "Request to join approved"
+    else:
+        request.approved = 0
+        message = "Request to join disapproved"
+
+    request.save()
+
+    return {"message": message}, 200
+
+
+@token_auth.login_required
+@permission_required(USER_TYPE['ADMIN'])
+def get_joining_requests():
+    requests = db.session.query(user_project_joining_table).filter_by(approved=0).all()
+
+    requests_json = [{
+        "project_id": request.project_id,
+        "user_id": request.project_id,
+    } for request in requests]
+
+    return {"requests": requests_json}, 200
 
 
 ########################################################################################################################

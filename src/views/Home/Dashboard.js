@@ -14,16 +14,28 @@ import GridContainer from "../../components/Grid/GridContainer"
 import GridItem from "../../components/Grid/GridItem"
 import ProjectCard from "../ProjectList/ProjectCard"
 import config from '../../config'
+import Paper from "@material-ui/core/Paper";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import Card from "../../components/Card/Card";
 
 class Dashboard extends Component {
     constructor(props){
         super(props);
 
+        this.joinRequestClicked = this.joinRequestClicked.bind(this);
+
         this.state = {
             user: {},
             projects: [],
+            requests: [],
         }
 
+    }
+
+    joinRequestClicked(event) {
+        console.log(event.target)
+        alert("Request approved." + event.target.value);
     }
 
     componentDidMount() {
@@ -49,11 +61,27 @@ class Dashboard extends Component {
                 })
             })
             .catch(console.log)
+
+        fetch(config.apiUrl + '/joiningApprove/', {
+            method: 'get',
+            headers: {
+                'Authorization': bearer
+            },
+        })
+            .then(res => res.json())
+            .then(data => {
+                this.setState({
+                    requests: data.requests
+                })
+                console.log(data.requests)
+            })
+            .catch(console.log)
     }
 
     render() {
       const { classes } = this.props
         return (
+            <>
             <ResponsiveDrawer name={"Dashboard"}>
               <div className={classes.root}>
                   <GridContainer spacing={2}>
@@ -65,6 +93,19 @@ class Dashboard extends Component {
                   </GridContainer>
               </div>
             </ResponsiveDrawer>
+            <Paper style={{maxHeight: 200, overflow: 'auto'}}>
+                 <List>
+                    {this.state.requests.map((request, i) => (
+                        <Card containerStyle={{width:"100%"}}>
+                            <ListItem selectable="true" onClick={this.joinRequestClicked}>
+                                value={i}
+                                primaryText={request.project_id + " " + request.user_id}
+                            </ListItem>
+                        </Card>
+                    ))}
+                </List>
+            </Paper>
+            </>
         )
     }
 }

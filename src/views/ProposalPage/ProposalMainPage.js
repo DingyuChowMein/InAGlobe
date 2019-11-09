@@ -59,7 +59,6 @@ class ProposalMainPage extends Component {
                 projectData: new_project_data,
                 buttonMessage: this.getButtonMessage(this.state.userType, new_project_data.status,  new_project_data.joined)
             });
-
             fetch(config.apiUrl + '/approve/', {
                 method: 'post',
                 headers: {
@@ -86,7 +85,7 @@ class ProposalMainPage extends Component {
                 buttonDisabled: true,
                 buttonMessage: this.getButtonMessage(this.state.userType, new_project_data.status,  new_project_data.joined)
             });
-
+            console.log(`proposalPage/${new_project_data.id}`);
                 fetch(config.apiUrl + '/dashboard/', {
                     method: 'post',
                     headers: {
