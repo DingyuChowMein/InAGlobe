@@ -23,7 +23,7 @@ class Config(object):
     MAIL_PASSWORD = os.environ['APP_MAIL_PASSWORD']
 
     # mail accounts
-    MAIL_DEFAULT_SENDER = 'from@example.com'
+    MAIL_DEFAULT_SENDER = 'inaglobetest@gmail.com'
 
 
 class ProductionConfig(Config):

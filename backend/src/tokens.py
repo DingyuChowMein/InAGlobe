@@ -3,6 +3,7 @@ from itsdangerous import URLSafeTimedSerializer
 
 from . import db
 from .auth import basic_auth, token_auth
+import os
 
 
 @basic_auth.login_required
@@ -26,8 +27,8 @@ def revoke_token():
 
 
 def generate_confirmation_token(email):
-    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
-    return serializer.dumps(email, salt=app.config['SECURITY_PASSWORD_SALT'])
+    serializer = URLSafeTimedSerializer(os.environ['SECRET_KEY'])
+    return serializer.dumps(email, salt=os.environ['SECURITY_PASSWORD_SALT'])
 
 def confirm_token(token, expiration=3600):
     serializer = URLSafeTimedSerializer(os.environ['SECRET_KEY'])
