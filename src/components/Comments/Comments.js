@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 
-import { withStyles, Grid } from "@material-ui/core"
+import { withStyles } from "@material-ui/core"
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import Divider from '@material-ui/core/Divider'

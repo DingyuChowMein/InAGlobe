@@ -1,4 +1,8 @@
 const styles = {
+    cardDiv: {
+        marginTop: "10px",
+        marginBottom: "10px"
+    },
     cardImgTop: {
         width: "100%",
         height: "180px",
@@ -25,15 +29,18 @@ const styles = {
         borderRadius: "calc(.25rem - 1px)"
     },
     learnMoreButton: {
-        width: "auto",
+        width: "25%",
         marginRight: "10px",
-        minWidth: "40%"
+        marginLeft:"10px",
+        minWidth: "100px",
+        maxWidth: "200px"
     },
     selectProposalButton: {
         width: "auto",
         minWidth: "40%"
     },
-    buttonDiv: { 
+    buttonDiv: {
+        width: "100%",
         textAlign: "center" 
     }
 }

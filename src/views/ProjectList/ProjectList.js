@@ -11,7 +11,7 @@ import GridItem from "../../components/Grid/GridItem"
 import ProjectCard from "./ProjectCard"
 
 // Importing example card data
-import cardData from "../../assets/data/ProjectData"
+// import cardData from "../../assets/data/ProjectData"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/projectListStyle"

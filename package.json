@@ -1,6 +1,6 @@
 {
 	"name": "inaglobe",
-	"version": "0.2.0",
+	"version": "0.2.4",
 	"private": true,
 	"dependencies": {
 		"@material-ui/core": "latest",
@@ -16,6 +16,7 @@
 		"react": "latest",
 		"react-dom": "latest",
 		"react-filepond": "^7.0.1",
+		"react-horizontal-scrolling-menu": "^0.7.3",
 		"react-popupbox": "latest",
 		"react-router-dom": "latest",
 		"react-scripts": "latest",
