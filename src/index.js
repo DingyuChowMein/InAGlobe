@@ -2,7 +2,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { createBrowserHistory } from "history"
-import { Router, Route, Switch, Redirect } from "react-router-dom"
+import { Router, Route, Switch, Redirect, IndexRoute } from "react-router-dom"
 
 // Importing and applying a global stylesheet
 import "./assets/css/material-dashboard-react.css?=1.8.0"
@@ -13,8 +13,9 @@ import Authentication from "./layouts/Authentication/Authentication"
 import MainPage from './layouts/MainPage/MainPage'
 import { createMuiTheme } from '@material-ui/core'
 import { ThemeProvider } from '@material-ui/styles'
+import {PrivateRoute} from "./helpers/PrivateRoute";
 
-const hist = createBrowserHistory()
+const hist = createBrowserHistory();
 
 const theme = createMuiTheme({
 	palette: {
@@ -33,8 +34,9 @@ ReactDOM.render(
 		<Router history={hist}>
 			<Switch>
 				<Route path="/login" component={Authentication} />
-				<Route path="/main" component={MainPage} />
-				<Redirect to="/login" />
+                <Route path="/confirm" component={Authentication} />
+				<PrivateRoute path="/main" component={MainPage} />
+                <Redirect to="/login" />
 			</Switch>
 		</Router>
 	</ThemeProvider>,

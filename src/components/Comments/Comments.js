@@ -1,6 +1,6 @@
-import React, { Component } from "react"
+import React, {Component} from "react"
 
-import { withStyles, Grid } from "@material-ui/core"
+import {withStyles, Grid} from "@material-ui/core"
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import Divider from '@material-ui/core/Divider'
@@ -15,6 +15,7 @@ import styles from "../../assets/jss/components/commentsStyle"
 
 // import comments from "../../assets/data/CommentData"
 import RegularButton from "../CustomButtons/RegularButton"
+import {commentsService} from "../../services/commentsService";
 
 class Comments extends Component {
 
@@ -37,25 +38,18 @@ class Comments extends Component {
         const today = new Date()
         this.setState({
             date: `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()}`
-        })
-        var bearer = 'Bearer ' + localStorage.getItem('token')
+        });
 
-        fetch(config.apiUrl + `/comments/${this.props.projectId}/`, {
-            method: 'post',
-            headers: {
-                'Authorization': bearer,
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify(this.state)
-        }).then(response => {
-            // Redirect here based on response
-            console.log(response)
-            window.location.reload()
-        }).catch(err => console.log(err))
+        commentsService.postComment()
+            .then(response => {
+                // Redirect here based on response
+                console.log(response)
+                window.location.reload()
+            }).catch(err => console.log(err))
     }
 
     render() {
-        const { classes, comments } = this.props
+        const {classes, comments} = this.props
         return (
             <div className={classes.root}>
                 <List>
@@ -85,7 +79,7 @@ class Comments extends Component {
                                     }
                                 />
                             </ListItem>
-                            <Divider variant="inset" component="li" />
+                            <Divider variant="inset" component="li"/>
                         </div>
                     ))}
                 </List>
@@ -96,13 +90,13 @@ class Comments extends Component {
                         placeholder="Enter your comment here..."
                         margin="normal"
                         variant="outlined"
-                        inputProps={{ 
+                        inputProps={{
                             'aria-label': 'bare',
                             onChange: this.handleFormChange
                         }}
                     />
-                    <RegularButton 
-                        color="primary" 
+                    <RegularButton
+                        color="primary"
                         className={classes.commentsPostButton}
                         onClick={this.post}
                     >

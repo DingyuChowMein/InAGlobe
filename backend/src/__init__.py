@@ -27,8 +27,7 @@ def create_app():
         add_comment, get_comments,
         get_dashboard_projects, select_project
     )
-    from .tokens import get_token, revoke_token
-
+    from .tokens import get_token, revoke_token 
     # Override pre-flight request to fix CORS issue
     class CORS(object):
         def options(self):

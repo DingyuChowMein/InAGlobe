@@ -35,7 +35,7 @@ class ResponsiveDrawer extends Component {
         super(props)
         this.state = {
             mobileOpen: false,
-            userPermissions: localStorage.getItem('permissions')
+            userPermissions: JSON.parse(localStorage.getItem('user')).permissions
         };
         this.handleDrawerToggle = this.handleDrawerToggle.bind(this)
         this.redirectTo = this.redirectTo.bind(this)

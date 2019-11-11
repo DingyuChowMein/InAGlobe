@@ -13,7 +13,7 @@ import styles from "../../assets/jss/views/proposalMainPageStyle"
 
 import Comments from '../../components/Comments/Comments'
 import config from "../../config";
-import { commentsService } from "../../services/commentsService";
+import {commentsService} from "../../services/commentsService";
 import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer'
 
 class ProposalMainPage extends Component {
@@ -22,7 +22,7 @@ class ProposalMainPage extends Component {
         super(props);
         this.actionButtonClicked = this.actionButtonClicked.bind(this);
         this.getButtonMessage = this.getButtonMessage.bind(this);
-        const userType = localStorage.getItem('permissions');
+        const userType = JSON.parse(localStorage.getItem('user')).permissions;
         const projectData = JSON.parse(localStorage.getItem(`proposalPage/${this.props.match.params.id}`));
         this.state = {
             userType: userType,
@@ -48,7 +48,7 @@ class ProposalMainPage extends Component {
     }
 
     actionButtonClicked() {
-        const token = localStorage.getItem('token');
+        const token = JSON.parse(localStorage.getItem('user')).token;
         const bearer = 'Bearer ' + token;
 
         if (this.state.userType === "0") {
@@ -69,29 +69,24 @@ class ProposalMainPage extends Component {
             }).then((response) => {
                 // Redirect here based on response
                 console.log(response)
-            })
-                .catch((err) => {
+            }).catch((err) => {
                     console.log(err)
-                });
+            });
         } else if (this.state.userType === "2" || this.state.userType === "3") {
-            const token = localStorage.getItem('token');
-            const bearer = 'Bearer ' + token;
-            console.log(this.state.projectData)
-
-                fetch(config.apiUrl + '/dashboard/', {
-                    method: 'post',
-                    headers: {
-                        'Authorization': bearer,
-                        'Content-type': 'application/json'
-                    },
-                    body: JSON.stringify({"projectId": this.state.projectData.id}),
-                }).then((response) => {
-                    // Redirect here based on response
-                    console.log(response)
-                })
-                    .catch((err) => {
-                        console.log(err)
-                    });
+            console.log(this.state.projectData);
+            fetch(config.apiUrl + '/dashboard/', {
+                method: 'post',
+                headers: {
+                    'Authorization': bearer,
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({"projectId": this.state.projectData.id}),
+            }).then((response) => {
+                // Redirect here based on response
+                console.log(response)
+            }).catch((err) => {
+                console.log(err)
+            });
         }
     }
 
@@ -109,19 +104,19 @@ class ProposalMainPage extends Component {
     }
 
     render() {
-        const { classes, match } = this.props
+        const {classes, match} = this.props
         const proposalData = JSON.parse(localStorage.getItem(`proposalPage/${match.params.id}`))
         return (
             <ResponsiveDrawer name={"Project Page"}>
                 <ProposalPage {...this.props} data={proposalData} isPreview={false}>
                     <div className={classes.buttonsDiv}>
-                            <RegularButton 
-                                color="primary"
-                                onClick={this.actionButtonClicked}
-                                disabled={this.state.buttonDisabled}
-                            >
-                                {this.state.buttonMessage}
-                            </RegularButton>
+                        <RegularButton
+                            color="primary"
+                            onClick={this.actionButtonClicked}
+                            disabled={this.state.buttonDisabled}
+                        >
+                            {this.state.buttonMessage}
+                        </RegularButton>
                     </div>
                     <div className={classes.commentsDiv}>
                         <Comments comments={this.state.comments} projectId={this.state.projectData.id}/>

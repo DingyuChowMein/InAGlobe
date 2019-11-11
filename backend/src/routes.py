@@ -1,3 +1,5 @@
+import os
+
 from flask import g, url_for, render_template
 from . import db
 from .auth import token_auth, permission_required
@@ -7,7 +9,6 @@ from .emails import send_email
 from collections import defaultdict
 from sqlalchemy import or_
 from datetime import datetime
-
 
 ###############################################################################
 
@@ -134,7 +135,7 @@ def create_user(data):
     new_user.save()
 
     token = generate_confirmation_token(new_user.email)
-    confirm_url = url_for('confirmemail', token=token, _external=True)
+    confirm_url = os.environ['SITE_URL'] + f"confirm/{token}"
     html = render_template('confirm_email.html', confirm_url=confirm_url)
     subject = "Please confirm your email for Inaglobe"
     send_email(new_user.email, subject, html)
