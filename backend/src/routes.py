@@ -135,7 +135,7 @@ def create_user(data):
     new_user.save()
 
     token = generate_confirmation_token(new_user.email)
-    confirm_url = os.environ['SITE_URL'] + f"confirm/{token}"
+    confirm_url = os.environ['SITE_URL'] + f"login/confirm/{token}"
     html = render_template('confirm_email.html', confirm_url=confirm_url)
     subject = "Please confirm your email for Inaglobe"
     send_email(new_user.email, subject, html)

@@ -14,6 +14,7 @@ import MainPage from './layouts/MainPage/MainPage'
 import { createMuiTheme } from '@material-ui/core'
 import { ThemeProvider } from '@material-ui/styles'
 import {PrivateRoute} from "./helpers/PrivateRoute";
+import ConfirmEmail from "./views/ConfirmEmail/ConfirmEmail";
 
 const hist = createBrowserHistory();
 
@@ -34,7 +35,6 @@ ReactDOM.render(
 		<Router history={hist}>
 			<Switch>
 				<Route path="/login" component={Authentication} />
-                <Route path="/confirm" component={Authentication} />
 				<PrivateRoute path="/main" component={MainPage} />
                 <Redirect to="/login" />
 			</Switch>

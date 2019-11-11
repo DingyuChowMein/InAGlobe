@@ -16,6 +16,8 @@ import Box from '@material-ui/core/Box'
 import Typography from '@material-ui/core/Typography'
 import {withStyles} from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 
 // Imports of different components in project
 import Copyright from "../../components/Copyright/Copyright"
@@ -23,6 +25,7 @@ import Copyright from "../../components/Copyright/Copyright"
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/signUpStyle"
 import {userService} from "../../services/userService"
+
 
 class SignUp extends Component {
 
@@ -47,7 +50,8 @@ class SignUp extends Component {
                 value: ""
             },
             userType: "STUDENT",
-            labelWidth: 0
+            labelWidth: 0,
+            signingUp: false
         };
         this.inputLabel = null
         this.handleFormChange = this.handleFormChange.bind(this)
@@ -76,6 +80,12 @@ class SignUp extends Component {
             success = false;
         }
 
+        if (this.state.password.value === "") {
+            passwordError = "Password cannot be empty!";
+            success = false;
+        }
+
+
         this.setState(prevState => ({
             email: {
                 ...prevState.email,
@@ -88,6 +98,10 @@ class SignUp extends Component {
             lastName: {
                 ...prevState.lastName,
                 error: lastNameError
+            },
+            password: {
+                ...prevState.password,
+                error: passwordError
             }
         }));
         return success;
@@ -105,7 +119,13 @@ class SignUp extends Component {
 
     signUpPressed() {
         // You can authenticate here
+        this.setState({
+            signingUp: true
+        });
+
+
         if (this.handleValidation()) {
+            console.log(this.state.signingUp);
             userService.signUp(
                 this.state.firstName.value,
                 this.state.lastName.value,
@@ -113,10 +133,24 @@ class SignUp extends Component {
                 this.state.password.value,
                 this.state.userType)
                 .then(response => {
-                    console.log(response);
                     this.props.history.push("/login")
                 })
+                .catch(err => {
+                    console.log(err);
+                    this.setState(prevState => ({
+                        signingUp: false,
+                        email: {
+                            ...prevState.email,
+                            error: "Email already exists!"
+                        }
+                    }));
+                });
+        } else {
+            this.setState({
+                signingUp: false
+            });
         }
+
     }
 
     componentDidMount() {
@@ -189,6 +223,7 @@ class SignUp extends Component {
                                     variant="outlined"
                                     required
                                     fullWidth
+                                    helperText={this.state.password.error}
                                     name="password"
                                     onChange={this.handleFormChange}
                                     label="Password"
@@ -228,7 +263,7 @@ class SignUp extends Component {
                             onClick={this.signUpPressed}
                             className={classes.submit}
                         >
-                            Sign Up
+                            {this.state.signingUp ? <CircularProgress className={classes.loading}/> : "Sign Up"}
                         </Button>
                         <Grid container justify="flex-end">
                             <Grid item>

@@ -121,7 +121,7 @@ def create_app():
     api.add_resource(Users, '/users/')
     api.add_resource(Tokens, '/users/tokens/')
     api.add_resource(Approvals, '/approve/')
-    api.add_resource(ConfirmEmail, '/confirm/', '/confirm/<token>')
+    api.add_resource(ConfirmEmail, '/confirm/', '/confirm/<token>/')
     api.add_resource(Dashboard, '/dashboard/')
 
     return app

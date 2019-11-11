@@ -13,6 +13,7 @@ import Paper from '@material-ui/core/Paper'
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
+import CircularProgress from '@material-ui/core/CircularProgress';
 import {withStyles} from '@material-ui/core'
 
 // Imports of different components and layouts in project
@@ -22,7 +23,7 @@ import RegularButton from "../../components/CustomButtons/RegularButton"
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/signInSideStyle"
 
-import { userService } from "../../services/userService";
+import {userService} from "../../services/userService";
 
 class SignInSide extends Component {
 
@@ -32,8 +33,9 @@ class SignInSide extends Component {
         this.state = {
             email: "",
             password: "",
-            loginFailed: false
-        }
+            loginFailed: false,
+            loggingIn: false,
+        };
 
         this.handleFormChange = this.handleFormChange.bind(this);
         this.loginPressed = this.loginPressed.bind(this);
@@ -41,7 +43,7 @@ class SignInSide extends Component {
 
 
     handleFormChange(e) {
-        const { name, value } = e.target
+        const {name, value} = e.target
         this.setState({
             [name]: value
         })
@@ -49,20 +51,33 @@ class SignInSide extends Component {
 
     loginPressed() {
         // You can authenticate here
-        userService.login(this.state.email, this.state.password).then(token => {
-            console.log(token)
-            if (token === "") {
-                this.state.loginFailed = true;
-                alert('INVALID')
-            } else {
-                this.props.history.push("/main")
-                this.state.loginFailed = false;
-            }
-        })
+        this.setState({
+            loggingIn: true
+        });
+        userService.login(this.state.email, this.state.password)
+            .then(token => {
+                console.log(token);
+                if (token === "") {
+                    this.setState({
+                        loginFailed: true,
+                        loggingIn: false
+                    });
+                } else {
+                    this.props.history.push("/main");
+                    this.state.loginFailed = false;
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                this.setState({
+                    loginFailed: true,
+                    loggingIn: false
+                });
+            });
     }
 
     render() {
-        const { classes } = this.props
+        const {classes} = this.props
 
         return (
             <div>
@@ -114,7 +129,7 @@ class SignInSide extends Component {
                                     className={classes.submit}
                                     onClick={this.loginPressed}
                                 >
-                                    Sign In
+                                    {this.state.loggingIn ? <CircularProgress className={classes.loading}/> : "Login"}
                                 </RegularButton>
                                 <Grid container>
                                     <Grid item>

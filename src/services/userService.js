@@ -6,7 +6,7 @@ import {authHeader} from '../helpers/auth-header'
 // const apiUrl = 'https://inaglobe-api.herokuapp.com';
 
 export const userService = {
-    login, signUp, logout
+    login, signUp, logout, confirm
 }
 
 function logout() {
@@ -66,6 +66,15 @@ function login(email, password) {
 
             return user;
         });
+}
+
+function confirm(token) {
+    const requestOptions = {
+        method: 'GET',
+    };
+
+    return fetch(`${config.apiUrl}/confirm/${token}/`, requestOptions)
+        .then(handleResponse)
 }
 
 function handleResponse(response) {
