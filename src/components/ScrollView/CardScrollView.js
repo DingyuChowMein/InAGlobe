@@ -17,7 +17,7 @@ import {
     ArrowForwardIos
 } from "@material-ui/icons"
 
-import styles from "../../assets/jss/views/cardScrollViewStyle"
+import styles from "../../assets/jss/components/cardScrollViewStyle"
 
 
 class CardScrollView extends Component {
@@ -52,9 +52,9 @@ class CardScrollView extends Component {
         
         const cardsList = (
             cardData.map((card, key) => (
-                <Card key={key} style={{ height: "150px", width: "200px", margin: "5px 10px" }}>
-                    <CardActionArea onClick={ () => this.goToProposalPage(card.id) } style={{ height: "inherit" }}>
-                        <Grid container justify="left" spacing={0} style={{ height: "inherit" }}>
+                <Card key={key} className={classes.card}>
+                    <CardActionArea onClick={ () => this.goToProposalPage(card.id) } className={classes.cardActionArea}>
+                        <Grid container justify="left" spacing={0} className={classes.cardActionArea}>
                             <Grid item xs={4}>
                                 <CardMedia
                                     component="img"
@@ -65,7 +65,7 @@ class CardScrollView extends Component {
                             </Grid>
                             <Grid item xs={8}>
                                 <CardContent>
-                                    <h5>{card.title}</h5>
+                                    <h5 className={classes.cardLabel}>{card.title}</h5>
                                 </CardContent>
                             </Grid>
                         </Grid>
@@ -97,13 +97,17 @@ class CardScrollView extends Component {
                 alignOnResize={true}
                 scrollToSelected={true}
                 transition={0.6}
-                innerWrapperStyle={{ marginLeft: "0", marginRight: "0" }}
+                innerWrapperStyle={{
+                    marginTop: "0", 
+                    marginBottom: "10px",
+                    float: "initial"
+                }}
             />
         )
 
         return (
             <div>
-                <h3 style={{ marginTop: "0", marginBottom: "10px" }}>{title}</h3>
+                <h3 className={classes.title}>{title}</h3>
                 <Hidden xsDown implementation="css">
                     <div style={{ width: `calc(${this.state.width}px - 320px)` }}>
                         {scrollMenu}

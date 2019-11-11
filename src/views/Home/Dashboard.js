@@ -16,6 +16,7 @@ import styles from "../../assets/jss/views/homePageStyle"
 // import config from '../../config'
 import CardScrollView from '../../components/ScrollView/CardScrollView'
 import data from "../../assets/data/ProjectData"
+import { Grid } from '@material-ui/core'
 
 class Dashboard extends Component {
     // constructor(props){
@@ -67,7 +68,17 @@ class Dashboard extends Component {
             //     </GridContainer>
             // </div>
             <ResponsiveDrawer name={"Dashboard"}>
-                <CardScrollView className={classes.root} cardData={data} title="Projects to Approve"/>
+                <Grid container spacing={0}>
+                    <Grid item xs={6}>
+
+                    </Grid>
+                    <Grid item xs={6}>
+
+                    </Grid>
+                    <Grid item xs={12}>
+                        <CardScrollView className={classes.root} cardData={data} title="Projects to Approve"/>
+                    </Grid>
+                </Grid>
             </ResponsiveDrawer>
         )
     }
