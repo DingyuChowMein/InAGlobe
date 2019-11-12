@@ -33,7 +33,7 @@ class ProposalMainPage extends Component {
             comments: []
         };
 
-        console.log(this.state.userType);
+        console.log("UserType:" + this.state.userType);
         console.log(this.state.buttonDisabled);
     }
 
@@ -51,8 +51,7 @@ class ProposalMainPage extends Component {
     actionButtonClicked() {
         const token = JSON.parse(localStorage.getItem('user')).token;
         const bearer = 'Bearer ' + token;
-
-        if (this.state.userType === "0") {
+        if (this.state.userType === 0) {
             var new_project_data = this.state.projectData;
             new_project_data.status = new_project_data.status === "Approved" ? "Needs Approval" : "Approved";
             this.setState({
@@ -72,11 +71,7 @@ class ProposalMainPage extends Component {
             }).catch((err) => {
                     console.log(err)
                 });
-        } else if ((this.state.userType === "2" || this.state.userType === "3") && (this.state.projectData.joined === 0)) {
-            const token = localStorage.getItem('token');
-            const bearer = 'Bearer ' + token;
-            console.log(this.state.projectData)
-
+        } else if ((this.state.userType === 2 || this.state.userType === 3) && (this.state.projectData.joined === 0)) {
             var new_project_data = this.state.projectData;
             new_project_data.joined = 1;
             this.setState({
@@ -84,7 +79,7 @@ class ProposalMainPage extends Component {
                 buttonDisabled: true,
                 buttonMessage: this.getButtonMessage(this.state.userType, new_project_data.status,  new_project_data.joined)
             });
-            console.log(`proposalPage/${new_project_data.id}`);
+
                 fetch(config.apiUrl + '/dashboard/', {
                     method: 'post',
                     headers: {
@@ -103,12 +98,12 @@ class ProposalMainPage extends Component {
     }
 
     getButtonMessage(userType, status, joined) {
-        if (userType === "0") {
+        if (userType === 0) {
             if (status === "Needs Approval") {
                 return "Approve"
             }
             return "Disapprove"
-        } else if (userType === "1") {
+        } else if (userType === 1) {
             return status
         } else if (joined === 0){
             return "Request joining";

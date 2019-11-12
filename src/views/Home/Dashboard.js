@@ -35,13 +35,13 @@ class Dashboard extends Component {
             user: {},
             projects: [],
             requests: [],
-            userType: localStorage.getItem('permissions')
+            userType: JSON.parse(localStorage.getItem('user')).permissions
         }
 
     }
 
     joinRequestClicked(project_id, user_id, index) {
-        var token = localStorage.getItem('token')
+        var token = JSON.parse(localStorage.getItem('user')).token;
         var bearer = 'Bearer ' + token
 
         fetch(config.apiUrl + `/joiningApprove/`, {
@@ -100,7 +100,7 @@ class Dashboard extends Component {
     }
 
     renderRequestsList() {
-        if (this.state.userType !== "0") {
+        if (this.state.userType !== 0) {
             return;
         }
         return (
