@@ -133,11 +133,18 @@ def approve_project_join(data):
 @token_auth.login_required
 @permission_required(USER_TYPE['ADMIN'])
 def get_joining_requests():
-    requests = db.session.query(user_project_joining_table).filter_by(approved=0).all()
+    requests = db.session.query(user_project_joining_table, User, Project) \
+        .filter_by(approved=0)\
+        .join(User, User.id == user_project_joining_table.c.user_id)\
+        .join(Project, Project.id == user_project_joining_table.c.project_id)\
+        .all()
 
     requests_json = [{
         "project_id": request.project_id,
         "user_id": request.user_id,
+        "user_first_name": request.User.first_name,
+        "user_last_name": request.User.last_name,
+        "project_title": request.Project.title
     } for request in requests]
 
     return {"requests": requests_json}, 200

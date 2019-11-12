@@ -116,7 +116,7 @@ class Dashboard extends Component {
                             <ListItem
                                 selectable="true"
                                 vlaue={i}>
-                                <ListItemText primary={request.project_id + " " + request.user_id}/>
+                                <ListItemText primary={request.user_first_name + " " + request.user_last_name + " wants to join " + request.project_title}/>
                                 <Button onClick={() => this.joinRequestClicked(request.project_id, request.user_id, i)}>Approve</Button>
                             </ListItem>
                         ))}
