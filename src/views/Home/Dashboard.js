@@ -22,6 +22,8 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 
+import {dashboardService} from "../../services/dashboardService";
+
 class Dashboard extends Component {
     constructor(props) {
         super(props);
@@ -67,16 +69,10 @@ class Dashboard extends Component {
             user: localStorage.getItem('user'),
         });
 
-        var token = localStorage.getItem('token')
-        var bearer = 'Bearer ' + token
+        var token = JSON.parse(localStorage.getItem('user')).token;
+        var bearer = 'Bearer ' + token;
 
-        fetch(config.apiUrl + '/dashboard/', {
-            method: 'get',
-            headers: {
-                'Authorization': bearer
-            },
-        })
-            .then(res => res.json())
+        dashboardService.getDashboard()
             .then(data => {
                 console.log(data)
                 data.projects.forEach(project => project.status = (project.status === 0 ? "Needs Approval" : "Approved"))
@@ -139,7 +135,7 @@ class Dashboard extends Component {
                         ))}
                     </GridContainer>
                 </div>
-                {this.renderRequestsList()}
+                  {this.renderRequestsList()}
             </ResponsiveDrawer>
 
         )

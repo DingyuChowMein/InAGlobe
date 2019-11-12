@@ -9,6 +9,7 @@ import PersonOutline from '@material-ui/icons/PersonOutline'
 // Importing reference to all the different views
 import SignInSide from './views/SignInSide/SignInSide'
 import SignUp from "./views/SignUp/SignUp"
+import ConfirmEmail from "./views/ConfirmEmail/ConfirmEmail"
 import Dashboard from "./views/Home/Dashboard"
 import ProjectList from "./views/ProjectList/ProjectList"
 import AddProposal from "./views/AddProposal/AddProposal"
@@ -29,6 +30,13 @@ const loginRoutes = [
         name: "Sign Up",
         icon: PersonAdd,
         component: SignUp,
+        layout: "/login"
+    },
+    {
+        path: "/confirm/:token",
+        name: "Confirm",
+        icon: PersonAdd,
+        component: ConfirmEmail,
         layout: "/login"
     }
 ]

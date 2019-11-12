@@ -1,11 +1,11 @@
 // Main ReactJS libraries
-import React, { Component } from 'react'
-import { FilePond, registerPlugin } from "react-filepond"
+import React, {Component} from 'react'
+import {FilePond, registerPlugin} from "react-filepond"
 import FilePondPluginImagePreview from "filepond-plugin-image-preview"
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type"
 
 // Material UI libraries
-import { withStyles } from "@material-ui/core"
+import {withStyles} from "@material-ui/core"
 import Dialog from '@material-ui/core/Dialog'
 
 // Imports of different components in project
@@ -18,13 +18,14 @@ import RegularButton from "../../components/CustomButtons/RegularButton"
 // Importing the ability to upload to AWS
 import upload from "../../s3"
 import config from "../../config"
-import { generateId } from "../../helpers/utils"
+import {generateId} from "../../helpers/utils"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/addProposalStyle"
 import "filepond/dist/filepond.min.css"
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css'
 import ProposalPreviewPage from '../ProposalPage/ProposalPreviewPage'
+import {projectService} from "../../services/projectsService";
 
 
 class AddProposal extends Component {
@@ -63,26 +64,16 @@ class AddProposal extends Component {
     }
 
     post = () => {
-        var token = localStorage.getItem('token')
-        var bearer = 'Bearer ' + token
-        console.log(bearer)
         const id = generateId()
         this.state.data.documents = upload(this.state.data.documents, id + '/Documents')
         this.state.data.images = upload(this.state.data.images, id + '/Images')
         console.log(this.state.data)
-
-        fetch(config.apiUrl + '/projects/', {
-            method: 'post',
-            headers: {
-                'Authorization': bearer,
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify(this.state.data),
-        }).then((response) => {
-            console.log(response)
-            // Redirect here based on response
-            this.props.history.push("/main/projectlist")
-        }).catch((err) => {
+        projectService.postProject(this.state.data)
+            .then((response) => {
+                console.log(response);
+                // Redirect here based on response
+                this.props.history.push("/main/projectlist")
+            }).catch((err) => {
             console.log(err)
         })
     }
@@ -94,7 +85,7 @@ class AddProposal extends Component {
     }
 
     render() {
-        const { classes } = this.props
+        const {classes} = this.props
         return (
             <div>
                 <ResponsiveDrawer name={"Add Proposal"}>
@@ -161,7 +152,7 @@ class AddProposal extends Component {
                             />
                         </GridItem>
                         <GridItem xs={12} sm={12} md={12}>
-                            <FilePond 
+                            <FilePond
                                 allowMultiple={true}
                                 files={this.state.data.images}
                                 labelIdle='Drag & Drop your images (.jpg, .png. or .bmp) or <span class="filepond--label-action">Browse</span>'
@@ -177,7 +168,7 @@ class AddProposal extends Component {
                             />
                         </GridItem>
                         <GridItem xs={12} sm={12} md={12}>
-                            <FilePond 
+                            <FilePond
                                 allowMultiple={true}
                                 files={this.state.data.documents}
                                 labelIdle='Drag & Drop your documents (.pdf, .docx, .doc, .txt and .odt) or <span class="filepond--label-action">Browse</span>'
@@ -207,7 +198,7 @@ class AddProposal extends Component {
                             >
                                 {"Preview"}
                             </RegularButton>
-                            <RegularButton 
+                            <RegularButton
                                 color="primary"
                                 onClick={this.post}
                                 className={classes.submitButton}
@@ -217,7 +208,7 @@ class AddProposal extends Component {
                         </div>
                     </GridContainer>
                 </ResponsiveDrawer>
-                <Dialog 
+                <Dialog
                     fullWidth="true"
                     maxWidth="lg"
                     open={this.state.open}
@@ -225,7 +216,7 @@ class AddProposal extends Component {
                         open: false
                     })}
                     aria-labelledby="proposalPreviewTitle">
-                        <ProposalPreviewPage data={this.state.data} />
+                    <ProposalPreviewPage data={this.state.data}/>
                 </Dialog>
             </div>
         )

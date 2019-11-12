@@ -91,6 +91,9 @@ class User(Model, db.Model):
     projects = db.relationship('Project', secondary=user_project_joining_table,
                                backref=db.backref('users', lazy='dynamic'),  uselist=True)
 
+    confirmed = db.Column(db.Boolean, nullable=False, default=False)
+    confirmed_on = db.Column(db.DateTime, nullable=True)
+    
     def hash_password(self, password):
         self.password_hash = generate_password_hash(password, method='sha256')
 
