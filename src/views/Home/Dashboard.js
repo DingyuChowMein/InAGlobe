@@ -2,10 +2,12 @@
 import React, { Component } from 'react'
 
 // Material UI libraries
-import { withStyles } from '@material-ui/styles'
+import { withStyles, Grid } from '@material-ui/core'
 
 // Imports of different components in project
+import CardScrollView from '../../components/ScrollView/CardScrollView'
 import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer'
+import Notifications from "../../components/Notifications/Notifications"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/homePageStyle"
@@ -14,9 +16,8 @@ import styles from "../../assets/jss/views/homePageStyle"
 // import GridItem from "../../components/Grid/GridItem"
 // import ProjectCard from "../ProjectList/ProjectCard"
 // import config from '../../config'
-import CardScrollView from '../../components/ScrollView/CardScrollView'
 import data from "../../assets/data/ProjectData"
-import { Grid } from '@material-ui/core'
+import notifications from "../../assets/data/NotificationData"
 
 class Dashboard extends Component {
     // constructor(props){
@@ -68,12 +69,15 @@ class Dashboard extends Component {
             //     </GridContainer>
             // </div>
             <ResponsiveDrawer name={"Dashboard"}>
-                <Grid container spacing={0}>
-                    <Grid item xs={6}>
-
+                <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                        <Notifications notifyList={notifications} title="Notifications"/>
                     </Grid>
-                    <Grid item xs={6}>
-
+                    <Grid item xs={12} sm={6}>
+                        <Notifications notifyList={notifications} title="Upcoming Deadlines"/>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <CardScrollView className={classes.root} cardData={data} title="Projects Updates"/>
                     </Grid>
                     <Grid item xs={12}>
                         <CardScrollView className={classes.root} cardData={data} title="Projects to Approve"/>

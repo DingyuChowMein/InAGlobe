@@ -99,8 +99,7 @@ class CardScrollView extends Component {
                 transition={0.6}
                 innerWrapperStyle={{
                     marginTop: "0", 
-                    marginBottom: "10px",
-                    float: "initial"
+                    marginBottom: "10px"
                 }}
             />
         )
