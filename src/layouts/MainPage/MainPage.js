@@ -12,9 +12,6 @@ import { mainRoutes } from "../../routes"
 import styles from "../../assets/jss/layouts/mainPageStyle"
 
 class MainPage extends Component {
-    constructor(props){
-        super(props);
-    }
 
     render() {
         console.log(localStorage.getItem("token").length);

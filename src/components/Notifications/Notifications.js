@@ -1,11 +1,7 @@
 import React, { Component, Fragment } from "react"
-import PerfectScrollbar from 'react-perfect-scrollbar'
 
 import { 
-    withStyles, 
-    Card, 
-    GridList,
-    List,
+    withStyles,
     ListItem,
     ListItemAvatar,
     Avatar,
@@ -13,48 +9,56 @@ import {
     Typography
 } from "@material-ui/core"
 
+import CardsList from "../CardsList/CardsList"
+import timeDiff from "../../utils/DynamicTimeDiff"
+
 import styles from "../../assets/jss/components/notificationsStyle"
-import 'react-perfect-scrollbar/dist/css/styles.css'
 
 class Notifications extends Component {
 
     render() {
         const { classes, notifyList, title } = this.props
+        const contentStruct = (card) => {
+            return (
+                <ListItem alignItems="flex-start">
+                    <ListItemAvatar>
+                        <Avatar
+                            alt="Profile Picture"
+                            src={card.profilePic}
+                        />
+                    </ListItemAvatar>
+                    <ListItemText
+                        primary={
+                            <Fragment>
+                                {card.userName}
+                                <Typography
+                                    component="span"
+                                    variant="body2"
+                                    className={classes.timeDiff}
+                                >
+                                    {timeDiff(card.date)}
+                                </Typography>
+                            </Fragment>
+                        }
+                        secondary={
+                            <Fragment>
+                                <Typography
+                                    component="span"
+                                    variant="body2"
+                                    color="textPrimary"
+                                >
+                                    {card.projectName}
+                                </Typography>
+                                {` — ${card.details}`}
+                            </Fragment>
+                        }
+                    />
+                </ListItem>
+            )
+        }
+
         return (
-            <div>
-                <h3 style={{ marginBlockStart: "0" }}>{title}</h3>
-                <PerfectScrollbar component="div" style={{ maxHeight: "300px", paddingRight: "20px" }}>
-                    <List>
-                        {notifyList.map((notification, key) => (
-                            <Card key={key} style={{ marginBottom: "10px" }}>
-                                <ListItem alignItems="flex-start">
-                                    <ListItemAvatar>
-                                        <Avatar
-                                            alt="Profile Picture"
-                                            src={notification.profilePic}
-                                        />
-                                    </ListItemAvatar>
-                                    <ListItemText
-                                        primary={`Owner: ${notification.userName} Project: ${notification.projectName}`}
-                                        secondary={
-                                            <Fragment>
-                                                <Typography
-                                                    component="span"
-                                                    variant="body2"
-                                                    color="textPrimary"
-                                                >
-                                                    {notification.date}
-                                                </Typography>
-                                                {` — ${notification.details}`}
-                                            </Fragment>
-                                        }
-                                    />
-                                </ListItem>
-                            </Card>
-                        ))}
-                    </List>
-                </PerfectScrollbar>
-            </div>
+            <CardsList cardData={notifyList} title={title} contentStruct={contentStruct}/>
         )
     }
 }
