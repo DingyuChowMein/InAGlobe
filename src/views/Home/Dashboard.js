@@ -27,11 +27,13 @@ class Dashboard extends Component {
         super(props);
 
         this.joinRequestClicked = this.joinRequestClicked.bind(this);
+        this.renderRequestsList = this.renderRequestsList.bind(this);
 
         this.state = {
             user: {},
             projects: [],
             requests: [],
+            userType: localStorage.getItem('permissions')
         }
 
     }
@@ -39,7 +41,7 @@ class Dashboard extends Component {
     joinRequestClicked(project_id, user_id, index) {
         var token = localStorage.getItem('token')
         var bearer = 'Bearer ' + token
-        
+
         fetch(config.apiUrl + `/joiningApprove/`, {
             method: 'post',
             headers: {
@@ -101,6 +103,29 @@ class Dashboard extends Component {
             .catch(console.log)
     }
 
+    renderRequestsList() {
+        if (this.state.userType !== "0") {
+            return;
+        }
+        return (
+            <div>
+                <Typography gutterBottom variant="h5" component="h2"> List of project join requests </Typography>
+                <Paper style={{maxHeight: 200, overflow: 'auto'}}>
+                    <List>
+                        {this.state.requests.map((request, i) => (
+                            <ListItem
+                                selectable="true"
+                                vlaue={i}>
+                                <ListItemText primary={request.project_id + " " + request.user_id}/>
+                                <Button onClick={() => this.joinRequestClicked(request.project_id, request.user_id, i)}>Approve</Button>
+                            </ListItem>
+                        ))}
+                    </List>
+                </Paper>
+            </div>
+        )
+    }
+
     render() {
         const {classes} = this.props
         return (
@@ -114,23 +139,7 @@ class Dashboard extends Component {
                         ))}
                     </GridContainer>
                 </div>
-                <div>
-                    <Typography gutterBottom variant="h5" component="h2">
-                        List of project join requests
-                    </Typography>
-                    <Paper style={{maxHeight: 200, overflow: 'auto'}}>
-                        <List>
-                            {this.state.requests.map((request, i) => (
-                                <ListItem
-                                    selectable="true"
-                                    vlaue={i}>
-                                    <ListItemText primary={request.project_id + " " + request.user_id}/>
-                                    <Button onClick={() => this.joinRequestClicked(request.project_id, request.user_id, i)}>Approve</Button>
-                                </ListItem>
-                            ))}
-                        </List>
-                    </Paper>
-                </div>
+                {this.renderRequestsList()}
             </ResponsiveDrawer>
 
         )

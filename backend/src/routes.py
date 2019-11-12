@@ -34,7 +34,7 @@ def get_dashboard_projects():
     # projects = Project.query.has(Project.id.in_(user_id.projects)).all()
     # projects = User.query.filter_by(id=user_id.id).first().projects
     #     # print(projects)
-    return get_projects_helper(g.current_user.projects, [])
+    return get_projects_helper(g.current_user.projects)
 
 
 @token_auth.login_required
@@ -67,7 +67,7 @@ def get_projects():
         join_relationship = db.session.query(user_project_joining_table) \
             .filter(user_project_joining_table.columns.user_id == user_id)
 
-    return get_projects_helper(projects, join_relationship)
+    return get_projects_helper(projects)
 
 
 @token_auth.login_required
@@ -198,8 +198,13 @@ def get_comments(project_id):
 
 ########################################################################################################################
 
-def get_projects_helper(projects, join_relationship):
+def get_projects_helper(projects):
     files = File.query.all()
+    join_relationship = []
+    user_type = g.current_user.get_permissions()
+    if user_type == USER_TYPE['STUDENT'] or user_type == USER_TYPE['ACADEMIC']:
+        join_relationship = db.session.query(user_project_joining_table) \
+            .filter(user_project_joining_table.columns.user_id == g.current_user.get_id())
 
     documents_map = defaultdict(list)
     images_map = defaultdict(list)
