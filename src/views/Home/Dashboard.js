@@ -1,8 +1,8 @@
 // Main ReactJS libraries
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 
 // Material UI libraries
-import { withStyles } from '@material-ui/styles'
+import {withStyles} from '@material-ui/styles'
 
 // Imports of different components in project
 import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer'
@@ -18,9 +18,12 @@ import Paper from "@material-ui/core/Paper";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import Card from "../../components/Card/Card";
+import ListItemText from "@material-ui/core/ListItemText";
+import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
 
 class Dashboard extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.joinRequestClicked = this.joinRequestClicked.bind(this);
@@ -33,9 +36,28 @@ class Dashboard extends Component {
 
     }
 
-    joinRequestClicked(event) {
-        console.log(event.target)
-        alert("Request approved." + event.target.value);
+    joinRequestClicked(project_id, user_id, index) {
+        var token = localStorage.getItem('token')
+        var bearer = 'Bearer ' + token
+        
+        fetch(config.apiUrl + `/joiningApprove/`, {
+            method: 'post',
+            headers: {
+                'Authorization': bearer,
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                userId: user_id,
+                projectId: project_id
+            })
+        }).then(response => {
+            // Redirect here based on response
+            console.log(response)
+            alert("Request approved.")
+            this.setState({
+                requests: this.state.requests.filter((_, i) => i !== index)
+            });
+        }).catch(err => console.log(err))
     }
 
     componentDidMount() {
@@ -62,6 +84,7 @@ class Dashboard extends Component {
             })
             .catch(console.log)
 
+        // Get the list of project join requests
         fetch(config.apiUrl + '/joiningApprove/', {
             method: 'get',
             headers: {
@@ -79,33 +102,37 @@ class Dashboard extends Component {
     }
 
     render() {
-      const { classes } = this.props
+        const {classes} = this.props
         return (
-            <>
             <ResponsiveDrawer name={"Dashboard"}>
-              <div className={classes.root}>
-                  <GridContainer spacing={2}>
-                      {this.state.projects.map(card => (
-                          <GridItem xs={12} sm={12} md={6} key={card.id}>
-                              <ProjectCard data={card}/>
-                          </GridItem>
-                      ))} 
-                  </GridContainer>
-              </div>
+                <div className={classes.root}>
+                    <GridContainer spacing={2}>
+                        {this.state.projects.map(card => (
+                            <GridItem xs={12} sm={12} md={6} key={card.id}>
+                                <ProjectCard data={card}/>
+                            </GridItem>
+                        ))}
+                    </GridContainer>
+                </div>
+                <div>
+                    <Typography gutterBottom variant="h5" component="h2">
+                        List of project join requests
+                    </Typography>
+                    <Paper style={{maxHeight: 200, overflow: 'auto'}}>
+                        <List>
+                            {this.state.requests.map((request, i) => (
+                                <ListItem
+                                    selectable="true"
+                                    vlaue={i}>
+                                    <ListItemText primary={request.project_id + " " + request.user_id}/>
+                                    <Button onClick={() => this.joinRequestClicked(request.project_id, request.user_id, i)}>Approve</Button>
+                                </ListItem>
+                            ))}
+                        </List>
+                    </Paper>
+                </div>
             </ResponsiveDrawer>
-            <Paper style={{maxHeight: 200, overflow: 'auto'}}>
-                 <List>
-                    {this.state.requests.map((request, i) => (
-                        <Card containerStyle={{width:"100%"}}>
-                            <ListItem selectable="true" onClick={this.joinRequestClicked}>
-                                value={i}
-                                primaryText={request.project_id + " " + request.user_id}
-                            </ListItem>
-                        </Card>
-                    ))}
-                </List>
-            </Paper>
-            </>
+
         )
     }
 }

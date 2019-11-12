@@ -1,4 +1,6 @@
 from flask import g
+from sqlalchemy.ext.automap import automap_base
+
 from . import db
 from .auth import token_auth, permission_required
 from .models import Project, File, User, Comment, USER_TYPE, FILE_TYPE, PROJECT_STATUS, user_project_joining_table
@@ -115,20 +117,17 @@ def approve_project(data):
 @token_auth.login_required
 @permission_required(USER_TYPE['ADMIN'])
 def approve_project_join(data):
-    request = db.session.query(user_project_joining_table).filter(
-        and_(user_project_joining_table.user_id == data['userId'],
-             user_project_joining_table.project_id == data['projectId'])).first()
 
-    if request.approved == 0:
-        request.approved = 1
-        message = "Request to join approved"
-    else:
-        request.approved = 0
-        message = "Request to join disapproved"
+    stm = user_project_joining_table.update().where(
+            and_(
+                user_project_joining_table.c.user_id == data['userId'],
+                user_project_joining_table.c.project_id == data['projectId'])).\
+            values({user_project_joining_table.c.approved: 1 - user_project_joining_table.c.approved})
 
-    request.save()
+    db.session.execute(stm)
+    db.session.commit()
 
-    return {"message": message}, 200
+    return {"message": "Approved value flipped."}, 200
 
 
 @token_auth.login_required
@@ -138,7 +137,7 @@ def get_joining_requests():
 
     requests_json = [{
         "project_id": request.project_id,
-        "user_id": request.project_id,
+        "user_id": request.user_id,
     } for request in requests]
 
     return {"requests": requests_json}, 200

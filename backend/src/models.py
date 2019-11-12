@@ -89,7 +89,7 @@ class User(Model, db.Model):
     token_expiration = db.Column(db.DateTime)
     user_type = db.Column(db.Integer, default=USER_TYPE['STUDENT'])
     projects = db.relationship('Project', secondary=user_project_joining_table,
-                               backref=db.backref('users', lazy='dynamic'))
+                               backref=db.backref('users', lazy='dynamic'),  uselist=True)
 
     def hash_password(self, password):
         self.password_hash = generate_password_hash(password, method='sha256')
