@@ -1,4 +1,4 @@
-from flask import g
+from flask import g, abort
 from . import db
 from .auth import token_auth, permission_required
 from .models import Project, File, User, Comment, USER_TYPE, FILE_TYPE, PROJECT_STATUS
@@ -98,15 +98,38 @@ def get_users():
 
 
 def create_user(data):
-    new_user = User(
-        email=data['email'],
-        first_name=data['firstName'],
-        last_name=data['lastName'],
-        user_type=USER_TYPE[data['userType']]
-    )
-    new_user.hash_password(data['password'])
-    new_user.save()
-    return {'message': 'User created!'}, 201
+    try:
+        if data['userType'] == 'ADMIN':
+            return abort(403, 'Not allowed!')
+
+        if not data['email']:
+            raise ValueError('email')
+        if not data['firstName']:
+            raise ValueError('name')
+        if not data['lastName']:
+            raise ValueError('surname')
+        if not data['userType'] in USER_TYPE:
+            raise ValueError('user type')
+        if not data['password'] or len(data['password']) < 8:
+            raise ValueError('password')
+
+        new_user = User(
+            email=data['email'],
+            first_name=data['firstName'],
+            last_name=data['lastName'],
+            user_type=USER_TYPE[data['userType']]
+        )
+
+        new_user.hash_password(data['password'])
+        new_user.save()
+        return {'message': 'User created!'}, 201
+    except ValueError as e:
+        return abort(400, 'Bad {} provided!'.format(e.__str__()))
+    except KeyError as e:
+        return abort(400, '{} not valid!'.format(e.__str__()))
+    else:
+        return abort(500)
+
 
 ########################################################################################################################
 
