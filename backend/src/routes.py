@@ -99,9 +99,6 @@ def get_users():
 
 def create_user(data):
     try:
-        if data['userType'] == 'ADMIN':
-            return abort(403, 'Not allowed!')
-
         if not data['email']:
             raise ValueError('email')
         if not data['firstName']:
@@ -112,6 +109,9 @@ def create_user(data):
             raise ValueError('user type')
         if not data['password'] or len(data['password']) < 8:
             raise ValueError('password')
+
+        if data['userType'] == 'ADMIN':
+            return {'message': 'Not allowed!'}, 403
 
         new_user = User(
             email=data['email'],
