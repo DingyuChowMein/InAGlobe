@@ -9,19 +9,6 @@ from src.models import Project, File, FILE_TYPE
 from conftests import db, app, auth, client
 from flask import g
 
-class PermissionHandler(object):
-    def __init__(self, auth):
-        self.auth = auth
-
-    def set(self, permission, email='email'):
-        self.auth.create_user(email=email, user_type=permission)
-        rv = self.auth.login(email=email)
-        return json.loads(rv.data.decode('utf-8')).get('token')
-
-
-@pytest.fixture
-def permission(auth):
-    return PermissionHandler(auth)
 
 def get_projects(client, token):
     return client.get('/projects/', headers={
@@ -52,7 +39,7 @@ def load_json_file(filename, dir):
         ('many_images_no_documents.json', 0, 3, b'Project added to db!', 201),
         ('many_files.json', 3, 3, b'Project added to db!', 201),
 ))
-def test_project_upload(app, client, permission, file, number_of_documents, number_of_images, message, code):
+def test_project_upload(app, client, auth, file, number_of_documents, number_of_images, message, code):
     with app.app_context():
         # We check that there are no projects in an empty database
         assert (
@@ -65,7 +52,7 @@ def test_project_upload(app, client, permission, file, number_of_documents, numb
             is None
         )
         # Create and load a humanitarian user
-        token = permission.set('HUMANITARIAN')
+        token = auth.get_token(email='humanitarian@charity.org')
         json_file = load_json_file(file, 'project_test_files')
         rv = upload_project(client, token, json_file)
 
@@ -100,39 +87,40 @@ def test_project_upload(app, client, permission, file, number_of_documents, numb
         assert message in rv.data
 
 
-# TODO: create more 'bad' test files, test cases here such as the commented out one, and add error handling
-@pytest.mark.parametrize(('file', 'user_type', 'message', 'code'), (
-        ('no_files.json', 'STUDENT', b'Insufficient permissions!', 403),
-        # ('missing_title.json', 'HUMANITARIAN', b'Missing data!', 400),
+# TODO: create more 'bad' test files, test cases here such as the commented out one (including bad filelinks), and add error handling
+@pytest.mark.parametrize(('file', 'email', 'message', 'code'), (
+        ('no_files.json', 'student@ic.ac.uk', b'Insufficient permissions!', 403),
+        ('missing_title.json', 'student@ic.ac.uk', b'Insufficient permissions!', 403),
+        ('missing_title.json', 'humanitarian@charity.org', b'Bad title provided!', 400),
 ))
-def test_bad_project_upload(app, client, permission, file, user_type, message, code):
+def test_bad_project_upload(app, client, auth, file, email, message, code):
     with app.app_context():
-        token = permission.set(user_type)
+        token = auth.get_token(email=email)
         json_file = load_json_file(file, 'project_test_files')
         rv = upload_project(client, token, json_file)
         # Check that no projects have been uploaded
         assert not db.session.query(Project).all()
-    assert code == rv.status_code
-    assert message in rv.data
+        assert code == rv.status_code
+        assert message in rv.data
 
 
 ########################################################################################################################
 # Get projects tests
 
 # TODO: add more test cases for the get project api
-@pytest.mark.parametrize(('files', 'user_type', 'expected', 'code'), (
-        (['no_files.json'], 'ADMIN', [b'no files'], 200),
-        (['no_files.json', 'many_files.json'], 'ADMIN', [b'many documents many images', b'no files'], 200),
-        (['no_files.json', 'many_files.json'], 'STUDENT', [], 200),
+@pytest.mark.parametrize(('files', 'email', 'expected', 'code'), (
+        (['no_files.json'], 'admin@administrator.co', [b'no files'], 200),
+        (['no_files.json', 'many_files.json'], 'admin@administrator.co', [b'many documents many images', b'no files'], 200),
+        (['no_files.json', 'many_files.json'], 'student@ic.ac.uk', [], 200),
 ))
-def test_get_project(client, permission, files, user_type, expected, code):
+def test_get_project(client, auth, files, email, expected, code):
     # Load up database with projects
-    token = permission.set('HUMANITARIAN', email='humanitarian@human.org')
+    token = auth.get_token(email='humanitarian@charity.org')
     for file in files:
         json_file = load_json_file(file, 'project_test_files')
         upload_project(client, token, json_file)
 
-    token = permission.set(user_type)
+    token = auth.get_token(email=email)
     rv = get_projects(client, token)
     assert code == rv.status_code
 
