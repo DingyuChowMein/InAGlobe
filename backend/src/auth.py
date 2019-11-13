@@ -21,7 +21,6 @@ def verify_password(email, password):
 @basic_auth.error_handler
 def basic_auth_error():
     return abort(401, 'Incorrect password!')
-    # return abort(404, 'User does not exist!')
 
 
 @token_auth.verify_token
