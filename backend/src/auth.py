@@ -13,14 +13,15 @@ def verify_password(email, password):
     # email unique so there can only be one
     user = User.query.filter_by(email=email).first()
     if user is None:
-        return False
+        return abort(404, 'User does not exist!')
     g.current_user = user
     return user.verify_password(password)
 
 
 @basic_auth.error_handler
 def basic_auth_error():
-    return abort(404, 'User does not exist!')
+    return abort(401, 'Incorrect password!')
+    # return abort(404, 'User does not exist!')
 
 
 @token_auth.verify_token
