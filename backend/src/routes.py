@@ -47,31 +47,48 @@ def get_projects():
 @token_auth.login_required
 @permission_required(USER_TYPE['HUMANITARIAN'])
 def upload_project(data):
-    # TODO: error handling (around saving to db)
-    project = Project(
-        title=data['title'],
-        short_description=data['shortDescription'],
-        long_description=data['detailedDescription'],
-        location=data['location'],
-        project_owner=g.current_user.get_id(),
-        organisation_name=data['organisationName'],
-        organisation_logo=data['organisationLogo']
-    )
-    project.save()
-    if data.get("documents") is not None:
-        for link in data['documents']:
-            file = File(project_id=project.id, link=link, type=FILE_TYPE['DOCUMENT'])
-            file.save()
-        for link in data['images']:
-            file = File(project_id=project.id, link=link, type=FILE_TYPE['IMAGE'])
-            file.save()
+    # TODO remove the code duplication for the try blocks
+    try:
+        if not data['title']:
+            raise ValueError('title')
+        if not data['shortDescription']:
+            raise ValueError('short description')
+        if not data['detailedDescription']:
+            raise ValueError('detailed description')
+        if not data['organisationName']:
+            raise ValueError('organisation name')
+        if not data['organisationLogo']:
+            raise ValueError('organisation logo')
 
-    #Create dashboard link for humanitarians
-    g.current_user.projects.append(project)
-    db.session.commit()
+        project = Project(
+            title=data['title'],
+            short_description=data['shortDescription'],
+            long_description=data['detailedDescription'],
+            location=data['location'],
+            project_owner=g.current_user.get_id(),
+            organisation_name=data['organisationName'],
+            organisation_logo=data['organisationLogo']
+        )
+        project.save()
 
-    return {'message': 'Project added to db!'}, 201
+        # TODO exceptions for bad links
+        if data.get("documents") is not None:
+            for link in data['documents']:
+                file = File(project_id=project.id, link=link, type=FILE_TYPE['DOCUMENT'])
+                file.save()
+            for link in data['images']:
+                file = File(project_id=project.id, link=link, type=FILE_TYPE['IMAGE'])
+                file.save()
 
+        #Create dashboard link for humanitarians
+        g.current_user.projects.append(project)
+        db.session.commit()
+
+        return {'message': 'Project added to db!'}, 201
+    except ValueError as e:
+        return abort(400, 'Bad {} provided!'.format(e.__str__()))
+    except Exception as e:
+        return abort(400, '{} not valid!'.format(e.__str__()))
 
 @token_auth.login_required
 @permission_required(USER_TYPE['ADMIN'])
