@@ -1,21 +1,14 @@
 // Main ReactJS libraries
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 
 // Material UI libraries
-import {withStyles, Grid} from '@material-ui/core'
-import { 
-    withStyles, 
+import {
+    withStyles,
     Grid,
-    Paper,
-    List,
-    ListItem,
-    ListItemText,
-    Typography,
-    Button,
 } from '@material-ui/core'
-import { 
-    UpdateOutlined, 
-    SentimentDissatisfiedOutlined, 
+import {
+    UpdateOutlined,
+    SentimentDissatisfiedOutlined,
     SentimentSatisfiedOutlined
 } from "@material-ui/icons"
 
@@ -31,7 +24,7 @@ import ProjectApprovals from '../../components/Approvals/ProjectApprovals'
 // import ProjectCard from "../ProjectList/ProjectCard"
 
 import config from '../../config'
-import { dashboardService } from "../../services/dashboardService"
+import {dashboardService} from "../../services/dashboardService"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/homePageStyle"
@@ -118,7 +111,7 @@ class Dashboard extends Component {
     }
 
     render() {
-        const { classes } = this.props
+        const {classes} = this.props
 
         let dashboardComponents
         switch (this.state.userType) {
@@ -126,36 +119,48 @@ class Dashboard extends Component {
                 dashboardComponents = (
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={12} md={4}>
-                            <Notifications 
-                                notifyList={[]} 
+                            <Notifications
+                                notifyList={[]}
                                 title="Notifications"
                             />
                         </Grid>
                         <Grid item xs={12} sm={12} md={4}>
-                            <Deadlines 
-                                deadlineList={[]} 
+                            <Deadlines
+                                deadlineList={[]}
                                 title="Upcoming Deadlines"
                             />
                         </Grid>
                         <Grid item xs={12} sm={12} md={4}>
-                            <ProjectApprovals 
-                                approvalList={[]} 
+                            <ProjectApprovals
+                                approvalList={this.state.requests.map((request, i) => {
+                                        return {
+                                            notifyId: i,
+                                            userId: request.user_id,
+                                            projectId: request.project_id,
+                                            userProfilePic: `https://picsum.photos/${Math.floor(Math.random() * 31) + 120}`,
+                                            userName: request.user_first_name + " " + request.user_last_name,
+                                            projectName: request.project_title,
+                                            details: request.project_short_description,
+                                            registrationDate: request.request_date_time
+                                        }
+                                    })}
                                 title="User Approvals for Projects"
+                                approveFunction={this.joinRequestClicked}
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <CardScrollView 
-                                className={classes.root} 
-                                cardData={[]} 
+                            <CardScrollView
+                                className={classes.root}
+                                cardData={[]}
                                 title="Projects Updates"
                                 EmptyIcon={UpdateOutlined}
                                 emptyText="No Updates for any Ongoing Projects"
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <CardScrollView 
-                                className={classes.root} 
-                                cardData={[]} 
+                            <CardScrollView
+                                className={classes.root}
+                                cardData={[]}
                                 title="Projects to Approve"
                                 EmptyIcon={UpdateOutlined}
                                 emptyText="No Approvals Needed for New Projects"
@@ -168,47 +173,36 @@ class Dashboard extends Component {
                 dashboardComponents = (
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={12} md={4}>
-                            <Notifications 
-                                notifyList={this.state.requests.map((request, i) => {
-                            return {
-                                notifyId: i,
-                                userId: request.user_id,
-                                projectId: request.project_id,
-                                profilePic: `https://picsum.photos/${Math.floor(Math.random() * 31) + 120}`,
-                                userName:request.user_first_name + " " + request.user_last_name,
-                                projectName: request.project_title,
-                                details: request.project_short_description,
-                                date: request.request_date_time
-                            } 
+                            <Notifications
+                                notifyList={[]}
                                 title="Notifications"
-                                approveFunction={this.joinRequestClicked}
                             />
                         </Grid>
                         <Grid item xs={12} sm={12} md={4}>
-                            <Deadlines 
-                                deadlineList={[]} 
+                            <Deadlines
+                                deadlineList={[]}
                                 title="Upcoming Deadlines"
                             />
                         </Grid>
                         <Grid item xs={12} sm={12} md={4}>
-                            <ProjectApprovals 
-                                approvalList={[]} 
+                            <ProjectApprovals
+                                approvalList={[]}
                                 title="Student/Academic Waiting to Join Project"
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <CardScrollView 
-                                className={classes.root} 
-                                cardData={[]} 
+                            <CardScrollView
+                                className={classes.root}
+                                cardData={[]}
                                 title="Ongoing Projects Approved by Admin"
                                 EmptyIcon={SentimentDissatisfiedOutlined}
                                 emptyText="No Ongoing Projects. Try joining some!"
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <CardScrollView 
-                                className={classes.root} 
-                                cardData={[]} 
+                            <CardScrollView
+                                className={classes.root}
+                                cardData={[]}
                                 title="Project Proposals Waiting for Admin Approval"
                                 EmptyIcon={SentimentSatisfiedOutlined}
                                 emptyText="All Projects Approved!"
@@ -221,30 +215,30 @@ class Dashboard extends Component {
                 dashboardComponents = (
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={12} md={6}>
-                            <Notifications 
-                                notifyList={[]} 
+                            <Notifications
+                                notifyList={[]}
                                 title="Notifications"
                             />
                         </Grid>
                         <Grid item xs={12} sm={12} md={6}>
-                            <Deadlines 
-                                deadlineList={[]} 
+                            <Deadlines
+                                deadlineList={[]}
                                 title="Upcoming Deadlines"
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <CardScrollView 
-                                className={classes.root} 
-                                cardData={[]} 
+                            <CardScrollView
+                                className={classes.root}
+                                cardData={[]}
                                 title="Ongoing Projects Joined"
                                 EmptyIcon={SentimentDissatisfiedOutlined}
                                 emptyText="No Ongoing Projects. Try joining some!"
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <CardScrollView 
-                                className={classes.root} 
-                                cardData={[]} 
+                            <CardScrollView
+                                className={classes.root}
+                                cardData={[]}
                                 title="Waiting for Approval to Join Project"
                                 EmptyIcon={SentimentSatisfiedOutlined}
                                 emptyText="All Projects Approved!"
@@ -257,30 +251,30 @@ class Dashboard extends Component {
                 dashboardComponents = (
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={12} md={6}>
-                            <Notifications 
-                                notifyList={[]} 
+                            <Notifications
+                                notifyList={[]}
                                 title="Notifications"
                             />
                         </Grid>
                         <Grid item xs={12} sm={12} md={6}>
-                            <Deadlines 
-                                deadlineList={[]} 
+                            <Deadlines
+                                deadlineList={[]}
                                 title="Upcoming Deadlines"
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <CardScrollView 
-                                className={classes.root} 
-                                cardData={[]} 
+                            <CardScrollView
+                                className={classes.root}
+                                cardData={[]}
                                 title="Ongoing Projects Joined"
                                 EmptyIcon={SentimentDissatisfiedOutlined}
                                 emptyText="No Ongoing Projects. Try joining some!"
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <CardScrollView 
-                                className={classes.root} 
-                                cardData={[]} 
+                            <CardScrollView
+                                className={classes.root}
+                                cardData={[]}
                                 title="Waiting for Approval to Join Project"
                                 EmptyIcon={SentimentSatisfiedOutlined}
                                 emptyText="All Projects Approved!"
