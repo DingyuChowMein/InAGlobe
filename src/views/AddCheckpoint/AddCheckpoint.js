@@ -53,8 +53,9 @@ class AddCheckpoint extends Component {
         checkpointService.postCheckpoint(match.params.id, this.state.data)
             .then((response) => {
                 console.log(response);
+
                 // Redirect here based on response
-                this.props.history.goBack()
+                this.props.history.push("/main/projectlist/")
             }).catch((err) => {
             console.log(err)
         })

@@ -29,7 +29,7 @@ class ProposalMainPage extends Component {
         this.state = {
             userType: userType,
             projectData: projectData,
-            buttonDisabled: !(userType === "0" || (userType !== "1" && projectData.status === "Approved" && projectData.joined === 0)),
+            buttonDisabled: !(userType === 0 || (userType !== 1 && projectData.status === "Approved" && projectData.joined === 0)),
             buttonMessage: this.getButtonMessage(userType, projectData.status, projectData.joined),
             comments: [],
             showModal: false,
@@ -131,7 +131,7 @@ class ProposalMainPage extends Component {
                         >
                             {this.state.buttonMessage}
                         </RegularButton>
-                        {this.state.projectData.joined ?
+                        {this.state.projectData.joined == 2 ?
                             <RegularButton
                                 color="primary"
                                 onClick={() => this.props.history.push(`/main/projectlist/checkpoint/${match.params.id}`)}
