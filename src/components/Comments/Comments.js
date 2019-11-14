@@ -1,32 +1,35 @@
 import React, {Component} from "react"
+import { confirmAlert } from 'react-confirm-alert'
 
-import {withStyles, Grid, ListItemIcon} from "@material-ui/core"
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import Divider from '@material-ui/core/Divider'
-import ListItemText from '@material-ui/core/ListItemText'
-import ListItemAvatar from '@material-ui/core/ListItemAvatar'
-import Avatar from '@material-ui/core/Avatar'
-import Typography from '@material-ui/core/Typography'
-import TextField from '@material-ui/core/TextField'
-import config from "../../config";
+import { 
+    withStyles, 
+    Avatar, 
+    Button,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogContentText,
+    DialogActions, 
+    Divider, 
+    List, 
+    ListItem,
+    ListItemAvatar,
+    ListItemText,
+    ListItemSecondaryAction,
+    Typography, 
+    TextField,
+    IconButton,
+} from "@material-ui/core"
+import { Close } from "@material-ui/icons"
+
+import RegularButton from "../CustomButtons/RegularButton"
 
 import styles from "../../assets/jss/components/commentsStyle"
+import 'react-confirm-alert/src/react-confirm-alert.css'
 
-// import comments from "../../assets/data/CommentData"
-import {confirmAlert} from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
-import RegularButton from "../CustomButtons/RegularButton"
-import {commentsService} from "../../services/commentsService";
-import deleteCommentButtonIcon from "../../assets/img/close-24px.svg"
-import Icon from "@material-ui/core/Icon";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import Dialog from "@material-ui/core/Dialog";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogActions from "@material-ui/core/DialogActions";
-import Button from "@material-ui/core/Button";
+import config from "../../config"
+import { commentsService } from "../../services/commentsService"
+
 
 class Comments extends Component {
 
@@ -53,7 +56,7 @@ class Comments extends Component {
                 this.setState({
                     comments: json.comments
                 })
-            }).catch(err => console.log(err));
+            }).catch(err => console.log(err))
     }
 
 
@@ -67,14 +70,14 @@ class Comments extends Component {
         const today = new Date()
         this.setState({
             date: `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()}`
-        });
+        })
 
         commentsService.postComment(this.props.projectId, this.state)
             .then(response => response.json())
             .then(response => {
-                console.log(response);
+                console.log(response)
                 this.setState(() => {
-                    const updated_comments = this.state.comments.concat(response.comment);
+                    const updated_comments = this.state.comments.concat(response.comment)
                 return {
                     comments: updated_comments
                 }})
@@ -83,7 +86,7 @@ class Comments extends Component {
     }
 
     deleteComment(commentId) {
-        this.setState({comments: this.state.comments.filter(comment => comment.commentId !== commentId )});
+        this.setState({comments: this.state.comments.filter(comment => comment.commentId !== commentId )})
         commentsService.deleteComment(commentId)
             .then(response => {
                 console.log(response)
@@ -116,13 +119,13 @@ class Comments extends Component {
                     No
                 </Button>
                 <Button onClick={() => {
-                    this.deleteComment(this.state.selectedCommentId);
+                    this.deleteComment(this.state.selectedCommentId)
                     this.setState({dialogBoxOpened: false})
                 }} color="primary" autoFocus>
                     Yes
                 </Button>
             </DialogActions>
-        </Dialog>);
+        </Dialog>)
     }
 
     render() {
@@ -140,15 +143,16 @@ class Comments extends Component {
                                     />
                                 </ListItemAvatar>
                                 <ListItemSecondaryAction>
-                                    <img src={deleteCommentButtonIcon}
-                                         onClick={() => {
-                                             this.setState({
-                                                 selectedCommentId: comment.commentId,
-                                                 dialogBoxOpened: true
-                                             });
-                                         }
-                                         }
-                                         style={{cursor: 'pointer'}}/>
+                                    <IconButton
+                                        onClick={() => {
+                                            this.setState({
+                                                selectedCommentId: comment.commentId,
+                                                dialogBoxOpened: true
+                                            })
+                                        }}
+                                    >
+                                        <Close fontSize="medium" />
+                                    </IconButton>
                                 </ListItemSecondaryAction>
                                 <ListItemText
                                     primary={comment.ownerFirstName + " " + comment.ownerLastName}

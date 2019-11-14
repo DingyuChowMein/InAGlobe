@@ -4,7 +4,6 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import { 
     withStyles, 
     Card,
-    Divider,
     List,
     ListSubheader,
     Typography,
