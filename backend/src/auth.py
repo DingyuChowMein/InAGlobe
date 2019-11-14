@@ -55,4 +55,3 @@ def no_user_error():
 
 def permissions_error_handler():
     return abort(403, "Insufficient permissions!")
-
