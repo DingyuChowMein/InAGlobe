@@ -1,9 +1,9 @@
 import pytest
+import os
 import sys
 
 sys.path.append('.')
 import json
-from os.path import join, dirname
 
 from src.models import Project, File, User, FILE_TYPE
 from conftests import db, app, auth, client
@@ -19,7 +19,7 @@ def get_projects(client, auth, email='humanitarian@charity.org'):
 
 def upload_project(client, auth, email='humanitarian@charity.org', file='no_files.json'):
     token = auth.get_token(email=email)
-    json_file = load_json_file(file, 'project_test_files')
+    json_file = load_json_file(file, 'test_files/projects')
     return client.post('/projects/', headers={
         'Authorization': 'Bearer ' + token
     }, json=json_file)
@@ -32,13 +32,12 @@ def delete_project(client, auth, email, project_id):
     })
 
 
-def load_json_file(filename, dir):
-    relative_path = join(dir, filename)
-    absolute_path = join(dirname(__file__), relative_path)
+def load_json_file(filename, directory):
+    relative_path = os.path.join(directory, filename)
+    absolute_path = os.path.join(os.path.dirname(__file__), relative_path)
 
     with open(absolute_path) as json_file:
         return json.loads(json_file.read())
-
 
 ########################################################################################################################
 # Upload project tests
