@@ -15,28 +15,6 @@ from datetime import datetime
 
 @token_auth.login_required
 def get_dashboard_projects():
-    # print(user_id.projects)
-    # projects = user_.query.with_parent(User.id == user_id.get_id()).all()
-    # projects = Project.query.join(user_id.projects)
-    # print(projects)
-    # projects = [Project.query.filter(Project.id == project_id).first() for project_id in user_id.projects]
-    # projects = []
-    # for project_id in user_id.projects:
-    #     print(project_id)
-    #     p = Project.query.filter(Project.id == project_id).first()
-    #     print(p)
-    #     projects.append(p)
-    # project_ids = UserProjects.db.query.filter(UserProjects.id == user_id).all()
-    # projects = []
-    # for project_id in project_ids:
-    #     project = Project.query.filter(Project.id == project_id).first()
-    #     projects.append(project)
-
-    # projects = Project.query.filter(Project.id.in_(user_id.projects)).all()
-
-    # projects = Project.query.has(Project.id.in_(user_id.projects)).all()
-    # projects = User.query.filter_by(id=user_id.id).first().projects
-    #     # print(projects)
     return get_projects_helper(g.current_user.projects)
 
 
@@ -104,7 +82,13 @@ def upload_project(data):
 @token_auth.login_required
 @permission_required(USER_TYPE['HUMANITARIAN'])
 def delete_project(project_id):
-    return {'message': 'Project deleted!'}, 500
+    project = db.session.query(Project).filter(Project.id == project_id).first()
+    if project is None:
+        return {'message': 'Project does not exist!'}, 404
+    if project in g.current_user.projects:
+        return {'message': 'Project deleted!'}, 200
+    else:
+        return {'message': 'Insufficient permissions'}, 403
 
 @token_auth.login_required
 def upload_checkpoint(data, project_id):
@@ -248,6 +232,7 @@ def get_comments(project_id):
 
 @token_auth.login_required
 def delete_comment(project_id):
+    g.current_user
     return {'message': 'Comment deleted!'}, 500
 
 def get_projects_helper(projects):
