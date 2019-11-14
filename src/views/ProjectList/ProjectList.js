@@ -16,6 +16,7 @@ import ProjectCard from "./ProjectCard"
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/projectListStyle"
 import config from '../../config'
+import {projectService} from "../../services/projectsService";
 
 class ProjectList extends Component {
     constructor(props) {
@@ -26,18 +27,9 @@ class ProjectList extends Component {
     }
 
     componentDidMount() {
-        var token = localStorage.getItem('token')
-        var bearer = 'Bearer ' + token
-
-        fetch(config.apiUrl + '/projects/', {
-            method: 'get',
-            headers: {
-                'Authorization': bearer
-            },
-        })
-            .then(res => res.json())
+        projectService.getProjects()
             .then(data => {
-                console.log(data)
+                console.log(data);
                 data.projects.forEach(project => project.status = (project.status === 0 ? "Needs Approval" : "Approved"))
                 this.setState({
                     projects: data.projects
@@ -47,7 +39,7 @@ class ProjectList extends Component {
     }
 
     render() {
-        const { classes } = this.props
+        const {classes} = this.props
         return (
             <ResponsiveDrawer name={"Project List"}>
                 <div className={classes.root}>

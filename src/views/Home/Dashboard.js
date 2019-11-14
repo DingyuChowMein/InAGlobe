@@ -2,7 +2,16 @@
 import React, { Component } from 'react'
 
 // Material UI libraries
-import { withStyles, Grid } from '@material-ui/core'
+import { 
+    withStyles, 
+    Grid,
+    Paper,
+    List,
+    ListItem,
+    ListItemText,
+    Typography,
+    Button,
+} from '@material-ui/core'
 import { UpdateOutlined } from "@material-ui/icons"
 
 // Imports of different components in project
@@ -19,20 +28,50 @@ import styles from "../../assets/jss/views/homePageStyle"
 // import GridItem from "../../components/Grid/GridItem"
 // import ProjectCard from "../ProjectList/ProjectCard"
 import config from '../../config'
+import { dashboardService } from "../../services/dashboardService"
+
+// Example data
 import data from "../../assets/data/ProjectData"
 import notifications from "../../assets/data/NotificationData"
 import deadlines from "../../assets/data/DeadlinesData"
 import approvals from "../../assets/data/ProjectApprovalData"
 
+
 class Dashboard extends Component {
-    constructor(props){
-        super(props);
+    constructor(props) {
+        super(props)
 
         this.state = {
             user: {},
             projects: [],
+            requests: [],
+            userType: JSON.parse(localStorage.getItem('user')).permissions
         }
 
+    }
+
+    joinRequestClicked = (project_id, user_id, index) => {
+        var token = JSON.parse(localStorage.getItem('user')).token;
+        var bearer = 'Bearer ' + token
+
+        fetch(config.apiUrl + `/joiningApprove/`, {
+            method: 'post',
+            headers: {
+                'Authorization': bearer,
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                userId: user_id,
+                projectId: project_id
+            })
+        }).then(response => {
+            // Redirect here based on response
+            console.log(response)
+            alert("Request approved.")
+            this.setState({
+                requests: this.state.requests.filter((_, i) => i !== index)
+            });
+        }).catch(err => console.log(err))
     }
 
     componentDidMount() {
@@ -40,16 +79,10 @@ class Dashboard extends Component {
             user: localStorage.getItem('user'),
         });
 
-        var token = localStorage.getItem('token')
-        var bearer = 'Bearer ' + token
+        var token = JSON.parse(localStorage.getItem('user')).token;
+        var bearer = 'Bearer ' + token;
 
-        fetch(config.apiUrl + '/dashboard/', {
-            method: 'get',
-            headers: {
-                'Authorization': bearer
-            },
-        })
-            .then(res => res.json())
+        dashboardService.getDashboard()
             .then(data => {
                 console.log(data)
                 data.projects.forEach(project => project.status = (project.status === 0 ? "Needs Approval" : "Approved"))
@@ -58,6 +91,45 @@ class Dashboard extends Component {
                 })
             })
             .catch(console.log)
+
+        // Get the list of project join requests
+        fetch(config.apiUrl + '/joiningApprove/', {
+            method: 'get',
+            headers: {
+                'Authorization': bearer
+            },
+        })
+            .then(res => res.json())
+            .then(data => {
+                this.setState({
+                    requests: data.requests
+                })
+                console.log(data.requests)
+            })
+            .catch(console.log)
+    }
+
+    renderRequestsList = () => {
+        if (this.state.userType !== 0) {
+            return;
+        }
+        return (
+            <div>
+                <Typography gutterBottom variant="h5" component="h2"> List of project join requests </Typography>
+                <Paper style={{maxHeight: 200, overflow: 'auto'}}>
+                    <List>
+                        {this.state.requests.map((request, i) => (
+                            <ListItem
+                                selectable="true"
+                                vlaue={i}>
+                                <ListItemText primary={request.user_first_name + " " + request.user_last_name + " wants to join " + request.project_title}/>
+                                <Button onClick={() => this.joinRequestClicked(request.project_id, request.user_id, i)}>Approve</Button>
+                            </ListItem>
+                        ))}
+                    </List>
+                </Paper>
+            </div>
+        )
     }
 
     render() {
@@ -102,10 +174,15 @@ class Dashboard extends Component {
                         />
                     </Grid>
                     <Grid item xs={12}>
-                        <CardScrollView className={classes.root} cardData={data} title="Projects to Approve"/>
+                        <CardScrollView 
+                            className={classes.root} 
+                            cardData={data} 
+                            title="Projects to Approve"
+                        />
                     </Grid>
                 </Grid>
             </ResponsiveDrawer>
+
         )
     }
 }

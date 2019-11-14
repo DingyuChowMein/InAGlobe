@@ -1,5 +1,5 @@
 // Main ReactJS libraries
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 
 // Material UI libraries
 import Avatar from '@material-ui/core/Avatar'
@@ -14,15 +14,18 @@ import Link from '@material-ui/core/Link'
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
 import Typography from '@material-ui/core/Typography'
-import { withStyles } from '@material-ui/core/styles'
+import {withStyles} from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 
 // Imports of different components in project
 import Copyright from "../../components/Copyright/Copyright"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/signUpStyle"
-import { userService } from "../../services/userService"
+import {userService} from "../../services/userService"
+
 
 class SignUp extends Component {
 
@@ -30,39 +33,124 @@ class SignUp extends Component {
         super(props);
         userService.logout();
         this.state = {
-            email: "",
-            password: "",
-            firstName: "",
-            lastName: "",
-            signUpFailed: false,
+            email: {
+                error: "",
+                value: ""
+            },
+            password: {
+                error: "",
+                value: ""
+            },
+            firstName: {
+                error: "",
+                value: ""
+            },
+            lastName: {
+                error: "",
+                value: ""
+            },
             userType: "STUDENT",
-            labelWidth: 0
-        }
+            labelWidth: 0,
+            signingUp: false
+        };
         this.inputLabel = null
         this.handleFormChange = this.handleFormChange.bind(this)
         this.signUpPressed = this.signUpPressed.bind(this)
     }
 
+    handleValidation = () => {
+        let success = true;
+        let emailError = ""
+        let firstNameError = ""
+        let lastNameError = ""
+        let passwordError = ""
+
+        if (!this.state.email.value.match(/^[\w\d]+@[\w\d]+\.(ac|org)\..*$/)) {
+            emailError = "Must have .ac or .org email!";
+            success = false;
+        }
+
+        if (this.state.firstName.value === "") {
+            firstNameError = "First name cannot be empty!";
+            success = false;
+        }
+
+        if (this.state.lastName.value === "") {
+            lastNameError = "Last name cannot be empty!";
+            success = false;
+        }
+
+        if (this.state.password.value === "") {
+            passwordError = "Password cannot be empty!";
+            success = false;
+        }
+
+
+        this.setState(prevState => ({
+            email: {
+                ...prevState.email,
+                error: emailError
+            },
+            firstName: {
+                ...prevState.firstName,
+                error: firstNameError
+            },
+            lastName: {
+                ...prevState.lastName,
+                error: lastNameError
+            },
+            password: {
+                ...prevState.password,
+                error: passwordError
+            }
+        }));
+        return success;
+    };
+
     handleFormChange(e) {
-        const { name, value } = e.target
+        const {name, value} = e.target;
         this.setState({
-            [name]: value
-        })
+            [name]: {
+                error: "",
+                value: value
+            }
+        });
     }
 
     signUpPressed() {
         // You can authenticate here
-        userService.signUp(
-            this.state.firstName,
-            this.state.lastName,
-            this.state.email,
-            this.state.password,
-            this.state.userType)
-            .then(response => {
-                console.log(response)
-                this.props.history.push("/login")
-            }
-        )
+        this.setState({
+            signingUp: true
+        });
+
+
+        if (this.handleValidation()) {
+            console.log(this.state.signingUp);
+            userService.signUp(
+                this.state.firstName.value,
+                this.state.lastName.value,
+                this.state.email.value,
+                this.state.password.value,
+                this.state.userType)
+                .then(response => {
+                    this.props.history.push("/login")
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.setState(prevState => ({
+                        signingUp: false,
+                        email: {
+                            ...prevState.email,
+                            error: "Email already exists!"
+                        }
+                    }));
+                });
+        } else {
+            this.setState({
+                signingUp: false
+            });
+        }
+
     }
 
     componentDidMount() {
@@ -72,14 +160,14 @@ class SignUp extends Component {
     }
 
     render() {
-        const { classes } = this.props;
+        const {classes} = this.props;
 
         return (
             <Container component="main" maxWidth="xs">
-                <CssBaseline />
+                <CssBaseline/>
                 <div className={classes.paper}>
                     <Avatar className={classes.avatar}>
-                        <this.props.icon />
+                        <this.props.icon/>
                     </Avatar>
                     <Typography component="h1" variant="h5">
                         Sign up
@@ -88,10 +176,12 @@ class SignUp extends Component {
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={6}>
                                 <TextField
+                                    error={!(this.state.firstName.error === "")}
                                     name="firstName"
                                     onChange={this.handleFormChange}
                                     variant="outlined"
                                     required
+                                    helperText={this.state.firstName.error}
                                     fullWidth
                                     id="firstName"
                                     label="First Name"
@@ -101,9 +191,11 @@ class SignUp extends Component {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
+                                    error={!(this.state.lastName.error === "")}
                                     variant="outlined"
                                     required
                                     fullWidth
+                                    helperText={this.state.lastName.error}
                                     id="lastName"
                                     label="Last Name"
                                     name="lastName"
@@ -113,10 +205,12 @@ class SignUp extends Component {
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
+                                    error={!(this.state.email.error === "")}
                                     variant="outlined"
                                     required
                                     fullWidth
                                     id="email"
+                                    helperText={this.state.email.error}
                                     label="Email Address"
                                     name="email"
                                     onChange={this.handleFormChange}
@@ -125,9 +219,11 @@ class SignUp extends Component {
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
+                                    error={!(this.state.password.error === "")}
                                     variant="outlined"
                                     required
                                     fullWidth
+                                    helperText={this.state.password.error}
                                     name="password"
                                     onChange={this.handleFormChange}
                                     label="Password"
@@ -137,12 +233,14 @@ class SignUp extends Component {
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <FormControl 
+                                <FormControl
                                     variant="outlined"
                                     required
                                     fullWidth
                                 >
-                                    <InputLabel ref={inputLabel => { this.inputLabel = inputLabel }} id="userTypeLabel">Select User Type</InputLabel>
+                                    <InputLabel ref={inputLabel => {
+                                        this.inputLabel = inputLabel
+                                    }} id="userTypeLabel">Select User Type</InputLabel>
                                     <Select
                                         labelId="userTypeLabel"
                                         id="userType"
@@ -165,7 +263,7 @@ class SignUp extends Component {
                             onClick={this.signUpPressed}
                             className={classes.submit}
                         >
-                            Sign Up
+                            {this.state.signingUp ? <CircularProgress className={classes.loading}/> : "Sign Up"}
                         </Button>
                         <Grid container justify="flex-end">
                             <Grid item>
@@ -177,7 +275,7 @@ class SignUp extends Component {
                     </form>
                 </div>
                 <Box mt={5}>
-                    <Copyright />
+                    <Copyright/>
                 </Box>
             </Container>
         )

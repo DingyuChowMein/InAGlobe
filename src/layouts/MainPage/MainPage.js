@@ -7,27 +7,28 @@ import { withStyles } from "@material-ui/styles"
 
 // Importing webpath data for logins
 import { mainRoutes } from "../../routes"
+import { checkpointRoutes } from "../../routes"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/layouts/mainPageStyle"
+import {PrivateRoute} from "../../helpers/PrivateRoute";
+
 
 class MainPage extends Component {
 
     render() {
-        console.log(localStorage.getItem("token").length);
         const { path } = this.props.match;
 
         return (
             <Switch>
                 {mainRoutes.map((prop, key) => {
                     return (
-                        <Route 
+                        <PrivateRoute
                             path={prop.layout + prop.path}
                             key={key}
                             exact
                             component={prop.component}
                         />
-
                     )
                 })}
                 <Redirect strict from="/main" to="/main/home" />
