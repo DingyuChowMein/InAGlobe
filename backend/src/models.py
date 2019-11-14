@@ -56,6 +56,11 @@ user_project_joining_table = db.Table('UserProjects', db.Model.metadata,
     db.Column('approved', db.Integer, default=0)
 )
 
+user_comment_joining_table = db.Table('UserComments', db.Model.metadata,
+    db.Column('user_id', db.Integer, ForeignKey('Users.id')),
+    db.Column('comment_id', db.Integer, ForeignKey('Comments.id'))
+)
+
 # checkpoint_project_joining_table = db.Table('CheckpointProjects', db.Model.metadata,
 #     db.Column('project_id', db.Integer, ForeignKey('Projects.id')),
 #     db.Column('checkpoint_id', db.Integer, ForeignKey('Checkpoints.id'))
@@ -94,6 +99,9 @@ class User(Model, db.Model):
     user_type = db.Column(db.Integer, default=USER_TYPE['STUDENT'])
     projects = db.relationship('Project', secondary=user_project_joining_table,
                                backref=db.backref('users', lazy='dynamic'),  uselist=True)
+
+    comments = db.relationship('Comment', secondary=user_comment_joining_table,
+                               backref=db.backref('users', lazy='dynamic'), uselist=True)
 
     confirmed = db.Column(db.Boolean, nullable=False, default=False)
     confirmed_on = db.Column(db.DateTime, nullable=True)
