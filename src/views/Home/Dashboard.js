@@ -32,7 +32,6 @@ class Dashboard extends Component {
         super(props);
 
         this.joinRequestClicked = this.joinRequestClicked.bind(this);
-        this.renderRequestsList = this.renderRequestsList.bind(this);
 
         this.state = {
             user: {},
@@ -102,31 +101,6 @@ class Dashboard extends Component {
             .catch(console.log)
     }
 
-    renderRequestsList() {
-        if (this.state.userType !== 0) {
-            return;
-        }
-        return (
-            <div>
-                <Typography gutterBottom variant="h5" component="h2"> List of project join requests </Typography>
-                <Paper style={{maxHeight: 200, overflow: 'auto'}}>
-                    <List>
-                        {this.state.requests.map((request, i) => (
-                            <ListItem
-                                selectable="true"
-                                vlaue={i}>
-                                <ListItemText
-                                    primary={request.user_first_name + " " + request.user_last_name + " wants to join " + request.project_title}/>
-                                <Button
-                                    onClick={() => this.joinRequestClicked(request.project_id, request.user_id, i)}>Approve</Button>
-                            </ListItem>
-                        ))}
-                    </List>
-                </Paper>
-            </div>
-        )
-    }
-
     render() {
         const {classes} = this.props
         return (
@@ -168,7 +142,6 @@ class Dashboard extends Component {
                         <CardScrollView className={classes.root} cardData={data} title="Projects to Approve"/>
                     </Grid>
                 </Grid>
-                {this.renderRequestsList()}
             </ResponsiveDrawer>
 
         )
