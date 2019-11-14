@@ -35,7 +35,7 @@ class ResponsiveDrawer extends Component {
         super(props)
         this.state = {
             mobileOpen: false,
-            userPermissions: localStorage.getItem('permissions')
+            userPermissions: JSON.parse(localStorage.getItem('user')).permissions
         };
         this.handleDrawerToggle = this.handleDrawerToggle.bind(this)
         this.redirectTo = this.redirectTo.bind(this)
@@ -75,7 +75,10 @@ class ResponsiveDrawer extends Component {
                             onClick={() => this.redirectTo(route.layout + route.path)}
                             key={route.name}
                         >
-                            <ListItemIcon><route.icon /></ListItemIcon>
+                            {this.state.mobileOpen ? 
+                            <ListItemIcon ><route.icon /></ListItemIcon> : 
+                            <ListItemIcon className={classes.iconColor}><route.icon /></ListItemIcon>}
+
                             <ListItemText primary={route.name} />
                         </ListItem>
                         : 
@@ -109,7 +112,9 @@ class ResponsiveDrawer extends Component {
 
                     </Toolbar>
                 </AppBar>
-                <nav className={classes.drawer} aria-label="mailbox folders">
+                <nav 
+                    className={classes.drawer} 
+                    aria-label="mailbox folders">
                     {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
                     <Hidden smUp implementation="css">
                         <Drawer
@@ -131,7 +136,7 @@ class ResponsiveDrawer extends Component {
                     <Hidden xsDown implementation="css">
                         <Drawer
                             classes={{
-                                paper: classes.drawerPaper,
+                                paper: classes.permanentDrawer
                             }}
                             variant="permanent"
                             open={this.state.mobileOpen}

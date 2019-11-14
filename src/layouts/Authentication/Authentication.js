@@ -13,10 +13,8 @@ import styles from "../../assets/jss/layouts/authenticationStyle"
 
 
 class Authentication extends Component {
-
     render() {
         // const { classes } = this.props
-        console.log('here')
         const { path } = this.props.match
         return (
             <Switch>

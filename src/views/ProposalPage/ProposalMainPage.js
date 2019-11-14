@@ -13,7 +13,9 @@ import styles from "../../assets/jss/views/proposalMainPageStyle"
 
 import Comments from '../../components/Comments/Comments'
 import config from "../../config";
-import { commentsService } from "../../services/commentsService";
+import {commentsService} from "../../services/commentsService";
+import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer'
+import AddCheckpointModal from "../AddCheckpoint/AddCheckpoint";
 
 class ProposalMainPage extends Component {
 
@@ -21,17 +23,19 @@ class ProposalMainPage extends Component {
         super(props);
         this.actionButtonClicked = this.actionButtonClicked.bind(this);
         this.getButtonMessage = this.getButtonMessage.bind(this);
-        const userType = localStorage.getItem('permissions');
+        const userType = JSON.parse(localStorage.getItem('user')).permissions;
         const projectData = JSON.parse(localStorage.getItem(`proposalPage/${this.props.match.params.id}`));
+        console.log(projectData);
         this.state = {
             userType: userType,
             projectData: projectData,
-            buttonDisabled: !(userType === "0" || (userType !== "1" && projectData.status === "Approved")),
-            buttonMessage: this.getButtonMessage(userType, projectData.status),
-            comments: []
+            buttonDisabled: !(userType === "0" || (userType !== "1" && projectData.status === "Approved" && projectData.joined === 0)),
+            buttonMessage: this.getButtonMessage(userType, projectData.status, projectData.joined),
+            comments: [],
+            showModal: false,
         };
 
-        console.log(this.state.userType);
+        console.log("UserType:" + this.state.userType);
         console.log(this.state.buttonDisabled);
     }
 
@@ -47,18 +51,38 @@ class ProposalMainPage extends Component {
     }
 
     actionButtonClicked() {
-        const token = localStorage.getItem('token');
+        const token = JSON.parse(localStorage.getItem('user')).token;
         const bearer = 'Bearer ' + token;
-
-        if (this.state.userType === "0") {
+        if (this.state.userType === 0) {
             var new_project_data = this.state.projectData;
             new_project_data.status = new_project_data.status === "Approved" ? "Needs Approval" : "Approved";
             this.setState({
                 projectData: new_project_data,
-                buttonMessage: this.getButtonMessage(this.state.userType, new_project_data.status)
+                buttonMessage: this.getButtonMessage(this.state.userType, new_project_data.status, new_project_data.joined)
+            });
+            fetch(config.apiUrl + '/approve/', {
+                method: 'post',
+                headers: {
+                    'Authorization': bearer,
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({"projectId": this.state.projectData.id}),
+            }).then((response) => {
+                // Redirect here based on response
+                console.log(response)
+            }).catch((err) => {
+                console.log(err)
+            });
+        } else if ((this.state.userType === 2 || this.state.userType === 3) && (this.state.projectData.joined === 0)) {
+            var new_project_data = this.state.projectData;
+            new_project_data.joined = 1;
+            this.setState({
+                projectData: new_project_data,
+                buttonDisabled: true,
+                buttonMessage: this.getButtonMessage(this.state.userType, new_project_data.status, new_project_data.joined)
             });
 
-            fetch(config.apiUrl + '/approve/', {
+            fetch(config.apiUrl + '/dashboard/', {
                 method: 'post',
                 headers: {
                     'Authorization': bearer,
@@ -72,59 +96,55 @@ class ProposalMainPage extends Component {
                 .catch((err) => {
                     console.log(err)
                 });
-        } else if (this.state.userType === "2" || this.state.userType === "3") {
-            const token = localStorage.getItem('token');
-            const bearer = 'Bearer ' + token;
-            console.log(this.state.projectData)
-
-                fetch(config.apiUrl + '/dashboard/', {
-                    method: 'post',
-                    headers: {
-                        'Authorization': bearer,
-                        'Content-type': 'application/json'
-                    },
-                    body: JSON.stringify({"projectId": this.state.projectData.id}),
-                }).then((response) => {
-                    // Redirect here based on response
-                    console.log(response)
-                })
-                    .catch((err) => {
-                        console.log(err)
-                    });
         }
     }
 
-    getButtonMessage(userType, status) {
-        if (userType === "0") {
+    getButtonMessage(userType, status, joined) {
+        if (userType === 0) {
             if (status === "Needs Approval") {
                 return "Approve"
             }
             return "Disapprove"
-        } else if (userType === "1") {
+        } else if (userType === 1) {
             return status
+        } else if (joined === 0) {
+            return "Request joining";
+        } else if (joined === 1) {
+            return "Awaiting approval";
         } else {
-            return "Select project";
+            return "Joined";
         }
     }
 
+
     render() {
-        const { classes, match } = this.props
+        const {classes, match} = this.props
         const proposalData = JSON.parse(localStorage.getItem(`proposalPage/${match.params.id}`))
         return (
-            <ProposalPage {...this.props} data={proposalData}>
-                <div className={classes.buttonsDiv}>
-                        <RegularButton 
+            <ResponsiveDrawer name={"Project Page"}>
+                <ProposalPage {...this.props} data={proposalData} isPreview={false}>
+                    <div className={classes.buttonsDiv}>
+                        <RegularButton
                             color="primary"
                             onClick={this.actionButtonClicked}
                             disabled={this.state.buttonDisabled}
                         >
                             {this.state.buttonMessage}
                         </RegularButton>
-                </div>
-                <div className={classes.commentsDiv}>
-                    <Comments comments={this.state.comments} projectId={this.state.projectData.id}/>
-                </div>
-            </ProposalPage>
+                        {this.state.projectData.joined ?
+                            <RegularButton
+                                color="primary"
+                                onClick={() => this.props.history.push(`/main/projectlist/checkpoint/${match.params.id}`)}
+                            >
+                                Add Checkpoint Progress
+                            </RegularButton> : null
+                        }
+                    </div>
+                    <div className={classes.commentsDiv}>
+                        <Comments comments={this.state.comments} projectId={this.state.projectData.id}/>
+                    </div>
+                </ProposalPage>
+            </ResponsiveDrawer>
         )
     }
 }

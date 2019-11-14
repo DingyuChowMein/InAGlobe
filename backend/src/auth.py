@@ -14,6 +14,8 @@ def verify_password(email, password):
     user = User.query.filter_by(email=email).first()
     if user is None:
         return abort(404, 'User does not exist!')
+    if not user.confirmed:
+        return abort(400)
     g.current_user = user
     return user.verify_password(password)
 
