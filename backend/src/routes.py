@@ -274,8 +274,16 @@ def add_comment(data, project_id):
     )
     comment.save()
     g.current_user.comments.append(comment)
-    db.commit()
-    return {'message': 'Comment added!'}, 201
+    db.session.commit()
+    comment_json = {
+        "commentId": comment.id,
+        "text": comment.text,
+        "ownerId": comment.owner_id,
+        "ownerFirstName": comment.owner_first_name,
+        "ownerLastName": comment.owner_last_name,
+        "date": comment.date_time.strftime("%Y-%m-%d %H:%M:%S")
+    }
+    return {'message': 'Comment added!', 'comment': comment_json}, 201
 
 
 @token_auth.login_required
@@ -293,9 +301,10 @@ def get_comments(project_id):
     } for comment in project_comments]
     return {"comments": comments_json}, 200
 
+
 @token_auth.login_required
 def delete_comment(comment_id):
-    comment = db.session.query(Comment).filter(Comment.id == comment_id).first()
+    comment = Comment.query.filter(Comment.id == comment_id).first()
     if comment is None:
         return {'message': 'Comment does not exist!'}, 404
     if comment in g.current_user.comments or g.current_user.is_admin():
