@@ -1,7 +1,6 @@
 import os
-import json
 
-from flask import g, abort, url_for, render_template
+from flask import g, abort, render_template
 from . import db
 from .auth import token_auth, permission_required
 from .models import Project, File, User, Comment, Checkpoint, CheckpointFile, USER_TYPE, FILE_TYPE, PROJECT_STATUS, user_project_joining_table
@@ -15,28 +14,6 @@ from datetime import datetime
 
 @token_auth.login_required
 def get_dashboard_projects():
-    # print(user_id.projects)
-    # projects = user_.query.with_parent(User.id == user_id.get_id()).all()
-    # projects = Project.query.join(user_id.projects)
-    # print(projects)
-    # projects = [Project.query.filter(Project.id == project_id).first() for project_id in user_id.projects]
-    # projects = []
-    # for project_id in user_id.projects:
-    #     print(project_id)
-    #     p = Project.query.filter(Project.id == project_id).first()
-    #     print(p)
-    #     projects.append(p)
-    # project_ids = UserProjects.db.query.filter(UserProjects.id == user_id).all()
-    # projects = []
-    # for project_id in project_ids:
-    #     project = Project.query.filter(Project.id == project_id).first()
-    #     projects.append(project)
-
-    # projects = Project.query.filter(Project.id.in_(user_id.projects)).all()
-
-    # projects = Project.query.has(Project.id.in_(user_id.projects)).all()
-    # projects = User.query.filter_by(id=user_id.id).first().projects
-    #     # print(projects)
     if g.current_user.get_permissions() == USER_TYPE['ADMIN']:
         return get_projects_helper(Project.query.filter(Project.status == PROJECT_STATUS['NEEDS_APPROVAL']).all())
     return get_projects_helper(g.current_user.projects)
@@ -46,9 +23,7 @@ def get_dashboard_projects():
 @token_auth.login_required
 def select_project(data):
     project = Project.query.filter(Project.id == data['projectId']).first()
-
     g.current_user.projects.append(project)
-
     db.session.commit()
     return {'message': 'Project selection requested!'}, 201
 
@@ -299,8 +274,16 @@ def add_comment(data, project_id):
     )
     comment.save()
     g.current_user.comments.append(comment)
-    db.commit()
-    return {'message': 'Comment added!'}, 201
+    db.session.commit()
+    comment_json = {
+        "commentId": comment.id,
+        "text": comment.text,
+        "ownerId": comment.owner_id,
+        "ownerFirstName": comment.owner_first_name,
+        "ownerLastName": comment.owner_last_name,
+        "date": comment.date_time.strftime("%Y-%m-%d %H:%M:%S")
+    }
+    return {'message': 'Comment added!', 'comment': comment_json}, 201
 
 
 @token_auth.login_required
@@ -318,13 +301,15 @@ def get_comments(project_id):
     } for comment in project_comments]
     return {"comments": comments_json}, 200
 
+
 @token_auth.login_required
 def delete_comment(comment_id):
-    comment = db.session.query(Comment).filter(Comment.id == comment_id).first()
+    comment = Comment.query.filter(Comment.id == comment_id).first()
     if comment is None:
         return {'message': 'Comment does not exist!'}, 404
-    if comment in g.current_user.comments:
-        comment.delete()
+    if comment in g.current_user.comments or g.current_user.get_permissions() == USER_TYPE['ADMIN']:
+        Comment.query.filter(Comment.id == comment_id).delete()
+        db.session.commit()
         return {'message': 'Comment deleted!'}, 200
     else:
         return {'message': 'Insufficient permissions'}, 403

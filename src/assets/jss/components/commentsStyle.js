@@ -21,6 +21,11 @@ const styles = theme => ({
         marginTop: "15px",
         paddingTop: "20px",
         paddingBottom: "20px"
+    },
+    buttonsDivider: {
+        width: "5px",
+        height: "auto",
+        display: "inline"
     }
 })
 

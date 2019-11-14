@@ -15,7 +15,7 @@ def verify_password(email, password):
     if user is None:
         return abort(404, 'User does not exist!')
     if not user.confirmed:
-        return abort(400)
+        return abort(500, 'User is not verified!')
     g.current_user = user
     return user.verify_password(password)
 

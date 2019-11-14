@@ -39,17 +39,6 @@ class ProposalMainPage extends Component {
         console.log(this.state.buttonDisabled);
     }
 
-    componentDidMount() {
-        commentsService.getComments(this.state.projectData.id)
-            .then(c => c.json())
-            .then(json => {
-                console.log(json)
-                this.setState({
-                    comments: json.comments
-                })
-            }).catch(err => console.log(err));
-    }
-
     actionButtonClicked() {
         const token = JSON.parse(localStorage.getItem('user')).token;
         const bearer = 'Bearer ' + token;
@@ -141,7 +130,7 @@ class ProposalMainPage extends Component {
                         }
                     </div>
                     <div className={classes.commentsDiv}>
-                        <Comments comments={this.state.comments} projectId={this.state.projectData.id}/>
+                        <Comments projectId={this.state.projectData.id}/>
                     </div>
                 </ProposalPage>
             </ResponsiveDrawer>
