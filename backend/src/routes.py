@@ -101,6 +101,8 @@ def upload_project(data):
 
     return {'message': 'Project added to db!'}, 201
 
+@token_auth.login_required
+@permission_required(USER_TYPE['HUMANITARIAN'])
 def delete_project(project_id):
     return {'message': 'Project deleted!'}, 500
 
@@ -244,7 +246,7 @@ def get_comments(project_id):
     } for comment in project_comments]
     return {"comments": comments_json}, 200
 
-
+@token_auth.login_required
 def delete_comment(project_id):
     return {'message': 'Comment deleted!'}, 500
 
