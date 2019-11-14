@@ -1,23 +1,17 @@
 import config from '../config'
-import { authHeader } from '../helpers/auth-header'
+import {authHeader} from '../helpers/auth-header'
 
 
 // const apiUrl = 'http://localhost:5000';
 // const apiUrl = 'https://inaglobe-api.herokuapp.com';
 
 export const userService = {
-    login, signUp, logout
+    login, signUp, logout, confirm
 }
 
-function logout(){
-    console.log("Logged out");
-    const token = localStorage.getItem('token')
-    localStorage.removeItem('firstname');
-    localStorage.removeItem('lastname');
-    localStorage.removeItem('permissions');
-    localStorage.setItem('token', '');
-    if (token !== '') {
-        const bearer = 'Bearer ' + localStorage.getItem('token')
+function logout() {
+    if (localStorage.getItem('user')) {
+        const bearer = 'Bearer ' + JSON.parse(localStorage.getItem('user')).token;
         const requestOptions = {
             method: 'DELETE',
             headers: {
@@ -26,7 +20,10 @@ function logout(){
         }
         console.log(config.apiUrl + '/users/tokens/')
         fetch(config.apiUrl + '/users/tokens/', requestOptions)
-            .then(response => console.log(response))
+            .then(response => console.log(response));
+
+        localStorage.clear();
+        console.log("Logged out");
     }
 }
 
@@ -51,7 +48,7 @@ function signUp(firstName, lastName, email, password, userType) {
 }
 
 function login(email, password) {
-    console.log(config.apiUrl + '/users/tokens/')
+    console.log(config.apiUrl + '/users/tokens/');
 
     const requestOptions = {
         method: 'GET',
@@ -60,25 +57,39 @@ function login(email, password) {
         }
     }
 
-    return fetch(config.apiUrl + '/users/tokens/', requestOptions)
-        .then(response => response.json())
+    return fetch(`${config.apiUrl}/users/tokens/`, requestOptions)
+        .then(handleResponse)
         .then(user => {
-            // login successful if there's a user in the response
-                // store user details and basic auth credentials in local storage
-                // to keep user logged in between page refreshes
-                // user.authdata = window.btoa(email + ':' + password);
-            if (Object.keys(user).length === 0) {
-                localStorage.setItem('token', '');
-                return '';
+            if (user) {
+                localStorage.setItem('user', JSON.stringify(user));
             }
 
-            localStorage.setItem('token', user.token);
-            localStorage.setItem('firstname', user.firstname);
-            localStorage.setItem('lastname', user.lastname);
-            localStorage.setItem('permissions', user.permissions);
-            localStorage.setItem('userid', user.userid);
-            console.log(localStorage);
-            return user.token;
+            return user;
         });
 }
 
+function confirm(token) {
+    const requestOptions = {
+        method: 'GET',
+    };
+
+    return fetch(`${config.apiUrl}/confirm/${token}/`, requestOptions)
+        .then(handleResponse)
+}
+
+function handleResponse(response) {
+    return response.text().then(text => {
+        const data = text && JSON.parse(text);
+        if (!response.ok) {
+            if (response.status === 401) {
+                logout();
+                // location.reload(true);
+            }
+
+            const error = (data && data.message) || response.statusText;
+            return Promise.reject(error);
+        }
+
+        return data;
+    })
+}

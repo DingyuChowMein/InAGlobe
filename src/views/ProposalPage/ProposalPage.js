@@ -1,13 +1,16 @@
-import React, { Component } from "react"
+import React, {Component} from "react"
+import {VerticalTimeline, VerticalTimelineElement} from 'react-vertical-timeline-component';
+import 'react-vertical-timeline-component/style.min.css';
 
-import { withStyles } from "@material-ui/styles"
+import {withStyles} from "@material-ui/styles"
+import School from '@material-ui/icons/School';
 
 import styles from "../../assets/jss/views/proposalPageStyle"
 import config from "../../config";
 
 class ProposalPage extends Component {
     render() {
-        const { classes, data, children, isPreview } = this.props
+        const {classes, data, children, isPreview} = this.props
 
         return (
             <div>
@@ -42,9 +45,35 @@ class ProposalPage extends Component {
                         </a>
                     ))}
                 </div>
+                <VerticalTimeline>
+                    {
+                        data.checkpoints.map(event => (
+                            <VerticalTimelineElement
+                                className="vertical-timeline-element--work"
+                                iconStyle={{background: 'rgb(33, 150, 243)', color: '#fff'}}
+                                date={event.date}
+                                icon={<School/>}
+                            >
+                                <h3 className="vertical-timeline-element-title">{event.title}</h3>
+                                <h4 className="vertical-timeline-element-subtitle">{event.subtitle}</h4>
+                                <p>{event.text}</p>
+                                <p>{event.documents.map(doc => (
+                                    <a href={config.s3Bucket + doc}> {/[^/]*$/.exec(doc)[0]} {"\n"}</a>
+                                ))}
+                                </p>
+                                <p>{event.images.map(doc => (
+                                    <a href={config.s3Bucket + doc}> {/[^/]*$/.exec(doc)[0]} {"\n"}</a>
+                                ))}
+                                </p>
+                            </VerticalTimelineElement>
+                        ))
+                    }
+                </VerticalTimeline>
 
                 {children}
+
             </div>
+
         )
     }
 }

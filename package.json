@@ -21,6 +21,7 @@
 		"react-popupbox": "latest",
 		"react-router-dom": "latest",
 		"react-scripts": "latest",
+		"react-vertical-timeline-component": "^2.5.0",
 		"react-window": "^1.8.5",
 		"serve": "latest"
 	},

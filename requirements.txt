@@ -7,8 +7,10 @@ flask-script
 flask-migrate
 flask-restful
 flask-cors
+flask-mail
 pymysql
 coverage
 python-dotenv
 pytest
 flask-httpauth
+itsdangerous
