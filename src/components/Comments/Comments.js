@@ -27,6 +27,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
+import Spinner from 'react-spinner-material';
 
 class Comments extends Component {
 
@@ -36,6 +37,7 @@ class Comments extends Component {
             text: "",
             dialogBoxOpened: false,
             selectedCommentId: 0,
+            postLoading: false,
             comments: []
         }
 
@@ -64,6 +66,7 @@ class Comments extends Component {
     }
 
     post() {
+        this.setState({postLoading: true});
         const today = new Date()
         this.setState({
             date: `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()}`
@@ -76,7 +79,8 @@ class Comments extends Component {
                 this.setState(() => {
                     const updated_comments = this.state.comments.concat(response.comment);
                 return {
-                    comments: updated_comments
+                    comments: updated_comments,
+                    postLoading: false
                 }})
             })
             .catch(err => console.log(err))
@@ -187,8 +191,9 @@ class Comments extends Component {
                         color="primary"
                         className={classes.commentsPostButton}
                         onClick={this.post}
+                        disabled={this.state.postLoading}
                     >
-                        {"Post"}
+                        {this.state.postLoading ?  <Spinner size={20} spinnerColor={"#FFFFFF"} spinnerWidth={3} visible={true} /> : "Post"}
                     </RegularButton>
                 </div>
                 {this.renderConfirmDialog()}
