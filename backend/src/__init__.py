@@ -25,6 +25,7 @@ def create_app():
 
     from .routes import (
         get_projects, upload_project, approve_project,
+        upload_checkpoint,
         get_users, create_user, confirm_email,
         add_comment, get_comments,
         get_dashboard_projects, select_project,
@@ -104,6 +105,18 @@ def create_app():
             response, code = create_user(request.get_json())
             return new_response(response, code)
 
+    class Checkpoints(Resource):
+        def options(self, project_id):
+            response = make_response()
+            response.headers.add("Access-Control-Allow-Origin", "*")
+            response.headers.add('Access-Control-Allow-Headers', "*")
+            response.headers.add('Access-Control-Allow-Methods', "*")
+            return response
+
+        def post(self, project_id):
+            response, code = upload_checkpoint(request.get_json(), project_id)
+            return new_response(response, code)
+
     class Tokens(Resource, CORS):
         def get(self):
             response, code = get_token()
@@ -134,5 +147,6 @@ def create_app():
     api.add_resource(JoiningApproval, '/joiningApprove/')
     api.add_resource(ConfirmEmail, '/confirm/', '/confirm/<token>/')
     api.add_resource(Dashboard, '/dashboard/')
+    api.add_resource(Checkpoints, '/checkpoint/<int:project_id>/')
 
     return app

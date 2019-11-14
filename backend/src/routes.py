@@ -103,6 +103,23 @@ def upload_project(data):
 
 
 @token_auth.login_required
+def upload_checkpoint(data, project_id):
+    if not project_id:
+        return {'message': "No project id"}
+    checkpoint = Checkpoint(
+        project_id=project_id,
+        owner_id=g.current_user.get_id(),
+        text=data['text'],
+        title=data['title'],
+        subtitle=data['subtitle'],
+        owner_first_name=g.current_user.first_name,
+        owner_last_name=g.current_user.last_name,
+    )
+
+    checkpoint.save()
+    return {'message': 'Checkpoint added!'}, 201
+
+@token_auth.login_required
 @permission_required(USER_TYPE['ADMIN'])
 def approve_project(data):
     project = Project.query.filter_by(id=data['projectId']).first()
