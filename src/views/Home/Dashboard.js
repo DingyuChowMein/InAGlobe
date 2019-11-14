@@ -12,7 +12,11 @@ import {
     Typography,
     Button,
 } from '@material-ui/core'
-import { UpdateOutlined } from "@material-ui/icons"
+import { 
+    UpdateOutlined, 
+    SentimentDissatisfiedOutlined, 
+    SentimentSatisfiedOutlined
+} from "@material-ui/icons"
 
 // Imports of different components in project
 import CardScrollView from '../../components/ScrollView/CardScrollView'
@@ -134,6 +138,169 @@ class Dashboard extends Component {
 
     render() {
         const { classes } = this.props
+
+        let dashboardComponents
+        switch (this.state.userType) {
+            case 0:
+                dashboardComponents = (
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={12} md={4}>
+                            <Notifications 
+                                notifyList={[]} 
+                                title="Notifications"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={4}>
+                            <Deadlines 
+                                deadlineList={[]} 
+                                title="Upcoming Deadlines"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={4}>
+                            <ProjectApprovals 
+                                approvalList={[]} 
+                                title="User Approvals for Projects"
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <CardScrollView 
+                                className={classes.root} 
+                                cardData={[]} 
+                                title="Projects Updates"
+                                EmptyIcon={UpdateOutlined}
+                                emptyText="No Updates for any Ongoing Projects"
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <CardScrollView 
+                                className={classes.root} 
+                                cardData={[]} 
+                                title="Projects to Approve"
+                                EmptyIcon={UpdateOutlined}
+                                emptyText="No Approvals Needed for New Projects"
+                            />
+                        </Grid>
+                    </Grid>
+                )
+                break
+            case 1:
+                dashboardComponents = (
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={12} md={4}>
+                            <Notifications 
+                                notifyList={[]} 
+                                title="Notifications"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={4}>
+                            <Deadlines 
+                                deadlineList={[]} 
+                                title="Upcoming Deadlines"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={4}>
+                            <ProjectApprovals 
+                                approvalList={[]} 
+                                title="Student/Academic Waiting to Join Project"
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <CardScrollView 
+                                className={classes.root} 
+                                cardData={[]} 
+                                title="Ongoing Projects Approved by Admin"
+                                EmptyIcon={SentimentDissatisfiedOutlined}
+                                emptyText="No Ongoing Projects. Try joining some!"
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <CardScrollView 
+                                className={classes.root} 
+                                cardData={[]} 
+                                title="Project Proposals Waiting for Admin Approval"
+                                EmptyIcon={SentimentSatisfiedOutlined}
+                                emptyText="All Projects Approved!"
+                            />
+                        </Grid>
+                    </Grid>
+                )
+                break
+            case 2:
+                dashboardComponents = (
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={12} md={6}>
+                            <Notifications 
+                                notifyList={[]} 
+                                title="Notifications"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={6}>
+                            <Deadlines 
+                                deadlineList={[]} 
+                                title="Upcoming Deadlines"
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <CardScrollView 
+                                className={classes.root} 
+                                cardData={[]} 
+                                title="Ongoing Projects Joined"
+                                EmptyIcon={SentimentDissatisfiedOutlined}
+                                emptyText="No Ongoing Projects. Try joining some!"
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <CardScrollView 
+                                className={classes.root} 
+                                cardData={[]} 
+                                title="Waiting for Approval to Join Project"
+                                EmptyIcon={SentimentSatisfiedOutlined}
+                                emptyText="All Projects Approved!"
+                            />
+                        </Grid>
+                    </Grid>
+                )
+                break
+            case 3:
+                dashboardComponents = (
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={12} md={6}>
+                            <Notifications 
+                                notifyList={[]} 
+                                title="Notifications"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={6}>
+                            <Deadlines 
+                                deadlineList={[]} 
+                                title="Upcoming Deadlines"
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <CardScrollView 
+                                className={classes.root} 
+                                cardData={[]} 
+                                title="Ongoing Projects Joined"
+                                EmptyIcon={SentimentDissatisfiedOutlined}
+                                emptyText="No Ongoing Projects. Try joining some!"
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <CardScrollView 
+                                className={classes.root} 
+                                cardData={[]} 
+                                title="Waiting for Approval to Join Project"
+                                EmptyIcon={SentimentSatisfiedOutlined}
+                                emptyText="All Projects Approved!"
+                            />
+                        </Grid>
+                    </Grid>
+                )
+                break
+            default:
+                console.log("Error in user type!")
+        }
+
         return (
             // <div className={classes.root}>
             //     <GridContainer spacing={2}>
@@ -145,44 +312,7 @@ class Dashboard extends Component {
             //     </GridContainer>
             // </div>
             <ResponsiveDrawer name={"Dashboard"}>
-                <Grid container spacing={2}>
-                    <Grid item xs={12} sm={12} md={4}>
-                        <Notifications 
-                            notifyList={[]} 
-                            title="Notifications"
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={12} md={4}>
-                        <Deadlines 
-                            deadlineList={[]} 
-                            title="Upcoming Deadlines"
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={12} md={4}>
-                        <ProjectApprovals 
-                            approvalList={[]} 
-                            title="User Approvals for Projects"
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <CardScrollView 
-                            className={classes.root} 
-                            cardData={[]} 
-                            title="Projects Updates"
-                            EmptyIcon={UpdateOutlined}
-                            emptyText="No Updates for any Ongoing Projects"
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <CardScrollView 
-                            className={classes.root} 
-                            cardData={[]} 
-                            title="Projects to Approve"
-                            EmptyIcon={UpdateOutlined}
-                            emptyText="No Approvals Needed for New Projects"
-                        />
-                    </Grid>
-                </Grid>
+                {dashboardComponents}
             </ResponsiveDrawer>
 
         )
