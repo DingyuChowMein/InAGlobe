@@ -25,6 +25,25 @@ const styles = {
     },
     cardLabel: {
         marginBlockStart: "0",
+    },
+    emptyComponentDiv: {
+        display: "table",
+        width: "100%",
+        height: "300px"
+    },
+    emptyComponentIcon: {
+        display: "table-cell",
+        verticalAlign: "middle",
+        textAlign: "right",
+        paddingLeft: "50px"
+    },
+    emptyComponentText: {
+        display: "table-cell",
+        verticalAlign: "middle",
+        paddingLeft: "20px",
+    },
+    colouring: {
+        color: "grey"
     }
 }
 

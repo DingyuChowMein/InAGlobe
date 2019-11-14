@@ -19,7 +19,7 @@ const notifications = [
         "userName":"Bruh Woman",
         "projectName": "Low Emission Cashew Nut Processor",
         "details": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        "date": "2019-11-12T19:23:59+00:00"
+        "date": "2019-11-12T20:23:59+00:00"
     },
     {
         "notifyId": 2,

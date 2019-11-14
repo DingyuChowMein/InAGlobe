@@ -3,11 +3,14 @@ import React, { Component } from 'react'
 
 // Material UI libraries
 import { withStyles, Grid } from '@material-ui/core'
+import { UpdateOutlined } from "@material-ui/icons"
 
 // Imports of different components in project
 import CardScrollView from '../../components/ScrollView/CardScrollView'
 import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer'
 import Notifications from '../../components/Notifications/Notifications'
+import Deadlines from "../../components/Deadlines/Deadlines"
+import ProjectApprovals from '../../components/Approvals/ProjectApprovals'
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/homePageStyle"
@@ -18,6 +21,8 @@ import styles from "../../assets/jss/views/homePageStyle"
 import config from '../../config'
 import data from "../../assets/data/ProjectData"
 import notifications from "../../assets/data/NotificationData"
+import deadlines from "../../assets/data/DeadlinesData"
+import approvals from "../../assets/data/ProjectApprovalData"
 
 class Dashboard extends Component {
     constructor(props){
@@ -70,16 +75,31 @@ class Dashboard extends Component {
             <ResponsiveDrawer name={"Dashboard"}>
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={12} md={4}>
-                        <Notifications notifyList={notifications} title="Notifications"/>
+                        <Notifications 
+                            notifyList={notifications} 
+                            title="Notifications"
+                        />
                     </Grid>
                     <Grid item xs={12} sm={12} md={4}>
-                        <Notifications notifyList={notifications} title="Upcoming Deadlines"/>
+                        <Deadlines 
+                            deadlineList={deadlines} 
+                            title="Upcoming Deadlines"
+                        />
                     </Grid>
                     <Grid item xs={12} sm={12} md={4}>
-                        <Notifications notifyList={notifications} title="Project Registration Approvals"/>
+                        <ProjectApprovals 
+                            approvalList={approvals} 
+                            title="Project Registration Approvals"
+                        />
                     </Grid>
                     <Grid item xs={12}>
-                        <CardScrollView className={classes.root} cardData={data} title="Projects Updates"/>
+                        <CardScrollView 
+                            className={classes.root} 
+                            cardData={data} 
+                            title="Projects Updates"
+                            EmptyIcon={UpdateOutlined}
+                            emptyText="No Updates for any Ongoing Projects"
+                        />
                     </Grid>
                     <Grid item xs={12}>
                         <CardScrollView className={classes.root} cardData={data} title="Projects to Approve"/>

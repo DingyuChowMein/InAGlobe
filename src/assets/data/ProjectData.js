@@ -21,7 +21,7 @@ const cardData = [
     },
     {
         id: 2,
-      title: "Low-Smoke Cooking Environment",
+        title: "Low-Smoke Cooking Environment",
         organisation: "Helvetas Swiss Intercooperation",
         organisationLogo: HelvetasLogo,
         status: "Adopted (Engineering Change)",
@@ -117,7 +117,7 @@ const cardData = [
     },
     {
         id: 10,
-      title: "Low-Smoke Cooking Environment",
+        title: "Low-Smoke Cooking Environment",
         organisation: "Helvetas Swiss Intercooperation",
         organisationLogo: HelvetasLogo,
         status: "Adopted (Engineering Change)",
