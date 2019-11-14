@@ -86,7 +86,7 @@ def create_app():
         #     return new_response(response, code)
 
     class Comments(Resource):
-        def options(self, project_id):
+        def options(self):
             response = make_response()
             response.headers.add("Access-Control-Allow-Origin", "*")
             response.headers.add('Access-Control-Allow-Headers', "*")
@@ -101,8 +101,8 @@ def create_app():
             response, code = add_comment(request.get_json(), project_id)
             return new_response(response, code)
 
-        def delete(self, project_id):
-            response, code = delete_comment(project_id)
+        def delete(self, comment_id):
+            response, code = delete_comment(comment_id)
             return new_response(response, code)
 
     class Users(Resource, CORS):
@@ -115,7 +115,7 @@ def create_app():
             return new_response(response, code)
 
     class Checkpoints(Resource):
-        def options(self, project_id):
+        def options(self):
             response = make_response()
             response.headers.add("Access-Control-Allow-Origin", "*")
             response.headers.add('Access-Control-Allow-Headers', "*")
@@ -149,7 +149,7 @@ def create_app():
 
     # Route classes to paths
     api.add_resource(Projects, '/projects/', '/projects/<int:project_id>/')
-    api.add_resource(Comments, '/comments/', '/comments/<int:project_id>/')
+    api.add_resource(Comments, '/comments/', '/comments/<int:project_id>/', '/comments/<int:comment_id>/')
     api.add_resource(Users, '/users/')
     api.add_resource(Tokens, '/users/tokens/')
     api.add_resource(Approvals, '/approve/')
