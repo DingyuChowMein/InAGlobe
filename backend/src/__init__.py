@@ -26,7 +26,8 @@ def create_app():
     from .routes import (
         get_projects, upload_project, approve_project,
         upload_checkpoint,
-        get_users, create_user, confirm_email,
+        get_users, create_user, confirm_email, confirm_reset_password_token,
+        reset_password, send_password_reset_email,
         add_comment, get_comments,
         get_dashboard_projects, select_project,
         get_joining_requests, approve_project_join,
@@ -147,6 +148,26 @@ def create_app():
             response, code = confirm_email(token)
             return new_response(response, code)
 
+    class ResetPassword(Resource, CORS):
+        def options(self, token=None):
+            response = make_response()
+            response.headers.add("Access-Control-Allow-Origin", "*")
+            response.headers.add('Access-Control-Allow-Headers', "*")
+            response.headers.add('Access-Control-Allow-Methods', "*")
+            return response
+        
+        def get(self, token):
+            response, code = confirm_reset_password_token(token)
+            return new_response(response, code)
+
+        def post(self, token=None):
+            if token:
+                response, code = reset_password(token, request.get_json())
+                return new_response(response, code)
+
+            response, code = send_password_reset_email(request.get_json())
+            return new_response(response, code)
+
     # Route classes to paths
     api.add_resource(Projects, '/projects/', '/projects/<int:project_id>/')
     api.add_resource(Comments, '/comments/', '/comments/<int:project_id>/')
@@ -155,6 +176,7 @@ def create_app():
     api.add_resource(Approvals, '/approve/')
     api.add_resource(JoiningApproval, '/joiningApprove/')
     api.add_resource(ConfirmEmail, '/confirm/', '/confirm/<token>/')
+    api.add_resource(ResetPassword, '/resetpassword/', '/resetpassword/<token>/')
     api.add_resource(Dashboard, '/dashboard/')
     api.add_resource(Checkpoints, '/checkpoint/<int:project_id>/')
 

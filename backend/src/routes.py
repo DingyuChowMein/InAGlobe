@@ -264,6 +264,37 @@ def confirm_email(token):
         user.save()
     return {'message': 'You have confirmed your account!'}, 200
 
+def confirm_reset_password_token(token):
+    try:
+        email = confirm_token(token)
+        user = User.query.filter_by(email=email).first_or_404()
+    except:
+        return {'message': 'The reset password link is invalid or has expired'}, 404
+
+def send_password_reset_email(data):
+    email = data['email']
+    token = generate_confirmation_token(email)
+    confirm_url = os.environ['SITE_URL'] + f"login/resetpassword/{token}"
+    html = render_template('reset_password.html', confirm_url=confirm_url)
+    subject = "Please reset your password"
+    send_email(email, subject, html)
+    return {'message': 'Email sent!'}, 200
+
+def reset_password(token, data):
+    try:
+        email = confirm_token(token)
+    except:
+        return {'message': 'The confirmation link is invalid or has expired'}, 404
+
+    if not data['password'] or len(data['password']) < 8:
+        raise ValueError('password')
+
+    user = User.query.filter_by(email=email).first_or_404()
+    user.hash_password(data['password'])
+    user.save()
+
+    return {'message': 'Your password has been reset!'}, 200
+
 
 @token_auth.login_required
 def add_comment(data, project_id):

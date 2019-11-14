@@ -17,6 +17,8 @@ import ProposalMainPage from "./views/ProposalPage/ProposalMainPage"
 import ProposalPreviewPage from './views/ProposalPage/ProposalPreviewPage'
 import Profile from './views/UserProfile/Profile'
 import AddCheckpoint from "./views/AddCheckpoint/AddCheckpoint";
+import SendEmail from "./views/ResetPassword/SendEmail";
+import ResetPassword from "./views/ResetPassword/ResetPassword";
 
 const loginRoutes = [
     {
@@ -38,6 +40,20 @@ const loginRoutes = [
         name: "Confirm",
         icon: PersonAdd,
         component: ConfirmEmail,
+        layout: "/login"
+    },
+    {
+        path: "/requestpassword/",
+        name: "Reset Password",
+        icon: PersonAdd,
+        component: SendEmail,
+        layout: "/login"
+    },
+    {
+        path: "/resetpassword/:token",
+        name: "Reset Password",
+        icon: PersonAdd,
+        component: ResetPassword,
         layout: "/login"
     }
 ]
