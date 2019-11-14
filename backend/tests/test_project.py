@@ -5,20 +5,32 @@ sys.path.append('.')
 import json
 from os.path import join, dirname
 
-from src.models import Project, File, FILE_TYPE
+from src.models import Project, File, User, FILE_TYPE
 from conftests import db, app, auth, client
 from flask import g
 
 
-def get_projects(client, token):
+def get_projects(client, auth, email='humanitarian@charity.org'):
+    token = auth.get_token(email=email)
     return client.get('/projects/', headers={
         'Authorization': 'Bearer ' + token
     })
 
-def upload_project(client, token, json):
+
+def upload_project(client, auth, email='humanitarian@charity.org', file='no_files.json'):
+    token = auth.get_token(email=email)
+    json_file = load_json_file(file, 'project_test_files')
     return client.post('/projects/', headers={
         'Authorization': 'Bearer ' + token
-    }, json=json)
+    }, json=json_file)
+
+
+def delete_project(client, auth, email, project_id):
+    token = auth.get_token(email=email)
+    return client.delete('/projects/{}/'.format(project_id), headers={
+        'Authorization': 'Bearer ' + token
+    })
+
 
 def load_json_file(filename, dir):
     relative_path = join(dir, filename)
@@ -51,10 +63,8 @@ def test_project_upload(app, client, auth, file, number_of_documents, number_of_
             db.session.query(File).first()
             is None
         )
-        # Load a humanitarian user
-        token = auth.get_token(email='humanitarian@charity.org')
-        json_file = load_json_file(file, 'project_test_files')
-        rv = upload_project(client, token, json_file)
+        # Upload a project using our default humanitarian user
+        rv = upload_project(client, auth, file=file)
 
         p_query = db.session.query(Project)
         # After uploading one file we check that there is only one project in the database
@@ -93,11 +103,9 @@ def test_project_upload(app, client, auth, file, number_of_documents, number_of_
         ('missing_title.json', 'student@ic.ac.uk', b'Insufficient permissions!', 403),
         ('missing_title.json', 'humanitarian@charity.org', b'Bad title provided!', 400),
 ))
-def test_bad_project_upload(app, client, auth, file, email, message, code):
+def test_bad_project_upload(app, auth, client, file, email, message, code):
     with app.app_context():
-        token = auth.get_token(email=email)
-        json_file = load_json_file(file, 'project_test_files')
-        rv = upload_project(client, token, json_file)
+        rv = upload_project(client, auth, email=email, file=file)
         # Check that no projects have been uploaded
         assert not db.session.query(Project).all()
         assert code == rv.status_code
@@ -115,13 +123,9 @@ def test_bad_project_upload(app, client, auth, file, email, message, code):
 ))
 def test_get_project(client, auth, files, email, expected, code):
     # Load up database with projects
-    token = auth.get_token(email='humanitarian@charity.org')
-    for file in files:
-        json_file = load_json_file(file, 'project_test_files')
-        upload_project(client, token, json_file)
+    [upload_project(client, auth, email=email, file=file) for file in files]
 
-    token = auth.get_token(email=email)
-    rv = get_projects(client, token)
+    rv = get_projects(client, auth, email=email)
     assert code == rv.status_code
 
     # Check that the response data has exactly the number of project files we expected on return
@@ -132,3 +136,59 @@ def test_get_project(client, auth, files, email, expected, code):
         assert message in rv.data
 
 # TODO: create tests for project approval and dashboard
+
+
+########################################################################################################################
+# Delete projects tests
+
+@pytest.mark.parametrize(('files', 'email', 'message', 'code'), (
+        (['no_files.json'], 'humanitarian@charity.org', b'Project deleted!', 200),
+        (['no_files.json', 'many_files.json', 'one_document_no_images.json'], 'humanitarian@charity.org', b'Project deleted!', 200),
+        (['no_files.json'], 'admin@administrator.co', b'Project deleted!', 200),
+        (['no_files.json'], 'student@ic.ac.uk', b'Insufficient permissions!', 403),
+        (['no_files.json'], 'academic@academia.com', b'Insufficient permissions!', 403),
+        (['no_files.json', 'many_images_no_documents.json'], 'newhumanitarian@charity.org', b'Insufficient permissions!', 403),
+))
+def test_delete_project(app, client, auth, files, email, message, code):
+    with app.app_context():
+
+        # For the new humanitarian edge case
+        if not db.session.query(User).filter(User.email == email).first():
+            auth.create_user(email=email, user_type='HUMANITARIAN')
+            auth.confirm_user(email=email)
+
+        # Upload projects with default humanitarian user
+        [upload_project(client, auth, file=file) for file in files]
+
+        # Delete each project sequentially and check that the database matches
+        for project in db.session.query(Project).all():
+            assert db.session.query(Project).filter(Project.id == project.id).first is not None
+            rv = delete_project(client, auth, email, project.id)
+            if code == 200:
+                assert db.session.query(Project).filter(Project.id == project.id).first() is None
+            else:
+                assert db.session.query(Project).filter(Project.id == project.id).first() is not None
+
+            # Check HTTP responses
+            assert rv.status_code == code
+            assert message in rv.data
+
+        if code == 200:
+            assert db.session.query(Project).all() == []
+        else:
+            assert len(db.session.query(Project).all()) == len(files)
+
+
+def test_delete_undefined_project(app, client, auth):
+    with app.app_context():
+        upload_project(client, auth)
+        project = db.session.query(Project).filter(Project.title == 'no files').first()
+        assert project is not None
+        assert project.id == 1
+
+        assert db.session.query(Project).filter(Project.id == 2).first() is None
+
+        rv = delete_project(client, auth, email='humanitarian@charity.org', project_id=2)
+
+        assert rv.status_code == 404
+        assert b'Project does not exist!' in rv.data

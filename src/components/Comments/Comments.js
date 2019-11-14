@@ -31,7 +31,6 @@ import { commentsService } from "../../services/commentsService"
 import styles from "../../assets/jss/components/commentsStyle"
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
-
 class Comments extends Component {
 
     constructor(props) {
@@ -40,6 +39,7 @@ class Comments extends Component {
             text: "",
             dialogBoxOpened: false,
             selectedCommentId: 0,
+            postLoading: false,
             comments: []
         }
     }
@@ -68,14 +68,15 @@ class Comments extends Component {
             date: `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()}`
         })
 
-        commentsService.postComment(this.props.projectId, this.state)
+        commentsService.postComment(this.props.projectId, this.state.text)
             .then(response => response.json())
             .then(response => {
                 console.log(response)
                 this.setState(() => {
                     const updated_comments = this.state.comments.concat(response.comment)
                 return {
-                    comments: updated_comments
+                    comments: updated_comments,
+                    postLoading: false
                 }})
             })
             .catch(err => console.log(err))
@@ -196,8 +197,9 @@ class Comments extends Component {
                         color="primary"
                         className={classes.commentsPostButton}
                         onClick={this.post}
+                        disabled={this.state.postLoading}
                     >
-                        {"Post"}
+                        {this.state.postLoading ?  <Spinner size={20} spinnerColor={"#FFFFFF"} spinnerWidth={3} visible={true} /> : "Post"}
                     </RegularButton>
                 </div>
                 {this.renderConfirmDialog()}

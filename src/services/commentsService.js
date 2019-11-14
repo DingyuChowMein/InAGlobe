@@ -22,7 +22,7 @@ function getComments(projectId) {
     return fetch(config.apiUrl + '/comments/' + projectId.toString() + '/', requestOptions);
 }
 
-function postComment(projectId, data) {
+function postComment(projectId, commenttext) {
     var token = JSON.parse(localStorage.getItem('user')).token;
     var bearer = 'Bearer ' + token;
     return fetch(config.apiUrl + `/comments/${projectId}/`, {
@@ -31,7 +31,7 @@ function postComment(projectId, data) {
             'Authorization': bearer,
             'Content-type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify({text: commenttext})
     })
 
 }
