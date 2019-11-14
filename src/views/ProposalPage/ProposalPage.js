@@ -1,12 +1,13 @@
-import React, {Component} from "react"
-import {VerticalTimeline, VerticalTimelineElement} from 'react-vertical-timeline-component';
-import 'react-vertical-timeline-component/style.min.css';
+import React, { Component } from "react"
+import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component'
 
-import {withStyles} from "@material-ui/styles"
-import School from '@material-ui/icons/School';
+import { withStyles } from "@material-ui/core"
+import { School } from '@material-ui/icons'
 
 import styles from "../../assets/jss/views/proposalPageStyle"
-import config from "../../config";
+import 'react-vertical-timeline-component/style.min.css'
+
+import config from "../../config"
 
 class ProposalPage extends Component {
     render() {
@@ -46,28 +47,26 @@ class ProposalPage extends Component {
                     ))}
                 </div>
                 <VerticalTimeline>
-                    {
-                        data.checkpoints.map(event => (
-                            <VerticalTimelineElement
-                                className="vertical-timeline-element--work"
-                                iconStyle={{background: 'rgb(33, 150, 243)', color: '#fff'}}
-                                date={event.date}
-                                icon={<School/>}
-                            >
-                                <h3 className="vertical-timeline-element-title">{event.title}</h3>
-                                <h4 className="vertical-timeline-element-subtitle">{event.subtitle}</h4>
-                                <p>{event.text}</p>
-                                <p>{event.documents.map(doc => (
-                                    <a href={config.s3Bucket + doc}> {/[^/]*$/.exec(doc)[0]} {"\n"}</a>
-                                ))}
-                                </p>
-                                <p>{event.images.map(doc => (
-                                    <a href={config.s3Bucket + doc}> {/[^/]*$/.exec(doc)[0]} {"\n"}</a>
-                                ))}
-                                </p>
-                            </VerticalTimelineElement>
-                        ))
-                    }
+                    {data.checkpoints.map(event => (
+                        <VerticalTimelineElement
+                            className="vertical-timeline-element--work"
+                            iconStyle={{background: 'rgb(33, 150, 243)', color: '#fff'}}
+                            date={event.date}
+                            icon={<School />}
+                        >
+                            <h3 className="vertical-timeline-element-title">{event.title}</h3>
+                            <h4 className="vertical-timeline-element-subtitle">{event.subtitle}</h4>
+                            <p>{event.text}</p>
+                            <p>{event.documents.map(doc => (
+                                <a href={config.s3Bucket + doc}> {/[^/]*$/.exec(doc)[0]} {"\n"}</a>
+                            ))}
+                            </p>
+                            <p>{event.images.map(doc => (
+                                <a href={config.s3Bucket + doc}> {/[^/]*$/.exec(doc)[0]} {"\n"}</a>
+                            ))}
+                            </p>
+                        </VerticalTimelineElement>
+                    ))}
                 </VerticalTimeline>
 
                 {children}

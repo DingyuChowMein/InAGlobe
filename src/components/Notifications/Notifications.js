@@ -11,7 +11,7 @@ import {
 import NotificationsIcon from '@material-ui/icons/Notifications'
 
 import CardsList from "../CardsList/CardsList"
-import timeDiff from "../../utils/DynamicTimeDiff"
+import timeDiff from "../../helpers/DynamicTimeDiff"
 
 import styles from "../../assets/jss/components/notificationsStyle"
 

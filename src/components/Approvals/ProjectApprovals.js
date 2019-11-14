@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 
 import CardsList from "../CardsList/CardsList"
-import timeDiff from "../../utils/DynamicTimeDiff"
+import timeDiff from "../../helpers/DynamicTimeDiff"
 
 import { 
     withStyles, 

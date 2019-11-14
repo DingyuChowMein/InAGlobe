@@ -41,11 +41,6 @@ class Comments extends Component {
             selectedCommentId: 0,
             comments: []
         }
-
-        this.handleFormChange = this.handleFormChange.bind(this)
-        this.post = this.post.bind(this)
-        this.deleteComment = this.deleteComment.bind(this)
-        this.renderConfirmDialog = this.renderConfirmDialog.bind(this)
     }
 
     componentDidMount() {
@@ -60,13 +55,13 @@ class Comments extends Component {
     }
 
 
-    handleFormChange(e) {
+    handleFormChange = (e) => {
         this.setState({
             [e.target.id]: e.target.value
         })
     }
 
-    post() {
+    post = () => {
         const today = new Date()
         this.setState({
             date: `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()}`
@@ -85,7 +80,7 @@ class Comments extends Component {
             .catch(err => console.log(err))
     }
 
-    deleteComment(commentId) {
+    deleteComment = (commentId) => {
         this.setState({comments: this.state.comments.filter(comment => comment.commentId !== commentId )})
         commentsService.deleteComment(commentId)
             .then(response => {
@@ -97,39 +92,48 @@ class Comments extends Component {
 
     }
 
-    renderConfirmDialog() {
-        return (<Dialog
-            open={this.state.dialogBoxOpened}
-            onClose={() => {
-                this.setState({dialogBoxOpened: false})
-            }}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-        >
-            <DialogTitle id="alert-dialog-title">{"Delete comment?"}</DialogTitle>
-            <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                    Are you sure you want to delete this comment?
-                </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={() => {
+    renderConfirmDialog = () => {
+        return (
+            <Dialog
+                open={this.state.dialogBoxOpened}
+                onClose={() => {
                     this.setState({dialogBoxOpened: false})
-                }} color="primary">
-                    No
-                </Button>
-                <Button onClick={() => {
-                    this.deleteComment(this.state.selectedCommentId)
-                    this.setState({dialogBoxOpened: false})
-                }} color="primary" autoFocus>
-                    Yes
-                </Button>
-            </DialogActions>
-        </Dialog>)
+                }}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">Delete comment?</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Are you sure you want to delete this comment?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button 
+                        onClick={() => {
+                            this.setState({ dialogBoxOpened: false })
+                        }} 
+                        color="primary"
+                    >
+                        No
+                    </Button>
+                    <Button 
+                        onClick={() => {
+                            this.deleteComment(this.state.selectedCommentId)
+                            this.setState({ dialogBoxOpened: false })
+                        }} 
+                        color="primary" 
+                        autoFocus
+                    >
+                        Yes
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        )
     }
 
     render() {
-        const {classes} = this.props
+        const { classes } = this.props
         return (
             <div className={classes.root}>
                 <List>

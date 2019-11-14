@@ -1,24 +1,26 @@
 import React, {Component} from 'react'
+import { FilePond, registerPlugin } from "react-filepond"
 import FilePondPluginImagePreview from "filepond-plugin-image-preview"
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type"
 
-import {withStyles} from "@material-ui/core"
-import RegularButton from "../../components/CustomButtons/RegularButton";
-import styles from "../../assets/jss/views/addCheckpointStyle"
-import GridContainer from "../../components/Grid/GridContainer";
-import GridItem from "../../components/Grid/GridItem";
-import ResponsiveDrawer from "../../components/ResponsiveDrawer/ResponsiveDrawer";
-import {FilePond, registerPlugin} from "react-filepond";
-import {generateId} from "../../helpers/utils";
+import { withStyles } from "@material-ui/core"
 
+import CustomInput from "../../components/CustomInput/CustomInput"
+import GridContainer from "../../components/Grid/GridContainer"
+import GridItem from "../../components/Grid/GridItem"
+import RegularButton from "../../components/CustomButtons/RegularButton"
+import ResponsiveDrawer from "../../components/ResponsiveDrawer/ResponsiveDrawer"
+
+import styles from "../../assets/jss/views/addCheckpointStyle"
+
+import { checkpointService } from "../../services/checkpointService"
+import { generateId } from "../../helpers/utils"
 import upload from "../../s3"
-import {checkpointService} from "../../services/checkpointService";
-import CustomInput from "../../components/CustomInput/CustomInput";
 
 class AddCheckpoint extends Component {
 
     constructor(props) {
-        super(props);
+        super(props)
         this.state = {
             data: {
                 title: "",
@@ -28,8 +30,8 @@ class AddCheckpoint extends Component {
                 images: [],
             },
             open: false
-        };
-        registerPlugin(FilePondPluginImagePreview);
+        }
+        registerPlugin(FilePondPluginImagePreview)
         registerPlugin(FilePondPluginFileValidateType)
     }
 
@@ -42,27 +44,27 @@ class AddCheckpoint extends Component {
                 [event.target.id]: event.target.value
             }
         })
-    };
+    }
 
     post = () => {
-        const id = generateId();
+        const id = generateId()
         this.state.data.documents = upload(this.state.data.documents, id + '/Documents')
-        this.state.data.images = upload(this.state.data.images, id + '/Images');
-        console.log(this.state.data);
-        const {match} = this.props;
+        this.state.data.images = upload(this.state.data.images, id + '/Images')
+        console.log(this.state.data)
+        const {match} = this.props
         checkpointService.postCheckpoint(match.params.id, this.state.data)
             .then((response) => {
-                console.log(response);
+                console.log(response)
 
                 // Redirect here based on response
                 this.props.history.push("/main/projectlist/")
             }).catch((err) => {
             console.log(err)
         })
-    };
+    }
 
     render() {
-        const {classes} = this.props;
+        const {classes} = this.props
         return (
             <div>
                 <ResponsiveDrawer name={"Add Checkpoint"}>

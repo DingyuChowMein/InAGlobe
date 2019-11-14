@@ -21,8 +21,6 @@ class ProposalMainPage extends Component {
 
     constructor(props) {
         super(props)
-        this.actionButtonClicked = this.actionButtonClicked.bind(this)
-        this.getButtonMessage = this.getButtonMessage.bind(this)
         const userType = JSON.parse(localStorage.getItem('user')).permissions
         const projectData = JSON.parse(localStorage.getItem(`proposalPage/${this.props.match.params.id}`))
         console.log(projectData)
@@ -39,7 +37,7 @@ class ProposalMainPage extends Component {
         console.log(this.state.buttonDisabled)
     }
 
-    actionButtonClicked() {
+    actionButtonClicked = () => {
         const token = JSON.parse(localStorage.getItem('user')).token
         const bearer = 'Bearer ' + token
         let new_project_data
@@ -89,7 +87,7 @@ class ProposalMainPage extends Component {
         }
     }
 
-    getButtonMessage(userType, status, joined) {
+    getButtonMessage = (userType, status, joined) => {
         if (userType === 0) {
             if (status === "Needs Approval") {
                 return "Approve"
@@ -121,13 +119,16 @@ class ProposalMainPage extends Component {
                         >
                             {this.state.buttonMessage}
                         </RegularButton>
-                        {this.state.projectData.joined === 2 ?
+                        {this.state.projectData.joined === 2 
+                            ?
                             <RegularButton
                                 color="primary"
                                 onClick={() => this.props.history.push(`/main/projectlist/checkpoint/${match.params.id}`)}
                             >
                                 Add Checkpoint Progress
-                            </RegularButton> : null
+                            </RegularButton> 
+                            :
+                            null
                         }
                     </div>
                     <div className={classes.commentsDiv}>
