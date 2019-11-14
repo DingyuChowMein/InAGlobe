@@ -51,7 +51,7 @@ def test_project_upload(app, client, auth, file, number_of_documents, number_of_
             db.session.query(File).first()
             is None
         )
-        # Create and load a humanitarian user
+        # Load a humanitarian user
         token = auth.get_token(email='humanitarian@charity.org')
         json_file = load_json_file(file, 'project_test_files')
         rv = upload_project(client, token, json_file)

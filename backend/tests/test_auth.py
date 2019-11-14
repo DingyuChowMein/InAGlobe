@@ -28,12 +28,13 @@ def test_create_user(app, auth, user_type, message, code):
         assert code == rv.status_code
         assert message in rv.data
         # Check the user has been registered in the database
+        user = db.session.query(User).filter(User.email == 'email@ic.ac.uk').first()
         assert (
-            db.session.query(User).filter(User.email == 'email@ic.ac.uk').first()
-            is not None if code == 201 else
-            db.session.query(User).filter(User.email == 'email@ic.ac.uk').first()
-            is None
+            user is not None
+            if code == 201 else
+            user is None
         )
+
 
 # TODO: error handling for bad user registration
 @pytest.mark.parametrize(('email', 'password', 'first_name', 'last_name', 'user_type', 'message', 'code'), (
@@ -56,6 +57,7 @@ def test_bad_create_user(auth, email, password, first_name, last_name, user_type
 
 def test_login(app, auth):
     auth.create_user()
+    auth.confirm_user()
     with app.app_context():
         # A token is only generated after the user logs in, so it should not exist at this stage
         assert (
@@ -77,8 +79,11 @@ def test_login_multiple_users(auth):
     email3 = 'email3@ic.ac.uk'
 
     auth.create_user(email=email1, first_name='one')
+    auth.confirm_user(email1)
     auth.create_user(email=email2, first_name='two')
+    auth.confirm_user(email2)
     auth.create_user(email=email3, first_name='three')
+    auth.confirm_user(email3)
 
     rv = auth.login(email1)
     assert b'one' in rv.data
@@ -103,10 +108,27 @@ def test_login_multiple_users(auth):
 ))
 def test_bad_login(auth, email, password, message, code):
     auth.create_user()
+    auth.confirm_user()
     rv = auth.login(email, password)
     assert rv.status_code == code
     assert message in rv.data
 
+
+########################################################################################################################
+# User confirmation
+
+@pytest.mark.parametrize(('email', 'confirm', 'code', 'message'), (
+        ('confirmation@ic.ac.uk', True, 200, b'token'),
+        ('noconfirmation@ic.ac.uk', False, 500, b'User is not verified!'),
+))
+def test_login_confirmation(auth, email, confirm, code, message):
+    auth.create_user(email=email)
+    auth.confirm_user(email) if confirm else None
+    rv = auth.login(email=email)
+    assert rv.status_code == code
+    assert message in rv.data
+
+# TODO more confirmation tests for edge cases
 
 ########################################################################################################################
 # User signout tests
