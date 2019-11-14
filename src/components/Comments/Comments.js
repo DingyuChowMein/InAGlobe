@@ -38,7 +38,8 @@ class Comments extends Component {
             dialogBoxOpened: false,
             selectedCommentId: 0,
             postLoading: false,
-            comments: []
+            comments: [],
+            deletedComments: []
         }
 
         this.handleFormChange = this.handleFormChange.bind(this)
@@ -54,7 +55,7 @@ class Comments extends Component {
                 .then(json => {
                     console.log(json)
                     this.setState({
-                        comments: json.comments
+                        comments: json.comments.filter(comment => !this.state.deletedComments.includes(comment.commentId))
                     })
                 }).catch(err => console.log(err));
         }, 3000)
@@ -89,9 +90,17 @@ class Comments extends Component {
     }
 
     deleteComment(commentId) {
-        this.setState({comments: this.state.comments.filter(comment => comment.commentId !== commentId )});
+        this.setState(() => {
+            const updatedDeletedComments = this.state.deletedComments.concat(commentId);
+            return {
+                deletedComments: updatedDeletedComments,
+                comments: this.state.comments.filter(comment => comment.commentId !== commentId)
+            }})
         commentsService.deleteComment(commentId)
             .then(response => {
+                this.setState({
+                    deletedComments: this.state.deletedComments.filter(id => id !== commentId)
+                })
                 console.log(response)
             })
             .catch(err => {
