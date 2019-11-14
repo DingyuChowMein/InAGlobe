@@ -30,6 +30,7 @@ def create_app():
         add_comment, get_comments,
         get_dashboard_projects, select_project,
         get_joining_requests, approve_project_join,
+        delete_project, delete_comment
     )
     from .tokens import get_token, revoke_token 
     # Override pre-flight request to fix CORS issue
@@ -76,6 +77,10 @@ def create_app():
             # print(request.get_json())
             return new_response(response, code)
 
+        def delete(self, project_id):
+            response, code = delete_project(project_id)
+            return new_response(response, code)
+
         # def patch(self):
         #     response, code = approve_project(request.get_json())
         #     return new_response(response, code)
@@ -94,6 +99,10 @@ def create_app():
 
         def post(self, project_id):
             response, code = add_comment(request.get_json(), project_id)
+            return new_response(response, code)
+
+        def delete(self, comment_id):
+            response, code = delete_comment(comment_id)
             return new_response(response, code)
 
     class Users(Resource, CORS):

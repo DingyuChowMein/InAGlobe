@@ -15,28 +15,6 @@ from datetime import datetime
 
 @token_auth.login_required
 def get_dashboard_projects():
-    # print(user_id.projects)
-    # projects = user_.query.with_parent(User.id == user_id.get_id()).all()
-    # projects = Project.query.join(user_id.projects)
-    # print(projects)
-    # projects = [Project.query.filter(Project.id == project_id).first() for project_id in user_id.projects]
-    # projects = []
-    # for project_id in user_id.projects:
-    #     print(project_id)
-    #     p = Project.query.filter(Project.id == project_id).first()
-    #     print(p)
-    #     projects.append(p)
-    # project_ids = UserProjects.db.query.filter(UserProjects.id == user_id).all()
-    # projects = []
-    # for project_id in project_ids:
-    #     project = Project.query.filter(Project.id == project_id).first()
-    #     projects.append(project)
-
-    # projects = Project.query.filter(Project.id.in_(user_id.projects)).all()
-
-    # projects = Project.query.has(Project.id.in_(user_id.projects)).all()
-    # projects = User.query.filter_by(id=user_id.id).first().projects
-    #     # print(projects)
     return get_projects_helper(g.current_user.projects)
 
 
@@ -101,6 +79,16 @@ def upload_project(data):
 
     return {'message': 'Project added to db!'}, 201
 
+@token_auth.login_required
+@permission_required(USER_TYPE['HUMANITARIAN'])
+def delete_project(project_id):
+    project = db.session.query(Project).filter(Project.id == project_id).first()
+    if project is None:
+        return {'message': 'Project does not exist!'}, 404
+    if project in g.current_user.projects:
+        return {'message': 'Project deleted!'}, 200
+    else:
+        return {'message': 'Insufficient permissions'}, 403
 
 @token_auth.login_required
 def upload_checkpoint(data, project_id):
@@ -224,6 +212,7 @@ def add_comment(data, project_id):
         owner_last_name=g.current_user.last_name
     )
     comment.save()
+    g.current_user.comments.append(comment)
     return {'message': 'Comment added!'}, 201
 
 
@@ -242,6 +231,15 @@ def get_comments(project_id):
     } for comment in project_comments]
     return {"comments": comments_json}, 200
 
+@token_auth.login_required
+def delete_comment(comment_id):
+    comment = db.session.query(Comment).filter(Comment.id == comment_id).first()
+    if comment is None:
+        return {'message': 'Comment does not exist!'}, 404
+    if comment in g.current_user.comments:
+        return {'message': 'Comment deleted!'}, 200
+    else:
+        return {'message': 'Insufficient permissions'}, 403
 
 def get_projects_helper(projects):
     files = File.query.all()
