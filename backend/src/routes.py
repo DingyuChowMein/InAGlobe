@@ -212,6 +212,7 @@ def add_comment(data, project_id):
         owner_last_name=g.current_user.last_name
     )
     comment.save()
+    g.current_user.comments.append(comment)
     return {'message': 'Comment added!'}, 201
 
 
