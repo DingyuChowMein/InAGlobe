@@ -41,9 +41,8 @@ class Model:
         db.session.add(self)
         db.session.commit()
 
-    @staticmethod
     def delete(self):
-        db.session.remove(self)
+        db.session.delete(self)
         db.session.commit()
 
     def __repr__(self):
