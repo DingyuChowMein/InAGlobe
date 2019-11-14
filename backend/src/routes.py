@@ -299,7 +299,7 @@ def add_comment(data, project_id):
     )
     comment.save()
     g.current_user.comments.append(comment)
-    db.commit()
+    db.session.commit()
     return {'message': 'Comment added!'}, 201
 
 
