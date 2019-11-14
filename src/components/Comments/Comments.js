@@ -79,12 +79,24 @@ class Comments extends Component {
             .then(response => response.json())
             .then(response => {
                 console.log(response);
-                this.setState(() => {
-                    const updated_comments = this.state.comments.concat(response.comment);
-                return {
-                    comments: updated_comments,
-                    postLoading: false
-                }})
+                let found = false;
+                for (let i = 0; i < this.state.comments.length; i++) {
+                    if (this.state.comments[i].commentId === response.comment.commentId) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    this.setState(() => {
+                        const updated_comments = this.state.comments.concat(response.comment);
+                        return {
+                            comments: updated_comments,
+                            postLoading: false
+                        }
+                    })
+                } else {
+                    this.setState({postLoading: false})
+                }
             })
             .catch(err => console.log(err))
     }
