@@ -1,7 +1,6 @@
 import os
-import json
 
-from flask import g, abort, url_for, render_template
+from flask import g, abort, render_template
 from . import db
 from .auth import token_auth, permission_required
 from .models import Project, File, User, Comment, Checkpoint, CheckpointFile, USER_TYPE, FILE_TYPE, PROJECT_STATUS, user_project_joining_table
@@ -15,15 +14,16 @@ from datetime import datetime
 
 @token_auth.login_required
 def get_dashboard_projects():
+    if g.current_user.get_permissions() == USER_TYPE['ADMIN']:
+        return get_projects_helper(Project.query.filter(Project.status == PROJECT_STATUS['NEEDS_APPROVAL']).all())
     return get_projects_helper(g.current_user.projects)
+
 
 
 @token_auth.login_required
 def select_project(data):
     project = Project.query.filter(Project.id == data['projectId']).first()
-
     g.current_user.projects.append(project)
-
     db.session.commit()
     return {'message': 'Project selection requested!'}, 201
 
@@ -115,6 +115,7 @@ def delete_project(project_id):
 def upload_checkpoint(data, project_id):
     if not project_id:
         return {'message': "No project id"}
+
     checkpoint = Checkpoint(
         project_id=project_id,
         owner_id=g.current_user.get_id(),
@@ -126,6 +127,24 @@ def upload_checkpoint(data, project_id):
     )
 
     checkpoint.save()
+    for c in data['documents']:
+        checkpoint_file = CheckpointFile(
+            checkpoint_id=checkpoint.id,
+            link=c,
+            type=FILE_TYPE['DOCUMENT']
+        )
+
+        checkpoint_file.save()
+
+    for c in data['images']:
+        checkpoint_file = CheckpointFile(
+            checkpoint_id=checkpoint.id,
+            link=c,
+            type=FILE_TYPE['IMAGE']
+        )
+
+        checkpoint_file.save()
+
     return {'message': 'Checkpoint added!'}, 201
 
 
@@ -298,7 +317,8 @@ def get_projects_helper(projects):
     documents_map = defaultdict(list)
     images_map = defaultdict(list)
     checkpoints_map = defaultdict(list)
-    checkpoint_files_map = defaultdict(list)
+    checkpoint_documents_map = defaultdict(list)
+    checkpoint_images_map = defaultdict(list)
     joined_projects = {}
 
     for f in files:
@@ -308,7 +328,10 @@ def get_projects_helper(projects):
             images_map[f.project_id].append(f.link)
 
     for f in checkpoint_files:
-        checkpoint_files_map[f.checkpoint_id].append(f.link)
+        if f.type == FILE_TYPE['DOCUMENT']:
+            checkpoint_documents_map[f.checkpoint_id].append(f.link)
+        elif f.type == FILE_TYPE['IMAGE']:
+            checkpoint_images_map[f.checkpoint_id].append(f.link)
 
     for r in join_relationship:
         if r.approved == 1:
@@ -324,7 +347,8 @@ def get_projects_helper(projects):
             "title": c.title,
             "subtitle": c.subtitle,
             "text": c.text,
-            "documents":checkpoint_files_map[c.id]
+            "documents":checkpoint_documents_map[c.id],
+            "images":checkpoint_images_map[c.id]
         }
         checkpoints_map[c.project_id].append(cJson)
 

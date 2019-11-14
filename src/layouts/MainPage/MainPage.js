@@ -7,10 +7,12 @@ import { withStyles } from "@material-ui/styles"
 
 // Importing webpath data for logins
 import { mainRoutes } from "../../routes"
+import { checkpointRoutes } from "../../routes"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/layouts/mainPageStyle"
 import {PrivateRoute} from "../../helpers/PrivateRoute";
+
 
 class MainPage extends Component {
     constructor(props){

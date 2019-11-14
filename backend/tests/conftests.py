@@ -10,6 +10,7 @@ import json
 sys.path.append('.')
 from src import create_app, db
 from src.models import User
+from src.tokens import generate_confirmation_token
 
 
 @pytest.fixture
@@ -31,16 +32,16 @@ def app():
         db.create_all()
 
         # Create dummy users
-        admin = User(email='admin@administrator.co', first_name='Drosophilia', last_name='Melongangster', user_type='0')
+        admin = User(email='admin@administrator.co', first_name='Drosophilia', last_name='Melongangster', user_type='0', confirmed=True)
         admin.hash_password('password')
 
-        humanitarian = User(email='humanitarian@charity.org', first_name='Mike', last_name='Hunt', user_type='1')
+        humanitarian = User(email='humanitarian@charity.org', first_name='Mike', last_name='Hunt', user_type='1', confirmed=True)
         humanitarian.hash_password('password')
 
-        academic = User(email='academic@academia.com', first_name='Tess', last_name='Tickle', user_type='2')
+        academic = User(email='academic@academia.com', first_name='Tess', last_name='Tickle', user_type='2', confirmed=True)
         academic.hash_password('password')
 
-        student = User(email='student@ic.ac.uk', first_name='Helmut', last_name='Schmacker', user_type='3')
+        student = User(email='student@ic.ac.uk', first_name='Helmut', last_name='Schmacker', user_type='3', confirmed=True)
         student.hash_password('password')
 
         # Put users in database
@@ -79,6 +80,10 @@ class AuthActions(object):
             'userType': user_type,
             'password': password
         })
+
+    def confirm_user(self, email='email@ic.ac.uk'):
+        token = generate_confirmation_token(email)
+        return self.client.get('/confirm/{}/'.format(token))
 
     def login(self, email='student@ic.ac.uk', password='password'):
         kv = '{0}:{1}'.format(email, password)

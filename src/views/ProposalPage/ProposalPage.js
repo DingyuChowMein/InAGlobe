@@ -50,14 +50,21 @@ class ProposalPage extends Component {
                         data.checkpoints.map(event => (
                             <VerticalTimelineElement
                                 className="vertical-timeline-element--work"
-                                iconStyle={{ background: 'rgb(33, 150, 243)', color: '#fff' }}
+                                iconStyle={{background: 'rgb(33, 150, 243)', color: '#fff'}}
                                 date={event.date}
-                                icon = {<School/>}
+                                icon={<School/>}
                             >
                                 <h3 className="vertical-timeline-element-title">{event.title}</h3>
                                 <h4 className="vertical-timeline-element-subtitle">{event.subtitle}</h4>
                                 <p>{event.text}</p>
-                                <p>{event.documents}</p>
+                                <p>{event.documents.map(doc => (
+                                    <a href={config.s3Bucket + doc}> {/[^/]*$/.exec(doc)[0]} {"\n"}</a>
+                                ))}
+                                </p>
+                                <p>{event.images.map(doc => (
+                                    <a href={config.s3Bucket + doc}> {/[^/]*$/.exec(doc)[0]} {"\n"}</a>
+                                ))}
+                                </p>
                             </VerticalTimelineElement>
                         ))
                     }
