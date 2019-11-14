@@ -15,9 +15,6 @@ import {PrivateRoute} from "../../helpers/PrivateRoute";
 
 
 class MainPage extends Component {
-    constructor(props){
-        super(props);
-    }
 
     render() {
         const { path } = this.props.match;
