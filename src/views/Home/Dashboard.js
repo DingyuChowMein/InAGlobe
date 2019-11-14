@@ -2,7 +2,7 @@
 import React, {Component} from 'react'
 
 // Material UI libraries
-import { withStyles, Grid } from '@material-ui/core'
+import {withStyles, Grid} from '@material-ui/core'
 
 // Imports of different components in project
 import CardScrollView from '../../components/ScrollView/CardScrollView'
@@ -115,8 +115,10 @@ class Dashboard extends Component {
                             <ListItem
                                 selectable="true"
                                 vlaue={i}>
-                                <ListItemText primary={request.user_first_name + " " + request.user_last_name + " wants to join " + request.project_title}/>
-                                <Button onClick={() => this.joinRequestClicked(request.project_id, request.user_id, i)}>Approve</Button>
+                                <ListItemText
+                                    primary={request.user_first_name + " " + request.user_last_name + " wants to join " + request.project_title}/>
+                                <Button
+                                    onClick={() => this.joinRequestClicked(request.project_id, request.user_id, i)}>Approve</Button>
                             </ListItem>
                         ))}
                     </List>
@@ -126,7 +128,7 @@ class Dashboard extends Component {
     }
 
     render() {
-        const { classes } = this.props
+        const {classes} = this.props
         return (
             // <div className={classes.root}>
             //     <GridContainer spacing={2}>
@@ -146,7 +148,18 @@ class Dashboard extends Component {
                         <Notifications notifyList={notifications} title="Upcoming Deadlines"/>
                     </Grid>
                     <Grid item xs={12} sm={12} md={4}>
-                        <Notifications notifyList={notifications} title="Project Registration Approvals"/>
+                        <Notifications notifyList={this.state.requests.map((request, i) => {
+                            return {
+                                notifyId: i,
+                                userId: request.user_id,
+                                projectId: request.project_id,
+                                profilePic: `https://picsum.photos/${Math.floor(Math.random() * 31) + 120}`,
+                                userName:request.user_first_name + " " + request.user_last_name,
+                                projectName: request.project_title,
+                                details: request.project_short_description,
+                                date: request.request_date_time
+                            }
+                        })} title="Project Registration Approvals" approveFunction={this.joinRequestClicked}/>
                     </Grid>
                     <Grid item xs={12}>
                         <CardScrollView className={classes.root} cardData={data} title="Projects Updates"/>
@@ -155,6 +168,7 @@ class Dashboard extends Component {
                         <CardScrollView className={classes.root} cardData={data} title="Projects to Approve"/>
                     </Grid>
                 </Grid>
+                {this.renderRequestsList()}
             </ResponsiveDrawer>
 
         )

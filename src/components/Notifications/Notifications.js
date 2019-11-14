@@ -13,11 +13,12 @@ import CardsList from "../CardsList/CardsList"
 import timeDiff from "../../utils/DynamicTimeDiff"
 
 import styles from "../../assets/jss/components/notificationsStyle"
+import Button from "@material-ui/core/Button";
 
 class Notifications extends Component {
 
     render() {
-        const { classes, notifyList, title } = this.props
+        const { classes, notifyList, title, approveFunction} = this.props
         const contentStruct = (card) => {
             return (
                 <ListItem alignItems="flex-start">
@@ -53,6 +54,7 @@ class Notifications extends Component {
                             </Fragment>
                         }
                     />
+                    <Button onClick={() => approveFunction(card.projectId, card.userId, card.notifyId)}>Approve</Button>
                 </ListItem>
             )
         }
