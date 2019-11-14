@@ -3,15 +3,20 @@ import React, { Component } from "react"
 import { withRouter } from "react-router-dom"
 
 // Material UI libraries
-import { withStyles } from "@material-ui/styles"
-import { Card, CardContent, CardActions } from "@material-ui/core"
+import { 
+    withStyles, 
+    Card, 
+    CardContent, 
+    CardActions,
+} from "@material-ui/core"
 
 // Imports of different components in project
 import RegularButton from "../../components/CustomButtons/RegularButton"
 
+import config from "../../config"
+
 // Import class's stylesheet
 import styles from "../../assets/jss/views/projectCardStyle"
-import config from "../../config"
 
 class ProjectCard extends Component {
     constructor(props) {

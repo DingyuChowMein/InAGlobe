@@ -5,27 +5,24 @@ import FilePondPluginImagePreview from "filepond-plugin-image-preview"
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type"
 
 // Material UI libraries
-import {withStyles} from "@material-ui/core"
-import Dialog from '@material-ui/core/Dialog'
+import { withStyles, Dialog, Grid } from "@material-ui/core"
 
 // Imports of different components in project
-import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer'
-import GridItem from "../../components/Grid/GridItem"
-import GridContainer from "../../components/Grid/GridContainer"
 import CustomInput from '../../components/CustomInput/CustomInput'
+import ProposalPreviewPage from '../ProposalPage/ProposalPreviewPage'
 import RegularButton from "../../components/CustomButtons/RegularButton"
+import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer'
 
-// Importing the ability to upload to AWS
+// Importing the helper functions from other files
 import upload from "../../s3"
 import config from "../../config"
-import {generateId} from "../../helpers/utils"
+import { generateId } from "../../helpers/utils"
+import { projectService } from "../../services/projectsService"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/addProposalStyle"
 import "filepond/dist/filepond.min.css"
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css'
-import ProposalPreviewPage from '../ProposalPage/ProposalPreviewPage'
-import {projectService} from "../../services/projectsService";
 
 
 class AddProposal extends Component {
@@ -89,8 +86,8 @@ class AddProposal extends Component {
         return (
             <div>
                 <ResponsiveDrawer name={"Add Proposal"}>
-                    <GridContainer>
-                        <GridItem xs={12} sm={12} md={12}>
+                    <Grid container>
+                        <Grid item xs={12} sm={12} md={12}>
                             <CustomInput
                                 id="title"
                                 labelText="Project Title"
@@ -99,8 +96,8 @@ class AddProposal extends Component {
                                     fullWidth: true
                                 }}
                             />
-                        </GridItem>
-                        <GridItem xs={12} sm={12} md={12}>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12}>
                             <CustomInput
                                 id="organisation"
                                 labelText="Name of Organisation"
@@ -109,8 +106,8 @@ class AddProposal extends Component {
                                     fullWidth: true
                                 }}
                             />
-                        </GridItem>
-                        <GridItem xs={12} sm={12} md={12}>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12}>
                             <CustomInput
                                 id="location"
                                 labelText="Location"
@@ -119,8 +116,8 @@ class AddProposal extends Component {
                                     fullWidth: true
                                 }}
                             />
-                        </GridItem>
-                        <GridItem xs={12} sm={12} md={12}>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12}>
                             <CustomInput
                                 id="shortDescription"
                                 labelText="Short Description"
@@ -134,8 +131,8 @@ class AddProposal extends Component {
                                 }}
                                 extraLines={true}
                             />
-                        </GridItem>
-                        <GridItem xs={12} sm={12} md={12}>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12}>
                             <CustomInput
                                 id="detailedDescription"
                                 labelText="Detailed Description"
@@ -150,8 +147,8 @@ class AddProposal extends Component {
                                 placeholder="Detailed Description"
                                 extraLines={true}
                             />
-                        </GridItem>
-                        <GridItem xs={12} sm={12} md={12}>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12}>
                             <FilePond
                                 allowMultiple={true}
                                 files={this.state.data.images}
@@ -166,8 +163,8 @@ class AddProposal extends Component {
                                     })
                                 }}
                             />
-                        </GridItem>
-                        <GridItem xs={12} sm={12} md={12}>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12}>
                             <FilePond
                                 allowMultiple={true}
                                 files={this.state.data.documents}
@@ -189,7 +186,7 @@ class AddProposal extends Component {
                                     console.log(this.state.data.documents)
                                 }}
                             />
-                        </GridItem>
+                        </Grid>
                         <div className={classes.cardButtonDiv}>
                             <RegularButton
                                 color="primary"
@@ -206,7 +203,7 @@ class AddProposal extends Component {
                                 {"Submit"}
                             </RegularButton>
                         </div>
-                    </GridContainer>
+                    </Grid>
                 </ResponsiveDrawer>
                 <Dialog
                     fullWidth="true"

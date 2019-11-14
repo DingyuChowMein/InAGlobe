@@ -3,18 +3,20 @@ import React, {Component} from 'react'
 import {withRouter} from "react-router-dom"
 
 // Material UI libraries
-import Avatar from '@material-ui/core/Avatar'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import TextField from '@material-ui/core/TextField'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
-import Link from '@material-ui/core/Link'
-import Paper from '@material-ui/core/Paper'
-import Box from '@material-ui/core/Box'
-import Grid from '@material-ui/core/Grid'
-import Typography from '@material-ui/core/Typography'
-import CircularProgress from '@material-ui/core/CircularProgress';
-import {withStyles} from '@material-ui/core'
+import { 
+    withStyles,
+    Avatar,
+    Box,
+    Checkbox,
+    CircularProgress,
+    CssBaseline, 
+    FormControlLabel, 
+    Grid,
+    Link, 
+    Paper, 
+    TextField, 
+    Typography,
+} from '@material-ui/core'
 
 // Imports of different components and layouts in project
 import Copyright from '../../components/Copyright/Copyright'
@@ -23,22 +25,22 @@ import RegularButton from "../../components/CustomButtons/RegularButton"
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/signInSideStyle"
 
-import {userService} from "../../services/userService";
+import {userService} from "../../services/userService"
 
 class SignInSide extends Component {
 
     constructor(props) {
-        super(props);
-        userService.logout();
+        super(props)
+        userService.logout()
         this.state = {
             email: "",
             password: "",
             loginFailed: false,
             loggingIn: false,
-        };
+        }
 
-        this.handleFormChange = this.handleFormChange.bind(this);
-        this.loginPressed = this.loginPressed.bind(this);
+        this.handleFormChange = this.handleFormChange.bind(this)
+        this.loginPressed = this.loginPressed.bind(this)
     }
 
 
@@ -53,27 +55,27 @@ class SignInSide extends Component {
         // You can authenticate here
         this.setState({
             loggingIn: true
-        });
+        })
         userService.login(this.state.email, this.state.password)
             .then(token => {
-                console.log(token);
+                console.log(token)
                 if (token === "") {
                     this.setState({
                         loginFailed: true,
                         loggingIn: false
-                    });
+                    })
                 } else {
-                    this.props.history.push("/main");
-                    this.state.loginFailed = false;
+                    this.props.history.push("/main")
+                    this.state.loginFailed = false
                 }
             })
             .catch(err => {
-                console.log(err);
+                console.log(err)
                 this.setState({
                     loginFailed: true,
                     loggingIn: false
-                });
-            });
+                })
+            })
     }
 
     render() {
@@ -122,7 +124,6 @@ class SignInSide extends Component {
                                     label="Remember me"
                                 />
                                 <RegularButton
-                                    // type="submit"
                                     fullWidth
                                     variant="contained"
                                     color="primary"

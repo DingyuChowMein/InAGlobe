@@ -11,11 +11,11 @@ import ProposalPage from "./ProposalPage"
 import RegularButton from '../../components/CustomButtons/RegularButton'
 import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer'
 
-// Importing class's stylesheet
-import styles from "../../assets/jss/views/proposalMainPageStyle"
-
 import config from "../../config"
 import { commentsService } from "../../services/commentsService"
+
+// Importing class's stylesheet
+import styles from "../../assets/jss/views/proposalMainPageStyle"
 
 class ProposalMainPage extends Component {
 

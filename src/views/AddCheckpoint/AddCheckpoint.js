@@ -3,19 +3,17 @@ import { FilePond, registerPlugin } from "react-filepond"
 import FilePondPluginImagePreview from "filepond-plugin-image-preview"
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type"
 
-import { withStyles } from "@material-ui/core"
+import { withStyles, Grid } from "@material-ui/core"
 
 import CustomInput from "../../components/CustomInput/CustomInput"
-import GridContainer from "../../components/Grid/GridContainer"
-import GridItem from "../../components/Grid/GridItem"
 import RegularButton from "../../components/CustomButtons/RegularButton"
 import ResponsiveDrawer from "../../components/ResponsiveDrawer/ResponsiveDrawer"
-
-import styles from "../../assets/jss/views/addCheckpointStyle"
 
 import { checkpointService } from "../../services/checkpointService"
 import { generateId } from "../../helpers/utils"
 import upload from "../../s3"
+
+import styles from "../../assets/jss/views/addCheckpointStyle"
 
 class AddCheckpoint extends Component {
 
@@ -68,8 +66,8 @@ class AddCheckpoint extends Component {
         return (
             <div>
                 <ResponsiveDrawer name={"Add Checkpoint"}>
-                    <GridContainer>
-                        <GridItem xs={12} sm={12} md={12}>
+                    <Grid container>
+                        <Grid item xs={12} sm={12} md={12}>
                             <CustomInput
                                 id="title"
                                 labelText="Title"
@@ -78,8 +76,8 @@ class AddCheckpoint extends Component {
                                     fullWidth: true
                                 }}
                             />
-                        </GridItem>
-                        <GridItem xs={12} sm={12} md={12}>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12}>
                             <CustomInput
                                 id="subtitle"
                                 labelText="Subtitle"
@@ -88,8 +86,8 @@ class AddCheckpoint extends Component {
                                     fullWidth: true
                                 }}
                             />
-                        </GridItem>
-                        <GridItem xs={12} sm={12} md={12}>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12}>
                             <CustomInput
                                 id="text"
                                 labelText="Text"
@@ -98,8 +96,8 @@ class AddCheckpoint extends Component {
                                     fullWidth: true
                                 }}
                             />
-                        </GridItem>
-                        <GridItem xs={12} sm={12} md={12}>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12}>
                             <FilePond
                                 allowMultiple={true}
                                 files={this.state.data.images}
@@ -114,8 +112,8 @@ class AddCheckpoint extends Component {
                                     })
                                 }}
                             />
-                        </GridItem>
-                        <GridItem xs={12} sm={12} md={12}>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12}>
                             <FilePond
                                 allowMultiple={true}
                                 files={this.state.data.documents}
@@ -136,7 +134,7 @@ class AddCheckpoint extends Component {
                                     })
                                 }}
                             />
-                        </GridItem>
+                        </Grid>
                         <RegularButton
                             color="primary"
                             onClick={this.post}
@@ -144,7 +142,7 @@ class AddCheckpoint extends Component {
                         >
                             {"Submit"}
                         </RegularButton>
-                    </GridContainer>
+                    </Grid>
                 </ResponsiveDrawer>
             </div>
         )

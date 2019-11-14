@@ -3,8 +3,7 @@ import React, { Component } from "react"
 import classNames from "classnames"
 
 // Material UI libraries
-import Button from "@material-ui/core/Button"
-import { withStyles } from "@material-ui/core"
+import { withStyles, Button } from "@material-ui/core"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/components/regularButtonStyle"

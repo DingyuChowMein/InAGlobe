@@ -24,11 +24,12 @@ import { Close } from "@material-ui/icons"
 
 import RegularButton from "../CustomButtons/RegularButton"
 
-import styles from "../../assets/jss/components/commentsStyle"
-import 'react-confirm-alert/src/react-confirm-alert.css'
-
+// Imports of helper or service functions
 import config from "../../config"
 import { commentsService } from "../../services/commentsService"
+
+import styles from "../../assets/jss/components/commentsStyle"
+import 'react-confirm-alert/src/react-confirm-alert.css'
 
 
 class Comments extends Component {

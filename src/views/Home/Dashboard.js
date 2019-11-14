@@ -20,15 +20,15 @@ import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer
 import Notifications from '../../components/Notifications/Notifications'
 import Deadlines from "../../components/Deadlines/Deadlines"
 import ProjectApprovals from '../../components/Approvals/ProjectApprovals'
-
-// Importing class's stylesheet
-import styles from "../../assets/jss/views/homePageStyle"
-
 // import GridContainer from "../../components/Grid/GridContainer"
 // import GridItem from "../../components/Grid/GridItem"
 // import ProjectCard from "../ProjectList/ProjectCard"
+
 import config from '../../config'
 import { dashboardService } from "../../services/dashboardService"
+
+// Importing class's stylesheet
+import styles from "../../assets/jss/views/homePageStyle"
 
 // Example data
 import data from "../../assets/data/ProjectData"

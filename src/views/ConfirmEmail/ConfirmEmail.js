@@ -2,18 +2,19 @@
 import React, {Component} from "react"
 
 // Material UI libraries
-import {withStyles} from "@material-ui/styles"
+import { withStyles } from "@material-ui/styles"
 
+import RegularButton from "../../components/CustomButtons/RegularButton"
+
+import { userService } from "../../services/userService"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/layouts/authenticationStyle"
-import RegularButton from "../../components/CustomButtons/RegularButton";
-import {userService} from "../../services/userService";
 
 
 class ConfirmEmail extends Component {
     constructor(props) {
-        super(props);
+        super(props)
         this.state = {
             confirmed: ""
         }
@@ -25,11 +26,11 @@ class ConfirmEmail extends Component {
                 if (response) {
                     this.setState({
                         confirmed: response.message
-                    });
+                    })
                 } else {
                     this.setState({
                         confirmed: "Unable to confirm account!"
-                    });
+                    })
                 }
             })
             .catch(err => console.log(err))

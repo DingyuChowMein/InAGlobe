@@ -4,10 +4,10 @@ import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeli
 import { withStyles } from "@material-ui/core"
 import { School } from '@material-ui/icons'
 
+import config from "../../config"
+
 import styles from "../../assets/jss/views/proposalPageStyle"
 import 'react-vertical-timeline-component/style.min.css'
-
-import config from "../../config"
 
 class ProposalPage extends Component {
     render() {
