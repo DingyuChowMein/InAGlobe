@@ -48,14 +48,16 @@ class Comments extends Component {
     }
 
     componentDidMount() {
-        commentsService.getComments(this.props.projectId)
-            .then(c => c.json())
-            .then(json => {
-                console.log(json)
-                this.setState({
-                    comments: json.comments
-                })
-            }).catch(err => console.log(err));
+        setInterval(() => {
+            commentsService.getComments(this.props.projectId)
+                .then(c => c.json())
+                .then(json => {
+                    console.log(json)
+                    this.setState({
+                        comments: json.comments
+                    })
+                }).catch(err => console.log(err));
+        }, 3000)
     }
 
 
