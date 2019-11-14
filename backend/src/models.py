@@ -56,6 +56,10 @@ user_project_joining_table = db.Table('UserProjects', db.Model.metadata,
     db.Column('approved', db.Integer, default=0)
 )
 
+# checkpoint_project_joining_table = db.Table('CheckpointProjects', db.Model.metadata,
+#     db.Column('project_id', db.Integer, ForeignKey('Projects.id')),
+#     db.Column('checkpoint_id', db.Integer, ForeignKey('Checkpoints.id'))
+# )
 
 class Project(Model, db.Model):
     __tablename__ = 'Projects'
@@ -151,3 +155,22 @@ class Comment(Model, db.Model):
     @staticmethod
     def get_all_comments_for_project_id(proj_id):
         return File.query.filter_by(project_id=proj_id).all()
+
+class Checkpoint(Model, db.Model):
+    __tablename__ = 'Checkpoints'
+
+    project_id = db.Column(db.Integer, ForeignKey('Projects.id'))
+    owner_id = db.Column(db.Integer, nullable=False)
+    owner_first_name = db.Column(db.String(OWNER_FIELD_LENGTH), nullable=False)
+    owner_last_name = db.Column(db.String(OWNER_FIELD_LENGTH), nullable=False)
+    date_time = db.Column(db.DateTime, default=datetime.now())
+    title = db.Column(db.String(100), nullable=False)
+    subtitle = db.Column(db.String(200), nullable=False)
+    text = db.Column(db.String(800), nullable=False)
+
+
+class CheckpointFile(Model, db.Model):
+    __tablename__ = 'CheckpointFiles'
+
+    checkpoint_id = db.Column(db.Integer, ForeignKey('Checkpoints.id'))
+    link = db.Column(db.String(LINK_FIELD_LENGTH), nullable=False)

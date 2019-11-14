@@ -1,9 +1,10 @@
 import os
+import json
 
 from flask import g, url_for, render_template
 from . import db
 from .auth import token_auth, permission_required
-from .models import Project, File, User, Comment, USER_TYPE, FILE_TYPE, PROJECT_STATUS, user_project_joining_table
+from .models import Project, File, User, Comment, Checkpoint, CheckpointFile, USER_TYPE, FILE_TYPE, PROJECT_STATUS, user_project_joining_table
 from .tokens import generate_confirmation_token, confirm_token
 from .emails import send_email
 from collections import defaultdict
@@ -227,6 +228,8 @@ def get_comments(project_id):
 
 def get_projects_helper(projects):
     files = File.query.all()
+    checkpoints = Checkpoint.query.all()
+    checkpoint_files = CheckpointFile.query.all()
     join_relationship = []
     user_type = g.current_user.get_permissions()
     if user_type == USER_TYPE['STUDENT'] or user_type == USER_TYPE['ACADEMIC']:
@@ -235,6 +238,8 @@ def get_projects_helper(projects):
 
     documents_map = defaultdict(list)
     images_map = defaultdict(list)
+    checkpoints_map = defaultdict(list)
+    checkpoint_files_map = defaultdict(list)
     joined_projects = {}
 
     for f in files:
@@ -243,11 +248,26 @@ def get_projects_helper(projects):
         elif f.type == FILE_TYPE['IMAGE']:
             images_map[f.project_id].append(f.link)
 
+    for f in checkpoint_files:
+        checkpoint_files_map[f.checkpoint_id].append(f.link)
+
     for r in join_relationship:
         if r.approved == 1:
             joined_projects[r.project_id] = 2
         else:
             joined_projects[r.project_id] = 1
+
+    for c in checkpoints:
+        cJson = {
+            "firstName": c.owner_first_name,
+            "lastName": c.owner_last_name,
+            "date": c.date_time,
+            "title": c.title,
+            "subtitle": c.subtitle,
+            "text": c.text,
+            "documents":checkpoint_files_map[c.id]
+        }
+        checkpoints_map[c.project_id].append(cJson)
 
     projects_json = [{
         "id": project.id,
@@ -263,6 +283,8 @@ def get_projects_helper(projects):
         # 0 = not requested, 1 = needs approval, 2 = approved
         "joined": 0 if project.id not in joined_projects else joined_projects[project.id],
         "images": images_map[project.id],
+        "checkpoints": checkpoints_map[project.id],
     } for project in projects]
+
 
     return {'projects': projects_json}, 200
