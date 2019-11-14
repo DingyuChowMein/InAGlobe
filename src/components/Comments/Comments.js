@@ -64,7 +64,14 @@ class Comments extends Component {
     }
 
     deleteComment(commentId) {
-        alert(commentId)
+        commentsService.deleteComment(commentId)
+            .then(response => {
+                console.log(response)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
     }
 
     renderConfirmDialog() {

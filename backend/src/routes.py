@@ -320,11 +320,12 @@ def get_comments(project_id):
 
 @token_auth.login_required
 def delete_comment(comment_id):
-    comment = db.session.query(Comment).filter(Comment.id == comment_id).first()
+    comment = Comment.query.filter(Comment.id == comment_id).first()
     if comment is None:
         return {'message': 'Comment does not exist!'}, 404
-    if comment in g.current_user.comments:
-        comment.delete()
+    if comment in g.current_user.comments or g.current_user.get_permissions() == USER_TYPE['ADMIN']:
+        Comment.query.filter(Comment.id == comment_id).delete()
+        db.session.commit()
         return {'message': 'Comment deleted!'}, 200
     else:
         return {'message': 'Insufficient permissions'}, 403
