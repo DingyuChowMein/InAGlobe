@@ -174,3 +174,4 @@ class CheckpointFile(Model, db.Model):
 
     checkpoint_id = db.Column(db.Integer, ForeignKey('Checkpoints.id'))
     link = db.Column(db.String(LINK_FIELD_LENGTH), nullable=False)
+    type = db.Column(db.Integer, default=FILE_TYPE['DOCUMENT'])
