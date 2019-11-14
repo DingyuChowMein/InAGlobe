@@ -40,7 +40,7 @@ class Comments extends Component {
             date: `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()}`
         });
 
-        commentsService.postComment()
+        commentsService.postComment(this.props.projectId, this.state)
             .then(response => {
                 // Redirect here based on response
                 console.log(response)

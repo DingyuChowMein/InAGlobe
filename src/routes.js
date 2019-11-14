@@ -16,6 +16,7 @@ import AddProposal from "./views/AddProposal/AddProposal"
 import ProposalMainPage from "./views/ProposalPage/ProposalMainPage"
 import ProposalPreviewPage from './views/ProposalPage/ProposalPreviewPage'
 import Profile from './views/UserProfile/Profile'
+import AddCheckpoint from "./views/AddCheckpoint/AddCheckpoint";
 
 const loginRoutes = [
     {
@@ -57,8 +58,16 @@ const proposalRoutes = [
         icon: null,
         layout: "/main/projectlist",
         userLevel: 3
-    }
-]
+    },
+    {
+        path: "/checkpoint/:id",
+        name: "Checkpoint",
+        component: AddCheckpoint,
+        icon: null,
+        layout: "/main/projectlist",
+        userLevel: 3
+    },
+];
 
 const drawerRoutes = [
     {
@@ -93,7 +102,7 @@ const drawerRoutes = [
         layout: "/main",
         userLevel: 3
     }
-]
+];
 
 const mainRoutes = [...drawerRoutes, ...proposalRoutes]
 

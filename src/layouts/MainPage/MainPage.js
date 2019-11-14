@@ -30,7 +30,6 @@ class MainPage extends Component {
                             exact
                             component={prop.component}
                         />
-
                     )
                 })}
                 <Redirect strict from="/main" to="/main/home" />

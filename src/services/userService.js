@@ -22,7 +22,7 @@ function logout() {
         fetch(config.apiUrl + '/users/tokens/', requestOptions)
             .then(response => console.log(response));
 
-        localStorage.removeItem('user');
+        localStorage.clear();
         console.log("Logged out");
     }
 }
