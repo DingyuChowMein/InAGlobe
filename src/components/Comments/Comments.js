@@ -80,7 +80,8 @@ class Comments extends Component {
                     const updated_comments = this.state.comments.concat(response.comment);
                 return {
                     comments: updated_comments,
-                    postLoading: false
+                    postLoading: false,
+                    text: ""
                 }})
             })
             .catch(err => console.log(err))
@@ -182,6 +183,8 @@ class Comments extends Component {
                         placeholder="Enter your comment here..."
                         margin="normal"
                         variant="outlined"
+                        value={this.state.text}
+                        disabled={this.state.postLoading}
                         inputProps={{
                             'aria-label': 'bare',
                             onChange: this.handleFormChange
