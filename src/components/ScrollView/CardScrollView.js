@@ -42,7 +42,7 @@ class CardScrollView extends Component {
     }
     componentDidMount() {
         window.addEventListener('resize', this.updateDimensions)
-        this.list.scrollTo(0)
+        if (this.list) this.list.scrollTo(0)
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateDimensions)

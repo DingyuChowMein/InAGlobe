@@ -31,10 +31,10 @@ import { dashboardService } from "../../services/dashboardService"
 import styles from "../../assets/jss/views/homePageStyle"
 
 // Example data
-import data from "../../assets/data/ProjectData"
-import notifications from "../../assets/data/NotificationData"
-import deadlines from "../../assets/data/DeadlinesData"
-import approvals from "../../assets/data/ProjectApprovalData"
+// import data from "../../assets/data/ProjectData"
+// import notifications from "../../assets/data/NotificationData"
+// import deadlines from "../../assets/data/DeadlinesData"
+// import approvals from "../../assets/data/ProjectApprovalData"
 
 
 class Dashboard extends Component {
@@ -148,26 +148,26 @@ class Dashboard extends Component {
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={12} md={4}>
                         <Notifications 
-                            notifyList={notifications} 
+                            notifyList={[]} 
                             title="Notifications"
                         />
                     </Grid>
                     <Grid item xs={12} sm={12} md={4}>
                         <Deadlines 
-                            deadlineList={deadlines} 
+                            deadlineList={[]} 
                             title="Upcoming Deadlines"
                         />
                     </Grid>
                     <Grid item xs={12} sm={12} md={4}>
                         <ProjectApprovals 
-                            approvalList={approvals} 
-                            title="Project Registration Approvals"
+                            approvalList={[]} 
+                            title="User Approvals for Projects"
                         />
                     </Grid>
                     <Grid item xs={12}>
                         <CardScrollView 
                             className={classes.root} 
-                            cardData={data} 
+                            cardData={[]} 
                             title="Projects Updates"
                             EmptyIcon={UpdateOutlined}
                             emptyText="No Updates for any Ongoing Projects"
@@ -176,8 +176,10 @@ class Dashboard extends Component {
                     <Grid item xs={12}>
                         <CardScrollView 
                             className={classes.root} 
-                            cardData={data} 
+                            cardData={[]} 
                             title="Projects to Approve"
+                            EmptyIcon={UpdateOutlined}
+                            emptyText="No Approvals Needed for New Projects"
                         />
                     </Grid>
                 </Grid>

@@ -29,7 +29,7 @@ const styles = {
     emptyComponentDiv: {
         display: "table",
         width: "100%",
-        height: "300px"
+        height: "150px"
     },
     emptyComponentIcon: {
         display: "table-cell",
