@@ -149,7 +149,7 @@ def create_app():
 
     # Route classes to paths
     api.add_resource(Projects, '/projects/', '/projects/<int:project_id>/')
-    api.add_resource(Comments, '/comments/', '/comments/<int:project_id>/', '/comments/<int:comment_id>/')
+    api.add_resource(Comments, '/comments/', '/comments/<int:project_id>/')
     api.add_resource(Users, '/users/')
     api.add_resource(Tokens, '/users/tokens/')
     api.add_resource(Approvals, '/approve/')

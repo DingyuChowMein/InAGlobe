@@ -35,13 +35,27 @@ class Comments extends Component {
         this.state = {
             text: "",
             dialogBoxOpened: false,
-            selectedCommentId: 0
+            selectedCommentId: 0,
+            comments: []
         }
+
         this.handleFormChange = this.handleFormChange.bind(this)
         this.post = this.post.bind(this)
         this.deleteComment = this.deleteComment.bind(this)
         this.renderConfirmDialog = this.renderConfirmDialog.bind(this)
     }
+
+    componentDidMount() {
+        commentsService.getComments(this.props.projectId)
+            .then(c => c.json())
+            .then(json => {
+                console.log(json)
+                this.setState({
+                    comments: json.comments
+                })
+            }).catch(err => console.log(err));
+    }
+
 
     handleFormChange(e) {
         this.setState({
@@ -56,14 +70,20 @@ class Comments extends Component {
         });
 
         commentsService.postComment(this.props.projectId, this.state)
+            .then(response => response.json())
             .then(response => {
-                // Redirect here based on response
-                console.log(response)
-                window.location.reload()
-            }).catch(err => console.log(err))
+                console.log(response);
+                this.setState(() => {
+                    const updated_comments = this.state.comments.concat(response.comment);
+                return {
+                    comments: updated_comments
+                }})
+            })
+            .catch(err => console.log(err))
     }
 
     deleteComment(commentId) {
+        this.setState({comments: this.state.comments.filter(comment => comment.commentId !== commentId )});
         commentsService.deleteComment(commentId)
             .then(response => {
                 console.log(response)
@@ -106,11 +126,11 @@ class Comments extends Component {
     }
 
     render() {
-        const {classes, comments} = this.props
+        const {classes} = this.props
         return (
             <div className={classes.root}>
                 <List>
-                    {comments.map(comment => (
+                    {this.state.comments.map(comment => (
                         <div className={classes.root}>
                             <ListItem alignItems="flex-start">
                                 <ListItemAvatar>

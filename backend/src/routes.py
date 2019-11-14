@@ -275,7 +275,15 @@ def add_comment(data, project_id):
     comment.save()
     g.current_user.comments.append(comment)
     db.session.commit()
-    return {'message': 'Comment added!'}, 201
+    comment_json = {
+        "commentId": comment.id,
+        "text": comment.text,
+        "ownerId": comment.owner_id,
+        "ownerFirstName": comment.owner_first_name,
+        "ownerLastName": comment.owner_last_name,
+        "date": comment.date_time.strftime("%Y-%m-%d %H:%M:%S")
+    }
+    return {'message': 'Comment added!', 'comment': comment_json}, 201
 
 
 @token_auth.login_required
@@ -292,6 +300,7 @@ def get_comments(project_id):
         "date": comment.date_time.strftime("%Y-%m-%d %H:%M:%S")
     } for comment in project_comments]
     return {"comments": comments_json}, 200
+
 
 @token_auth.login_required
 def delete_comment(comment_id):
