@@ -10,6 +10,7 @@ import {
     Grid,
     IconButton,
     Hidden,
+    Typography
 } from "@material-ui/core"
 
 import { 
@@ -41,14 +42,14 @@ class CardScrollView extends Component {
     }
     componentDidMount() {
         window.addEventListener('resize', this.updateDimensions)
-        this.list.scrollTo(0)
+        if (this.list) this.list.scrollTo(0)
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateDimensions)
     }
 
     render() {
-        const { classes, cardData, title } = this.props
+        const { classes, cardData, title, EmptyIcon, emptyText } = this.props
         
         const cardsList = (
             cardData.map((card, key) => (
@@ -105,19 +106,33 @@ class CardScrollView extends Component {
         )
 
         return (
-            <div>
+            <>
                 <h3 className={classes.title}>{title}</h3>
-                <Hidden xsDown implementation="css">
-                    <div style={{ width: `calc(${this.state.width}px - 320px)` }}>
-                        {scrollMenu}
+                {cardsList.length === 0
+                ?
+                    <div className={classes.emptyComponentDiv}>
+                        <div className={classes.emptyComponentIcon}>
+                            <EmptyIcon fontSize="large" className={classes.colouring}/>
+                        </div>
+                        <div className={classes.emptyComponentText}>
+                            <Typography component="h3" variant="h5" className={classes.colouring}>{emptyText}</Typography>
+                        </div>
                     </div>
-                </Hidden>
-                <Hidden smUp implementation="css">
-                    <div style={{ width: `calc(${this.state.width}px - 30px)` }}>
-                        {scrollMenu}
-                    </div>
-                </Hidden>
-            </div>
+                :
+                    <>
+                        <Hidden xsDown implementation="css">
+                            <div style={{ width: `calc(${this.state.width}px - 320px)` }}>
+                                {scrollMenu}
+                            </div>
+                        </Hidden>
+                        <Hidden smUp implementation="css">
+                            <div style={{ width: `calc(${this.state.width}px - 30px)` }}>
+                                {scrollMenu}
+                            </div>
+                        </Hidden>
+                    </>
+                }
+            </>
         )
     }
 }

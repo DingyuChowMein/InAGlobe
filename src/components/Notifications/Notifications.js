@@ -4,13 +4,14 @@ import {
     withStyles,
     ListItem,
     ListItemAvatar,
-    Avatar,
     ListItemText,
+    Avatar,
     Typography
 } from "@material-ui/core"
+import NotificationsIcon from '@material-ui/icons/Notifications'
 
 import CardsList from "../CardsList/CardsList"
-import timeDiff from "../../utils/DynamicTimeDiff"
+import timeDiff from "../../helpers/DynamicTimeDiff"
 
 import styles from "../../assets/jss/components/notificationsStyle"
 import Button from "@material-ui/core/Button";
@@ -34,13 +35,15 @@ class Notifications extends Component {
                     <ListItemText
                         primary={
                             <Fragment>
-                                {card.userName}
+                                <b>
+                                    {card.userName}
+                                </b>
                                 <Typography
                                     component="span"
                                     variant="body2"
                                     className={classes.timeDiff}
                                 >
-                                    {timeDiff(card.date)}
+                                    {timeDiff(new Date(card.date))}
                                 </Typography>
                             </Fragment>
                         }
@@ -53,7 +56,8 @@ class Notifications extends Component {
                                 >
                                     {card.projectName}
                                 </Typography>
-                                {` — ${card.details}`}
+                                <br/>
+                                {card.details}
                             </Fragment>
                         }
                     />
@@ -69,7 +73,13 @@ class Notifications extends Component {
         }
 
         return (
-            <CardsList cardData={notifyList} title={title} contentStruct={contentStruct}/>
+            <CardsList 
+                cardData={notifyList} 
+                title={title} 
+                contentStruct={contentStruct}
+                EmptyIcon={NotificationsIcon}
+                emptyText="All Caught Up!"
+            />
         )
     }
 }

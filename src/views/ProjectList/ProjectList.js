@@ -1,22 +1,19 @@
 // Main ReactJS libraries
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 
 // Material UI libraries
-import {withStyles} from '@material-ui/core'
+import { withStyles, Grid } from '@material-ui/core'
 
 // Imports of different components in project
 import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer'
-import GridContainer from "../../components/Grid/GridContainer"
-import GridItem from "../../components/Grid/GridItem"
 import ProjectCard from "./ProjectCard"
 
-// Importing example card data
-// import cardData from "../../assets/data/ProjectData"
+// Importing helper or service functions
+import config from '../../config'
+import { projectService } from "../../services/projectsService"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/projectListStyle"
-import config from '../../config'
-import {projectService} from "../../services/projectsService";
 
 class ProjectList extends Component {
     constructor(props) {
@@ -43,13 +40,13 @@ class ProjectList extends Component {
         return (
             <ResponsiveDrawer name={"Project List"}>
                 <div className={classes.root}>
-                    <GridContainer spacing={2}>
+                    <Grid container spacing={2}>
                         {this.state.projects.map(card => (
-                            <GridItem xs={12} sm={12} md={6} key={card.id}>
+                            <Grid item xs={12} sm={12} md={6} key={card.id}>
                                 <ProjectCard data={card}/>
-                            </GridItem>
+                            </Grid>
                         ))}
-                    </GridContainer>
+                    </Grid>
                 </div>
             </ResponsiveDrawer>
         )

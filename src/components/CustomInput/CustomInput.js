@@ -4,11 +4,15 @@ import classNames from "classnames"
 import PropTypes from "prop-types"
 
 // Material UI libraries
-import FormControl from "@material-ui/core/FormControl"
-import TextField from '@material-ui/core/TextField'
-import Clear from "@material-ui/icons/Clear"
-import Check from "@material-ui/icons/Check"
-import { withStyles } from "@material-ui/styles"
+import { 
+	withStyles,
+	FormControl, 
+	TextField 
+} from "@material-ui/core"
+import { 
+	Clear, 
+	Check 
+} from "@material-ui/icons"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/components/customInputStyle"
