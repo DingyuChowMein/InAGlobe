@@ -52,7 +52,8 @@ class Model:
 user_project_joining_table = db.Table('UserProjects', db.Model.metadata,
     db.Column('user_id', db.Integer, ForeignKey('Users.id')),
     db.Column('project_id', db.Integer, ForeignKey('Projects.id')),
-    db.Column('approved', db.Integer, default=0)
+    db.Column('approved', db.Integer, default=0),
+    db.Column('date_time', db.DateTime, default=datetime.now())
 )
 
 user_comment_joining_table = db.Table('UserComments', db.Model.metadata,

@@ -193,7 +193,9 @@ def get_joining_requests():
         "user_id": request.user_id,
         "user_first_name": request.User.first_name,
         "user_last_name": request.User.last_name,
-        "project_title": request.Project.title
+        "project_title": request.Project.title,
+        "project_short_description": request.Project.short_description,
+        "request_date_time": request.date_time
     } for request in requests]
 
     return {"requests": requests_json}, 200
