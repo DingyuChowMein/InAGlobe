@@ -231,9 +231,14 @@ def get_comments(project_id):
     return {"comments": comments_json}, 200
 
 @token_auth.login_required
-def delete_comment(project_id):
-    g.current_user
-    return {'message': 'Comment deleted!'}, 500
+def delete_comment(comment_id):
+    comment = db.session.query(Comment).filter(Comment.id == comment_id).first()
+    if comment is None:
+        return {'message': 'Comment does not exist!'}, 404
+    if comment in g.current_user.comments:
+        return {'message': 'Comment deleted!'}, 200
+    else:
+        return {'message': 'Insufficient permissions'}, 403
 
 def get_projects_helper(projects):
     files = File.query.all()
