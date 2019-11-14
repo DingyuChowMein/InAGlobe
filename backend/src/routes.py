@@ -104,7 +104,7 @@ def delete_project(project_id):
     project = db.session.query(Project).filter(Project.id == project_id).first()
     if project is None:
         return {'message': 'Project does not exist!'}, 404
-    if project in g.current_user.projects:
+    if project in g.current_user.projects or g.current_user.is_admin():
         project.delete()
         return {'message': 'Project deleted!'}, 200
     else:
@@ -298,7 +298,7 @@ def delete_comment(comment_id):
     comment = db.session.query(Comment).filter(Comment.id == comment_id).first()
     if comment is None:
         return {'message': 'Comment does not exist!'}, 404
-    if comment in g.current_user.comments:
+    if comment in g.current_user.comments or g.current_user.is_admin():
         comment.delete()
         return {'message': 'Comment deleted!'}, 200
     else:
