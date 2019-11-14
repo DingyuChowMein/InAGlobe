@@ -101,6 +101,8 @@ def upload_project(data):
 
     return {'message': 'Project added to db!'}, 201
 
+def delete_project(project_id):
+    return {'message': 'Project deleted!'}, 500
 
 @token_auth.login_required
 def upload_checkpoint(data, project_id):
@@ -242,6 +244,9 @@ def get_comments(project_id):
     } for comment in project_comments]
     return {"comments": comments_json}, 200
 
+
+def delete_comment(project_id):
+    return {'message': 'Comment deleted!'}, 500
 
 def get_projects_helper(projects):
     files = File.query.all()
