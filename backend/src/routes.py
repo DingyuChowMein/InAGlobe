@@ -108,7 +108,7 @@ def delete_project(project_id):
         project.delete()
         return {'message': 'Project deleted!'}, 200
     else:
-        return {'message': 'Insufficient permissions'}, 403
+        return {'message': 'Insufficient permissions!'}, 403
 
 
 @token_auth.login_required
