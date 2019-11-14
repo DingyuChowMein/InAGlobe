@@ -86,6 +86,7 @@ def delete_project(project_id):
     if project is None:
         return {'message': 'Project does not exist!'}, 404
     if project in g.current_user.projects:
+        project.delete()
         return {'message': 'Project deleted!'}, 200
     else:
         return {'message': 'Insufficient permissions'}, 403
@@ -237,6 +238,7 @@ def delete_comment(comment_id):
     if comment is None:
         return {'message': 'Comment does not exist!'}, 404
     if comment in g.current_user.comments:
+        comment.delete()
         return {'message': 'Comment deleted!'}, 200
     else:
         return {'message': 'Insufficient permissions'}, 403
