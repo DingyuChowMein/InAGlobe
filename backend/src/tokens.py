@@ -23,12 +23,13 @@ def get_token():
 def revoke_token():
     g.current_user.revoke_token()
     db.session.commit()
-    return {'message': 'user removed'}, 200
+    return {'message': 'User removed!'}, 200
 
 
 def generate_confirmation_token(email):
     serializer = URLSafeTimedSerializer(os.environ['SECRET_KEY'])
     return serializer.dumps(email, salt=os.environ['SECURITY_PASSWORD_SALT'])
+
 
 def confirm_token(token, expiration=3600):
     serializer = URLSafeTimedSerializer(os.environ['SECRET_KEY'])

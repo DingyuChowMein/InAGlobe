@@ -1,7 +1,7 @@
 import os
 import json
 
-from flask import g, url_for, render_template
+from flask import g, abort, url_for, render_template
 from . import db
 from .auth import token_auth, permission_required
 from .models import Project, File, User, Comment, Checkpoint, CheckpointFile, USER_TYPE, FILE_TYPE, PROJECT_STATUS, user_project_joining_table
@@ -54,31 +54,50 @@ def get_projects():
 @token_auth.login_required
 @permission_required(USER_TYPE['HUMANITARIAN'])
 def upload_project(data):
-    # TODO: error handling (around saving to db)
-    project = Project(
-        title=data['title'],
-        short_description=data['shortDescription'],
-        long_description=data['detailedDescription'],
-        location=data['location'],
-        project_owner=g.current_user.get_id(),
-        organisation_name=data['organisationName'],
-        organisation_logo=data['organisationLogo']
-    )
-    project.save()
-    if data.get("documents") is not None:
-        for link in data['documents']:
-            file = File(project_id=project.id, link=link, type=FILE_TYPE['DOCUMENT'])
-            file.save()
-        for link in data['images']:
-            file = File(project_id=project.id, link=link, type=FILE_TYPE['IMAGE'])
-            file.save()
+    # TODO remove the code duplication for the try blocks
+    try:
+        if not data['title']:
+            raise ValueError('title')
+        if not data['shortDescription']:
+            raise ValueError('short description')
+        if not data['detailedDescription']:
+            raise ValueError('detailed description')
+        if not data['organisationName']:
+            raise ValueError('organisation name')
+        if not data['organisationLogo']:
+            raise ValueError('organisation logo')
 
-    # Create dashboard link for humanitarians
-    g.current_user.projects.append(project)
-    db.session.commit()
+        project = Project(
+            title=data['title'],
+            short_description=data['shortDescription'],
+            long_description=data['detailedDescription'],
+            location=data['location'],
+            project_owner=g.current_user.get_id(),
+            organisation_name=data['organisationName'],
+            organisation_logo=data['organisationLogo']
+        )
+        project.save()
 
-    return {'message': 'Project added to db!'}, 201
+        # TODO exceptions for bad links
+        if data.get("documents") is not None:
+            for link in data['documents']:
+                file = File(project_id=project.id, link=link, type=FILE_TYPE['DOCUMENT'])
+                file.save()
+            for link in data['images']:
+                file = File(project_id=project.id, link=link, type=FILE_TYPE['IMAGE'])
+                file.save()
 
+        #Create dashboard link for humanitarians
+        g.current_user.projects.append(project)
+        db.session.commit()
+
+        return {'message': 'Project added to db!'}, 201
+    except ValueError as e:
+        return abort(400, 'Bad {} provided!'.format(e.__str__()))
+    except Exception as e:
+        return abort(400, '{} not valid!'.format(e.__str__()))
+      
+      
 @token_auth.login_required
 @permission_required(USER_TYPE['HUMANITARIAN'])
 def delete_project(project_id):
@@ -90,6 +109,7 @@ def delete_project(project_id):
         return {'message': 'Project deleted!'}, 200
     else:
         return {'message': 'Insufficient permissions'}, 403
+
 
 @token_auth.login_required
 def upload_checkpoint(data, project_id):
@@ -107,6 +127,7 @@ def upload_checkpoint(data, project_id):
 
     checkpoint.save()
     return {'message': 'Checkpoint added!'}, 201
+
 
 @token_auth.login_required
 @permission_required(USER_TYPE['ADMIN'])
@@ -168,23 +189,43 @@ def get_users():
 
 
 def create_user(data):
-    new_user = User(
-        email=data['email'],
-        first_name=data['firstName'],
-        last_name=data['lastName'],
-        user_type=USER_TYPE[data['userType']],
-        confirmed=False
-    )
-    new_user.hash_password(data['password'])
-    new_user.save()
+    try:
+        if not data['email']:
+            raise ValueError('email')
+        if not data['firstName']:
+            raise ValueError('name')
+        if not data['lastName']:
+            raise ValueError('surname')
+        if not data['userType'] in USER_TYPE:
+            raise ValueError('user type')
+        if not data['password'] or len(data['password']) < 8:
+            raise ValueError('password')
 
-    token = generate_confirmation_token(new_user.email)
-    confirm_url = os.environ['SITE_URL'] + f"login/confirm/{token}"
-    html = render_template('confirm_email.html', confirm_url=confirm_url)
-    subject = "Please confirm your email for Inaglobe"
-    send_email(new_user.email, subject, html)
+        if data['userType'] == 'ADMIN':
+            return {'message': 'Not allowed!'}, 403
 
-    return {'message': 'User created!'}, 201
+        new_user = User(
+            email=data['email'],
+            first_name=data['firstName'],
+            last_name=data['lastName'],
+            user_type=USER_TYPE[data['userType']]
+        )
+
+        new_user.hash_password(data['password'])
+        new_user.save()
+        
+        token = generate_confirmation_token(new_user.email)
+        confirm_url = os.environ['SITE_URL'] + f"login/confirm/{token}"
+        html = render_template('confirm_email.html', confirm_url=confirm_url)
+        subject = "Please confirm your email for Inaglobe"
+        send_email(new_user.email, subject, html)
+        
+        return {'message': 'User created!'}, 201
+
+    except ValueError as e:
+        return abort(400, 'Bad {} provided!'.format(e.__str__()))
+    except Exception as e:
+        return abort(400, '{} not valid!'.format(e.__str__()))
 
   
 def confirm_email(token):
@@ -214,6 +255,7 @@ def add_comment(data, project_id):
     )
     comment.save()
     g.current_user.comments.append(comment)
+    db.commit()
     return {'message': 'Comment added!'}, 201
 
 
