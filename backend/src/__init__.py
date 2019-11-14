@@ -101,8 +101,8 @@ def create_app():
             response, code = add_comment(request.get_json(), project_id)
             return new_response(response, code)
 
-        def delete(self, project_id):
-            response, code = delete_comment(project_id)
+        def delete(self, comment_id):
+            response, code = delete_comment(comment_id)
             return new_response(response, code)
 
     class Users(Resource, CORS):
