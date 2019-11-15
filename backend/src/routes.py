@@ -110,6 +110,11 @@ def delete_project(project_id):
     else:
         return {'message': 'Insufficient permissions!'}, 403
 
+@token_auth.login_required
+@permission_required(USER_TYPE['HUMANITARIAN'])
+def update_project(data, project_id):
+    return {'message': 'TODO'}, 500
+
 
 @token_auth.login_required
 def upload_checkpoint(data, project_id):
