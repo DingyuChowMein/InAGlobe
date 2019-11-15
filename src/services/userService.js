@@ -28,7 +28,8 @@ function logout() {
 }
 
 function signUp(firstName, lastName, email, password, userType) {
-    console.log(config.apiUrl + '/users/')
+    console.log(config.apiUrl + '/users/');
+    console.log(userType);
     const requestOptions = {
         method: 'POST',
         headers: {
@@ -39,7 +40,7 @@ function signUp(firstName, lastName, email, password, userType) {
             lastName: lastName,
             email: email,
             password: password,
-            userType: userType
+            userType: userType.value
         })
     }
 
