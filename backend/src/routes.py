@@ -131,6 +131,8 @@ def update_project(data, project_id):
         }
 
         for k, v in data.items():
+            if k not in PROJECT_FIELDS:
+                return {'message': 'Bad request!'}, 400
             if v is not '':
                 PROJECT_FIELDS[k] = v
 
