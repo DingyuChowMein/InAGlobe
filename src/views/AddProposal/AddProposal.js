@@ -60,19 +60,16 @@ class AddProposal extends Component {
         })
     }
 
-    post = () => {
-        const id = generateId()
-        this.state.data.documents = upload(this.state.data.documents, id + '/Documents')
-        this.state.data.images = upload(this.state.data.images, id + '/Images')
-        console.log(this.state.data)
-        projectService.postProject(this.state.data)
-            .then((response) => {
-                console.log(response);
-                // Redirect here based on response
-                this.props.history.push("/main/projectlist")
-            }).catch((err) => {
-            console.log(err)
-        })
+    componentDidMount() {
+        projectService.getProjects()
+            .then(data => {
+                console.log(data)
+                data.projects.forEach(project => project.status = (project.status === 0 ? "Needs Approval" : "Approved"))
+                this.setState({
+                    projects: data.projects
+                })
+            })
+            .catch(console.log)
     }
 
     previewProposal = () => {

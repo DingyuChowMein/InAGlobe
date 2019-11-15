@@ -28,18 +28,18 @@ class Profile extends Component {
         super(props)
         this.state = {
             width: window.innerWidth,
-            data: {
-                userId: props.match.params.id,
-                firstName: "",
-                lastName: "",
-                userType: "", 
-                profilePic: "", 
-                email: "", 
-                location: "", 
-                shortDescription: "", 
-                longDescription: "", 
-                album: []
-            }
+            // data: {
+            //     userId: props.match.params.id,
+            //     firstName: "",
+            //     lastName: "",
+            //     userType: "", 
+            //     profilePic: "", 
+            //     email: "", 
+            //     location: "", 
+            //     shortDescription: "", 
+            //     longDescription: "", 
+            //     album: []
+            // }
         }
         this.albumList = null
     }
@@ -59,7 +59,7 @@ class Profile extends Component {
 
     render() {
         const { classes } = this.props
-        const { firstName, lastName, userType, profilePic, email, location, shortBio, longBio, album } = exampleProfile
+        const { firstname, lastname, permission, profile_picture, email, location, short_description, long_description, album } = JSON.parse(localStorage.getItem("user"))
 
         if (this.state.data.userId) {
             console.log(this.state.data.userId)
@@ -67,7 +67,7 @@ class Profile extends Component {
         }
 
         let userTypeText
-        switch (userType) {
+        switch (permission) {
             case 0:
                 userTypeText = "Admin"
                 break
@@ -140,13 +140,13 @@ class Profile extends Component {
                     <Grid item xs={12} className={classes.centering}>
                         <Avatar 
                             alt="Profile Picture"
-                            src={profilePic}
+                            src={profile_picture}
                             style={{ height: "250px", width: "250px" }}
                         />
                     </Grid>
                     <Grid item xs={12} className={classes.centering}>
                         <Typography component="h3" variant="h2">
-                            {`${firstName} ${lastName}`}
+                            {`${firstname} ${lastname}`}
                         </Typography>
                     </Grid>
                     <Grid item xs={12} className={classes.leftAlign}>
@@ -176,43 +176,49 @@ class Profile extends Component {
                     <Grid item xs={12} className={classes.leftAlign}>
                         <div>
                             <Typography component="h5" variant="h5">
-                                <b>Short Biography: </b>
+                                <b>Summary: </b>
                             </Typography>
                             <br />
                             <Typography component="span" variant="body1">
-                                {shortBio}
+                                {short_description}
                             </Typography>
                         </div>
                     </Grid>
                     <Grid item xs={12} className={classes.leftAlign}>
                         <div>
                             <Typography component="h5" variant="h5">
-                                <b>Detailed Biography: </b>
+                                <b>Biography: </b>
                             </Typography>
                             <br />
                             <Typography component="span" variant="body1">
-                                {longBio}
+                                {long_description}
                             </Typography>
                         </div>
                     </Grid>
-                    <Grid item xs={12} className={classes.leftAlign}>
-                        <div>
-                            <Typography component="h5" variant="h5">
-                                <b>Album Pictures: </b>
-                            </Typography>
-                            <br />
-                            <Hidden xsDown implementation="css">
-                                <div style={{ width: `calc(${this.state.width}px - 350px)` }}>
-                                    {scrollMenu}
-                                </div>
-                            </Hidden>
-                            <Hidden smUp implementation="css">
-                                <div style={{ width: `calc(${this.state.width}px - 85px)` }}>
-                                    {scrollMenu}
-                                </div>
-                            </Hidden>
-                        </div>
-                    </Grid>
+                    {album 
+                        ? 
+                        <Grid item xs={12} className={classes.leftAlign}>
+                            <div>
+                                <Typography component="h5" variant="h5">
+                                    <b>Album Pictures: </b>
+                                </Typography>
+                                <br />
+                                <Hidden xsDown implementation="css">
+                                    <div style={{ width: `calc(${this.state.width}px - 350px)` }}>
+                                        {scrollMenu}
+                                    </div>
+                                </Hidden>
+                                <Hidden smUp implementation="css">
+                                    <div style={{ width: `calc(${this.state.width}px - 85px)` }}>
+                                        {scrollMenu}
+                                    </div>
+                                </Hidden>
+                            </div>
+                        </Grid>
+                        :
+                        null
+                    }
+                    
                 </Grid>
             </ResponsiveDrawer>
         )
