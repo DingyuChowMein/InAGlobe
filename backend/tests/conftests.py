@@ -19,8 +19,12 @@ def app():
     sqlite3.connect(db_path)
     os.environ['DATABASE_URL'] = 'sqlite:///' + db_path
 
-    #configure testing configuration
+    #configure testing environment
     os.environ['APP_SETTINGS'] = 'backend.config.TestingConfig'
+    os.environ['APP_MAIL_USERNAME'] = 'fake_username@fake.email.com'
+    os.environ['APP_MAIL_PASSWORD'] = '..'
+    os.environ['FLASK_ENV'] = 'testing'
+    os.environ['SECURITY_PASSWORD_SALT'] = 'salty'
 
     #create app
     app = create_app()
