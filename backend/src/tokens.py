@@ -18,6 +18,7 @@ def get_token():
         'userid': g.current_user.get_id(),
         'profile_picture': g.current_user.profile_picture,
         'location': g.current_user.location,
+        'email': g.current_user.email,
         'short_description': g.current_user.short_description,
         'long_description': g.current_user.long_description
     }, 200
