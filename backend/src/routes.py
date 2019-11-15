@@ -121,7 +121,7 @@ def update_project(data, project_id):
         if data.items == {}:
             return {'message': 'No changes!'}, 204
 
-        PROJECT_FIELDS = {
+        project_fields = {
             'title': p.title,
             'shortDescription': p.short_description,
             'detailedDescription': p.long_description,
@@ -131,10 +131,10 @@ def update_project(data, project_id):
         }
 
         for k, v in data.items():
-            if k not in PROJECT_FIELDS:
+            if k not in project_fields:
                 return {'message': 'Bad request!'}, 400
             if v is not '':
-                PROJECT_FIELDS[k] = v
+                project_fields[k] = v
 
         db.commit()
         return {'message': 'Project updated!'}, 200
