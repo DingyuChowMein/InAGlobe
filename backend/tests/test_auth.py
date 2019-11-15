@@ -2,9 +2,9 @@ import pytest
 import sys
 
 sys.path.append('.')
-
-from src.models import User
+from backend.src.models import User
 from conftests import db, app, auth, client
+
 
 
 ########################################################################################################################

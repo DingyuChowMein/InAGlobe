@@ -3,14 +3,13 @@ import sys
 import tempfile
 import pytest
 import sqlite3
-
-from base64 import b64encode
 import json
 
 sys.path.append('.')
-from src import create_app, db
-from src.models import User
-from src.tokens import generate_confirmation_token
+from base64 import b64encode
+from backend.src import create_app, db
+from backend.src.models import User
+from backend.src.tokens import generate_confirmation_token
 
 
 @pytest.fixture
@@ -20,8 +19,13 @@ def app():
     sqlite3.connect(db_path)
     os.environ['DATABASE_URL'] = 'sqlite:///' + db_path
 
-    #configure testing configuration
-    os.environ['APP_SETTINGS'] = 'config.TestingConfig'
+    #configure testing environment
+    os.environ['APP_SETTINGS'] = 'backend.config.TestingConfig'
+    os.environ['APP_MAIL_USERNAME'] = 'fake_username@fake.email.com'
+    os.environ['APP_MAIL_PASSWORD'] = '..'
+    os.environ['FLASK_ENV'] = 'testing'
+    os.environ['SECURITY_PASSWORD_SALT'] = 'salty'
+    os.environ['SITE_URL'] = 'localhost:3000/'
 
     #create app
     app = create_app()

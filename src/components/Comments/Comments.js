@@ -1,33 +1,33 @@
 import React, {Component} from "react"
-import { confirmAlert } from 'react-confirm-alert'
+import {confirmAlert} from 'react-confirm-alert'
 import Spinner from 'react-spinner-material'
 
-import { 
-    withStyles, 
-    Avatar, 
+import {
+    withStyles,
+    Avatar,
     Button,
     Dialog,
     DialogTitle,
     DialogContent,
     DialogContentText,
-    DialogActions, 
-    Divider, 
-    List, 
+    DialogActions,
+    Divider,
+    List,
     ListItem,
     ListItemAvatar,
     ListItemText,
     ListItemSecondaryAction,
-    Typography, 
+    Typography,
     TextField,
     IconButton,
 } from "@material-ui/core"
-import { Close } from "@material-ui/icons"
+import {Close} from "@material-ui/icons"
 
 import RegularButton from "../CustomButtons/RegularButton"
 
 // Imports of helper or service functions
 import config from "../../config"
-import { commentsService } from "../../services/commentsService"
+import {commentsService} from "../../services/commentsService"
 
 import styles from "../../assets/jss/components/commentsStyle"
 import 'react-confirm-alert/src/react-confirm-alert.css'
@@ -41,7 +41,9 @@ class Comments extends Component {
             dialogBoxOpened: false,
             selectedCommentId: 0,
             postLoading: false,
-            comments: []
+            comments: [],
+            userType: JSON.parse(localStorage.getItem('user')).permissions,
+            userId: JSON.parse(localStorage.getItem('user')).userid
         }
     }
 
@@ -66,6 +68,7 @@ class Comments extends Component {
     post = () => {
         const today = new Date()
         this.setState({
+            postLoading: true,
             date: `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()}`
         })
 
@@ -75,17 +78,18 @@ class Comments extends Component {
                 console.log(response)
                 this.setState(() => {
                     const updated_comments = this.state.comments.concat(response.comment)
-                return {
-                    comments: updated_comments,
-                    postLoading: false,
-                    text: ""
-                }})
+                    return {
+                        comments: updated_comments,
+                        postLoading: false,
+                        text: ""
+                    }
+                })
             })
             .catch(err => console.log(err))
     }
 
     deleteComment = (commentId) => {
-        this.setState({comments: this.state.comments.filter(comment => comment.commentId !== commentId )})
+        this.setState({comments: this.state.comments.filter(comment => comment.commentId !== commentId)})
         commentsService.deleteComment(commentId)
             .then(response => {
                 console.log(response)
@@ -94,6 +98,10 @@ class Comments extends Component {
                 console.log(err)
             })
 
+    }
+
+    hasPermissions = (ownerId) => {
+        return (this.state.userType === 0 || this.state.userId === ownerId)
     }
 
     renderConfirmDialog = () => {
@@ -113,20 +121,20 @@ class Comments extends Component {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button 
+                    <Button
                         onClick={() => {
-                            this.setState({ dialogBoxOpened: false })
-                        }} 
+                            this.setState({dialogBoxOpened: false})
+                        }}
                         color="primary"
                     >
                         No
                     </Button>
-                    <Button 
+                    <Button
                         onClick={() => {
                             this.deleteComment(this.state.selectedCommentId)
-                            this.setState({ dialogBoxOpened: false })
-                        }} 
-                        color="primary" 
+                            this.setState({dialogBoxOpened: false})
+                        }}
+                        color="primary"
                         autoFocus
                     >
                         Yes
@@ -137,7 +145,7 @@ class Comments extends Component {
     }
 
     render() {
-        const { classes } = this.props
+        const {classes} = this.props
         return (
             <div className={classes.root}>
                 <List>
@@ -150,18 +158,22 @@ class Comments extends Component {
                                         src="https://picsum.photos/128"
                                     />
                                 </ListItemAvatar>
-                                <ListItemSecondaryAction>
-                                    <IconButton
-                                        onClick={() => {
-                                            this.setState({
-                                                selectedCommentId: comment.commentId,
-                                                dialogBoxOpened: true
-                                            })
-                                        }}
-                                    >
-                                        <Close fontSize="medium" />
-                                    </IconButton>
-                                </ListItemSecondaryAction>
+                                {this.hasPermissions(comment.ownerId) ?
+                                    <ListItemSecondaryAction>
+                                        <IconButton
+                                            onClick={() => {
+                                                this.setState({
+                                                    selectedCommentId: comment.commentId,
+                                                    dialogBoxOpened: true
+                                                })
+                                            }}
+                                        >
+                                            <Close fontSize="medium"/>
+                                        </IconButton>
+                                    </ListItemSecondaryAction>
+                                    :
+                                    <></>
+                                }
                                 <ListItemText
                                     primary={comment.ownerFirstName + " " + comment.ownerLastName}
                                     secondary={
@@ -203,7 +215,8 @@ class Comments extends Component {
                         onClick={this.post}
                         disabled={this.state.postLoading}
                     >
-                        {this.state.postLoading ?  <Spinner size={20} spinnerColor={"#FFFFFF"} spinnerWidth={3} visible={true} /> : "Post"}
+                        {this.state.postLoading ?
+                            <Spinner size={20} spinnerColor={"#FFFFFF"} spinnerWidth={3} visible={true}/> : "Post"}
                     </RegularButton>
                 </div>
                 {this.renderConfirmDialog()}

@@ -25,11 +25,20 @@ import {
 import Copyright from "../../components/Copyright/Copyright"
 
 // Importing helper or service functions
-import { userService } from "../../services/userService"
+import {userService} from "../../services/userService"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/signUpStyle"
-
+import Dialog from "@material-ui/core/Dialog";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from '@material-ui/icons/Close';
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogContent from "@material-ui/core/DialogContent";
+import Slide from "@material-ui/core/Slide";
+import termsOfService from '../../assets/data/terms-and-conditions-template.pdf';
 
 class SignUp extends Component {
 
@@ -86,6 +95,13 @@ class SignUp extends Component {
 
         if (this.state.password.value === "") {
             passwordError = "Password cannot be empty!";
+            success = false;
+        }
+
+        var passw = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+        if (!this.state.password.value.match(passw)) {
+            passwordError = "Password must be between 6-20 characters," +
+                " contain one uppercase and one lowecase character as well as a number!";
             success = false;
         }
 
@@ -258,6 +274,10 @@ class SignUp extends Component {
                                         <MenuItem value={"STUDENT"}>Student</MenuItem>
                                     </Select>
                                 </FormControl>
+                                <h5 align={'center'}>By registering you agree to the
+                                    <a href={termsOfService}
+                                       style={{cursor: "pointer"}}> Terms of Service</a>
+                                </h5>
                             </Grid>
                         </Grid>
                         <Button

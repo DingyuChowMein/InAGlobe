@@ -1,6 +1,6 @@
-import React, { Component, Fragment } from "react"
+import React, {Component, Fragment} from "react"
 
-import { 
+import {
     withStyles,
     Avatar,
     ListItem,
@@ -14,11 +14,15 @@ import CardsList from "../CardsList/CardsList"
 import timeDiff from "../../helpers/DynamicTimeDiff"
 
 import styles from "../../assets/jss/components/notificationsStyle"
+import Button from "@material-ui/core/Button";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 
 class Notifications extends Component {
 
     render() {
-        const { classes, notifyList, title } = this.props
+        const {classes, notifyList, title, approveFunction} = this.props
+        const displayApproveButton = this.props.hasOwnProperty("approveFunction")
+
         const contentStruct = (card) => {
             return (
                 <ListItem alignItems="flex-start">
@@ -57,6 +61,13 @@ class Notifications extends Component {
                             </Fragment>
                         }
                     />
+                    {displayApproveButton ?
+                        <div style={{height: "5px"}}>
+                            <Button
+                                onClick={() => approveFunction(card.projectId, card.userId, card.notifyId)}>Approve</Button>
+                        </div>
+                        : <></>
+                    }
                 </ListItem>
             )
         }

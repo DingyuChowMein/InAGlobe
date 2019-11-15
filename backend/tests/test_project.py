@@ -1,13 +1,13 @@
+import json
 import pytest
+import os
 import sys
 
 sys.path.append('.')
-import json
-from os.path import join, dirname
-
-from src.models import Project, File, User, FILE_TYPE
+from backend.src.models import Project, File, User, FILE_TYPE
 from conftests import db, app, auth, client
 from flask import g
+
 
 
 def get_projects(client, auth, email='humanitarian@charity.org'):
@@ -19,7 +19,7 @@ def get_projects(client, auth, email='humanitarian@charity.org'):
 
 def upload_project(client, auth, email='humanitarian@charity.org', file='no_files.json'):
     token = auth.get_token(email=email)
-    json_file = load_json_file(file, 'project_test_files')
+    json_file = load_json_file(file, 'test_files/projects')
     return client.post('/projects/', headers={
         'Authorization': 'Bearer ' + token
     }, json=json_file)
@@ -31,14 +31,19 @@ def delete_project(client, auth, email, project_id):
         'Authorization': 'Bearer ' + token
     })
 
+def modify_project(client, auth, email, project_id, file):
+    token = auth.get_token(email=email)
+    json_file = load_json_file(file, 'test_files/projects/modify_projects')
+    return client.patch('/projects/{}/'.format(project_id), headers={
+        'Authorization': 'Bearer ' + token
+    }, json=json_file)
 
-def load_json_file(filename, dir):
-    relative_path = join(dir, filename)
-    absolute_path = join(dirname(__file__), relative_path)
+def load_json_file(filename, directory):
+    relative_path = os.path.join(directory, filename)
+    absolute_path = os.path.join(os.path.dirname(__file__), relative_path)
 
     with open(absolute_path) as json_file:
         return json.loads(json_file.read())
-
 
 ########################################################################################################################
 # Upload project tests
@@ -118,6 +123,7 @@ def test_bad_project_upload(app, auth, client, file, email, message, code):
 # TODO: add more test cases for the get project api
 @pytest.mark.parametrize(('files', 'email', 'expected', 'code'), (
         (['no_files.json'], 'admin@administrator.co', [b'no files'], 200),
+        (['no_files.json', 'no_files.json'], 'admin@administrator.co', [b'no files', b'no files'], 200),
         (['no_files.json', 'many_files.json'], 'admin@administrator.co', [b'many documents many images', b'no files'], 200),
         (['no_files.json', 'many_files.json'], 'student@ic.ac.uk', [], 200),
 ))
@@ -192,3 +198,41 @@ def test_delete_undefined_project(app, client, auth):
 
         assert rv.status_code == 404
         assert b'Project does not exist!' in rv.data
+
+
+########################################################################################################################
+# Modify project Tests
+
+
+@pytest.mark.parametrize(('email', 'files', 'code', 'message'), (
+        ('humanitarian@charity.org', ['change_title.json'], 200, b'Project updated!'),
+))
+def test_modify_project(app, auth, client, email, files, code, message):
+    with app.app_context():
+        # For the new humanitarian edge case
+        if not db.session.query(User).filter(User.email == email).first():
+            auth.create_user(email=email, user_type='HUMANITARIAN')
+            auth.confirm_user(email=email)
+
+        [upload_project(client, auth) for i in range(3)]
+        assert all(db.session.query(Project).filter(Project.id == i+1).first().title == 'no files' for i in range(3))
+
+        for file in files:
+            rv = modify_project(client, auth, email=email, project_id=1, file=file)
+            assert rv.status_code == code
+            assert message in rv.data
+
+        p = db.session.query(Project).filter(Project.id == 1).first()
+
+        project_fields = {
+            'title': p.title,
+            'shortDescription': p.short_description,
+            'detailedDescription': p.long_description,
+            'location': p.location,
+            'organisationName': p.organisation_name,
+            'organisationLogo': p.organisation_logo
+        }
+        for file in files:
+            for k, v in load_json_file(file, 'test_files/projects/modify_projects').items():
+                assert project_fields[k] == v
+                # assert all(v not in db.session.query(Project).filter(Project.id == i+2).first() for i in range(2))

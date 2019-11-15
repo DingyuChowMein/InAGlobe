@@ -6,7 +6,7 @@ import { authHeader } from '../helpers/auth-header'
 // const apiUrl = 'https://inaglobe-api.herokuapp.com';
 
 export const userService = {
-    login, signUp, logout, confirm
+    login, signUp, logout, confirm, send_reset_email, reset_password
 }
 
 function logout() {
@@ -74,6 +74,32 @@ function confirm(token) {
     };
 
     return fetch(`${config.apiUrl}/confirm/${token}/`, requestOptions)
+        .then(handleResponse)
+}
+
+function reset_password(token, password) {
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json'
+        },
+        body: JSON.stringify({"password": password})
+    };
+
+    return fetch(`${config.apiUrl}/resetpassword/${token}/`, requestOptions)
+        .then(handleResponse)
+}
+
+function send_reset_email(email) {
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json'
+        },
+        body: JSON.stringify({email: email})
+    };
+
+    return fetch(`${config.apiUrl}/resetpassword/`, requestOptions)
         .then(handleResponse)
 }
 

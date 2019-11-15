@@ -21,7 +21,7 @@ import styles from "../../assets/jss/components/projectApprovalsStyle"
 
 class ProjectApprovals extends Component {
     render() {
-        const { classes, approvalList, title } = this.props
+        const { classes, approvalList, title, approveFunction} = this.props
         const contentStruct = (card) => {
             return (
                 <Grid container justify="left" spacing={0}>
@@ -33,7 +33,7 @@ class ProjectApprovals extends Component {
                     </Grid>
                     <Grid item xs={7}>
                         <CardContent component="div">
-                            <Typography component="h3" variant="body" className={classes.userApproval}>
+                            <Typography component="h3" variant="body1" className={classes.userApproval}>
                                 {card.userName}
                             </Typography>
                             <Typography component="h3" variant="body2" className={classes.userRegisterDate}>
@@ -44,7 +44,7 @@ class ProjectApprovals extends Component {
                         </CardContent>
                     </Grid>
                     <Grid item xs={1} className={classes.acceptButton}>
-                        <IconButton aria-label="accept-icon">
+                        <IconButton aria-label="accept-icon" onClick={() => approveFunction(card.projectId, card.userId, card.notifyId)}>
                             <Done fontSize="medium" className={classes.acceptIcon}/>
                         </IconButton>
                     </Grid>

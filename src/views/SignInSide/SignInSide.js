@@ -139,6 +139,14 @@ class SignInSide extends Component {
                                         </Link>
                                     </Grid>
                                 </Grid>
+                                <Grid container>
+                                    <Grid item>
+                                        <Link href="/login/requestpassword" variant="body2">
+                                            {"Forgotten your password?"}
+                                        </Link>
+                                    </Grid>
+                                </Grid>
+
                                 <Box mt={5}>
                                     <Copyright/>
                                 </Box>

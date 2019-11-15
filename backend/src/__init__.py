@@ -26,11 +26,13 @@ def create_app():
     from .routes import (
         get_projects, upload_project, approve_project,
         upload_checkpoint,
-        get_users, create_user, confirm_email,
+        get_users, create_user, confirm_email, confirm_reset_password_token,
+        reset_password, send_password_reset_email,
         add_comment, get_comments,
         get_dashboard_projects, select_project,
         get_joining_requests, approve_project_join,
-        delete_project, delete_comment
+        delete_project, delete_comment,
+        update_project
     )
     from .tokens import get_token, revoke_token 
     # Override pre-flight request to fix CORS issue
@@ -77,32 +79,33 @@ def create_app():
             # print(request.get_json())
             return new_response(response, code)
 
-        def delete(self, project_id):
-            response, code = delete_project(project_id)
+        def delete(self, identifier):
+            response, code = delete_project(identifier)
             return new_response(response, code)
 
-        # def patch(self):
-        #     response, code = approve_project(request.get_json())
-        #     return new_response(response, code)
+        def patch(self, identifier):
+            response, code = update_project(request.get_json(), identifier)
+            return new_response(response, code)
 
     class Comments(Resource):
-        def options(self, project_id):
+        # Please don't remove second argument, namely the identifier
+        def options(self, identifier):
             response = make_response()
             response.headers.add("Access-Control-Allow-Origin", "*")
             response.headers.add('Access-Control-Allow-Headers', "*")
             response.headers.add('Access-Control-Allow-Methods', "*")
             return response
 
-        def get(self, project_id):
-            response, code = get_comments(project_id)
+        def get(self, identifier):
+            response, code = get_comments(identifier)
             return new_response(response, code)
 
-        def post(self, project_id):
-            response, code = add_comment(request.get_json(), project_id)
+        def post(self, identifier):
+            response, code = add_comment(request.get_json(), identifier)
             return new_response(response, code)
 
-        def delete(self, project_id):
-            response, code = delete_comment(project_id)
+        def delete(self, identifier):
+            response, code = delete_comment(identifier)
             return new_response(response, code)
 
     class Users(Resource, CORS):
@@ -115,15 +118,15 @@ def create_app():
             return new_response(response, code)
 
     class Checkpoints(Resource):
-        def options(self, project_id):
+        def options(self):
             response = make_response()
             response.headers.add("Access-Control-Allow-Origin", "*")
             response.headers.add('Access-Control-Allow-Headers', "*")
             response.headers.add('Access-Control-Allow-Methods', "*")
             return response
 
-        def post(self, project_id):
-            response, code = upload_checkpoint(request.get_json(), project_id)
+        def post(self, identifier):
+            response, code = upload_checkpoint(request.get_json(), identifier)
             return new_response(response, code)
 
     class Tokens(Resource, CORS):
@@ -135,7 +138,8 @@ def create_app():
             response, code = revoke_token()
             return new_response(response, code)
           
-    class ConfirmEmail(Resource, CORS):
+    class ConfirmEmail(Resource):
+        # Please don't remove second argument, namely the token
         def options(self, token):
             response = make_response()
             response.headers.add("Access-Control-Allow-Origin", "*")
@@ -147,15 +151,36 @@ def create_app():
             response, code = confirm_email(token)
             return new_response(response, code)
 
+    class ResetPassword(Resource, CORS):
+        def options(self, token=None):
+            response = make_response()
+            response.headers.add("Access-Control-Allow-Origin", "*")
+            response.headers.add('Access-Control-Allow-Headers', "*")
+            response.headers.add('Access-Control-Allow-Methods', "*")
+            return response
+        
+        def get(self, token):
+            response, code = confirm_reset_password_token(token)
+            return new_response(response, code)
+
+        def post(self, token=None):
+            if token:
+                response, code = reset_password(token, request.get_json())
+                return new_response(response, code)
+
+            response, code = send_password_reset_email(request.get_json())
+            return new_response(response, code)
+
     # Route classes to paths
-    api.add_resource(Projects, '/projects/', '/projects/<int:project_id>/')
-    api.add_resource(Comments, '/comments/', '/comments/<int:project_id>/')
+    api.add_resource(Projects, '/projects/', '/projects/<int:identifier>/')
+    api.add_resource(Comments, '/comments/', '/comments/<int:identifier>/')
     api.add_resource(Users, '/users/')
     api.add_resource(Tokens, '/users/tokens/')
     api.add_resource(Approvals, '/approve/')
     api.add_resource(JoiningApproval, '/joiningApprove/')
     api.add_resource(ConfirmEmail, '/confirm/', '/confirm/<token>/')
+    api.add_resource(ResetPassword, '/resetpassword/', '/resetpassword/<token>/')
     api.add_resource(Dashboard, '/dashboard/')
-    api.add_resource(Checkpoints, '/checkpoint/<int:project_id>/')
+    api.add_resource(Checkpoints, '/checkpoint/<int:identifier>/')
 
     return app
