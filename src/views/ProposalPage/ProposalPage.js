@@ -47,7 +47,7 @@ class ProposalPage extends Component {
                     ))}
                 </div>
                 <VerticalTimeline>
-                    {data.checkpoints.map(event => (
+                    {data.checkpoints ? data.checkpoints.map(event => (
                         <VerticalTimelineElement
                             className="vertical-timeline-element--work"
                             iconStyle={{background: 'rgb(33, 150, 243)', color: '#fff'}}
@@ -66,7 +66,7 @@ class ProposalPage extends Component {
                             ))}
                             </p>
                         </VerticalTimelineElement>
-                    ))}
+                    )) : null}
                 </VerticalTimeline>
 
                 {children}

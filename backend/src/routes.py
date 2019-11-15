@@ -56,16 +56,16 @@ def get_projects():
 def upload_project(data):
     # TODO remove the code duplication for the try blocks
     try:
-        if not data['title']:
-            raise ValueError('title')
-        if not data['shortDescription']:
-            raise ValueError('short description')
-        if not data['detailedDescription']:
-            raise ValueError('detailed description')
-        if not data['organisationName']:
-            raise ValueError('organisation name')
-        if not data['organisationLogo']:
-            raise ValueError('organisation logo')
+        # if not data['title']:
+        #     raise ValueError('title')
+        # if not data['shortDescription']:
+        #     raise ValueError('short description')
+        # if not data['detailedDescription']:
+        #     raise ValueError('detailed description')
+        # if not data['organisationName']:
+        #     raise ValueError('organisation name')
+        # if not data['organisationLogo']:
+        #     raise ValueError('organisation logo')
 
         project = Project(
             title=data['title'],
