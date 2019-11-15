@@ -78,8 +78,8 @@ def create_app():
             # print(request.get_json())
             return new_response(response, code)
 
-        def delete(self, project_id):
-            response, code = delete_project(project_id)
+        def delete(self, identifier):
+            response, code = delete_project(identifier)
             return new_response(response, code)
 
         # def patch(self):
@@ -87,23 +87,23 @@ def create_app():
         #     return new_response(response, code)
 
     class Comments(Resource):
-        def options(self, project_id):
+        def options(self):
             response = make_response()
             response.headers.add("Access-Control-Allow-Origin", "*")
             response.headers.add('Access-Control-Allow-Headers', "*")
             response.headers.add('Access-Control-Allow-Methods', "*")
             return response
 
-        def get(self, project_id):
-            response, code = get_comments(project_id)
+        def get(self, identifier):
+            response, code = get_comments(identifier)
             return new_response(response, code)
 
-        def post(self, project_id):
-            response, code = add_comment(request.get_json(), project_id)
+        def post(self, identifier):
+            response, code = add_comment(request.get_json(), identifier)
             return new_response(response, code)
 
-        def delete(self, project_id):
-            response, code = delete_comment(project_id)
+        def delete(self, identifier):
+            response, code = delete_comment(identifier)
             return new_response(response, code)
 
     class Users(Resource, CORS):
@@ -116,15 +116,15 @@ def create_app():
             return new_response(response, code)
 
     class Checkpoints(Resource):
-        def options(self, project_id):
+        def options(self):
             response = make_response()
             response.headers.add("Access-Control-Allow-Origin", "*")
             response.headers.add('Access-Control-Allow-Headers', "*")
             response.headers.add('Access-Control-Allow-Methods', "*")
             return response
 
-        def post(self, project_id):
-            response, code = upload_checkpoint(request.get_json(), project_id)
+        def post(self, identifier):
+            response, code = upload_checkpoint(request.get_json(), identifier)
             return new_response(response, code)
 
     class Tokens(Resource, CORS):
@@ -169,8 +169,8 @@ def create_app():
             return new_response(response, code)
 
     # Route classes to paths
-    api.add_resource(Projects, '/projects/', '/projects/<int:project_id>/')
-    api.add_resource(Comments, '/comments/', '/comments/<int:project_id>/')
+    api.add_resource(Projects, '/projects/', '/projects/<int:identifier>/')
+    api.add_resource(Comments, '/comments/', '/comments/<int:identifier>/')
     api.add_resource(Users, '/users/')
     api.add_resource(Tokens, '/users/tokens/')
     api.add_resource(Approvals, '/approve/')
@@ -178,6 +178,6 @@ def create_app():
     api.add_resource(ConfirmEmail, '/confirm/', '/confirm/<token>/')
     api.add_resource(ResetPassword, '/resetpassword/', '/resetpassword/<token>/')
     api.add_resource(Dashboard, '/dashboard/')
-    api.add_resource(Checkpoints, '/checkpoint/<int:project_id>/')
+    api.add_resource(Checkpoints, '/checkpoint/<int:identifier>/')
 
     return app

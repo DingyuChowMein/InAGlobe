@@ -344,7 +344,7 @@ def delete_comment(comment_id):
         comment.delete()
         return {'message': 'Comment deleted!'}, 200
     else:
-        return {'message': 'Insufficient permissions'}, 403
+        return {'message': 'Insufficient permissions!'}, 403
 
 def get_projects_helper(projects):
     files = File.query.all()
