@@ -1,13 +1,13 @@
 import json
 import pytest
 import sys
-
 sys.path.append('.')
 
-from src.models import Comment, Project, User
+from backend.src.models import Comment, Project, User
 from conftests import db, app, auth, client
-from test_project import get_projects, upload_project, load_json_file
+from test_project import upload_project, load_json_file
 from flask import g
+
 
 FILES = ['no_files.json', 'many_files.json', 'many_images_no_documents.json', 'many_documents_no_images.json']
 

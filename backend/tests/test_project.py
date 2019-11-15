@@ -1,13 +1,13 @@
+import json
 import pytest
 import os
 import sys
 
 sys.path.append('.')
-import json
-
-from src.models import Project, File, User, FILE_TYPE
+from backend.src.models import Project, File, User, FILE_TYPE
 from conftests import db, app, auth, client
 from flask import g
+
 
 
 def get_projects(client, auth, email='humanitarian@charity.org'):

@@ -3,14 +3,13 @@ import sys
 import tempfile
 import pytest
 import sqlite3
-
-from base64 import b64encode
 import json
 
 sys.path.append('.')
-from src import create_app, db
-from src.models import User
-from src.tokens import generate_confirmation_token
+from base64 import b64encode
+from backend.src import create_app, db
+from backend.src.models import User
+from backend.src.tokens import generate_confirmation_token
 
 
 @pytest.fixture
@@ -21,7 +20,7 @@ def app():
     os.environ['DATABASE_URL'] = 'sqlite:///' + db_path
 
     #configure testing configuration
-    os.environ['APP_SETTINGS'] = 'config.TestingConfig'
+    os.environ['APP_SETTINGS'] = 'backend.config.TestingConfig'
 
     #create app
     app = create_app()
