@@ -161,6 +161,7 @@ class Dashboard extends Component {
                         </Grid>
                         <Grid item xs={12}>
                             <CardScrollView
+                                {...this.props}
                                 className={classes.root}
                                 cardData={[]}
                                 title="Projects Updates"
@@ -170,8 +171,9 @@ class Dashboard extends Component {
                         </Grid>
                         <Grid item xs={12}>
                             <CardScrollView
+                                {...this.props}
                                 className={classes.root}
-                                cardData={this.projectsToCardData(this.state.projects)}
+                                cardData={this.state.projects}
                                 title="Projects to Approve"
                                 EmptyIcon={UpdateOutlined}
                                 emptyText="No Approvals Needed for New Projects"
@@ -203,8 +205,9 @@ class Dashboard extends Component {
                         </Grid>
                         <Grid item xs={12}>
                             <CardScrollView
+                                {...this.props}
                                 className={classes.root}
-                                cardData={this.projectsToCardData(this.state.projects.filter(project => project.status === "Approved"))}
+                                cardData={this.state.projects.filter(project => project.status === "Approved")}
                                 title="Your Approved Projects"
                                 EmptyIcon={SentimentDissatisfiedOutlined}
                                 emptyText="No Ongoing Projects. Try joining some!"
@@ -212,8 +215,9 @@ class Dashboard extends Component {
                         </Grid>
                         <Grid item xs={12}>
                             <CardScrollView
+                                {...this.props}
                                 className={classes.root}
-                                cardData={this.projectsToCardData(this.state.projects.filter(project => project.status === "Needs Approval"))}
+                                cardData={this.state.projects.filter(project => project.status === "Needs Approval")}
                                 title="Your Project Proposals Waiting for Admin Approval"
                                 EmptyIcon={SentimentSatisfiedOutlined}
                                 emptyText="All Projects Approved!"
@@ -239,8 +243,9 @@ class Dashboard extends Component {
                         </Grid>
                         <Grid item xs={12}>
                             <CardScrollView
+                                {...this.props}
                                 className={classes.root}
-                                cardData={this.projectsToCardData(this.state.projects.filter(project => project.joined === 2))}
+                                cardData={this.state.projects.filter(project => project.joined === 2)}
                                 title="Ongoing Projects Joined"
                                 EmptyIcon={SentimentDissatisfiedOutlined}
                                 emptyText="No Ongoing Projects. Try joining some!"
@@ -248,8 +253,9 @@ class Dashboard extends Component {
                         </Grid>
                         <Grid item xs={12}>
                             <CardScrollView
+                                {...this.props}
                                 className={classes.root}
-                                cardData={this.projectsToCardData(this.state.projects.filter(project => project.joined === 1))}
+                                cardData={this.state.projects.filter(project => project.joined === 1)}
                                 title="Waiting for Approval to Join Project"
                                 EmptyIcon={SentimentSatisfiedOutlined}
                                 emptyText="All Projects Approved!"
@@ -275,8 +281,9 @@ class Dashboard extends Component {
                         </Grid>
                         <Grid item xs={12}>
                             <CardScrollView
+                                {...this.props}
                                 className={classes.root}
-                                cardData={this.projectsToCardData(this.state.projects.filter(project => project.joined === 2))}
+                                cardData={this.state.projects.filter(project => project.joined === 2)}
                                 title="Ongoing Projects Joined"
                                 EmptyIcon={SentimentDissatisfiedOutlined}
                                 emptyText="No Ongoing Projects. Try joining some!"
@@ -284,8 +291,9 @@ class Dashboard extends Component {
                         </Grid>
                         <Grid item xs={12}>
                             <CardScrollView
+                                {...this.props}
                                 className={classes.root}
-                                cardData={this.projectsToCardData(this.state.projects.filter(project => project.joined === 1))}
+                                cardData={this.state.projects.filter(project => project.joined === 1)}
                                 title="Waiting for Approval to Join Project"
                                 EmptyIcon={SentimentSatisfiedOutlined}
                                 emptyText="All Projects Joins Approved!"
