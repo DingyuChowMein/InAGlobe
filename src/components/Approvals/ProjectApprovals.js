@@ -33,7 +33,7 @@ class ProjectApprovals extends Component {
                     </Grid>
                     <Grid item xs={7}>
                         <CardContent component="div">
-                            <Typography component="h3" variant="body" className={classes.userApproval}>
+                            <Typography component="h3" variant="body1" className={classes.userApproval}>
                                 {card.userName}
                             </Typography>
                             <Typography component="h3" variant="body2" className={classes.userRegisterDate}>
