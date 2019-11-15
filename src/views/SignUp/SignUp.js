@@ -89,6 +89,14 @@ class SignUp extends Component {
             success = false;
         }
 
+        var passw = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+        if (!this.state.password.value.match(passw))
+        {
+            passwordError = "Password must be between 6-20 characters," +
+            " contain one uppercase and one lowecase character as well as a number!";
+            success = false;
+        }
+
 
         this.setState(prevState => ({
             email: {
