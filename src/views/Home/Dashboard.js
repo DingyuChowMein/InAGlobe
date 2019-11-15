@@ -38,7 +38,7 @@ import styles from "../../assets/jss/views/homePageStyle"
 // import data from "../../assets/data/ProjectData"
 // import notifications from "../../assets/data/NotificationData"
 // import deadlines from "../../assets/data/DeadlinesData"
-// import approvals from "../../assets/data/ProjectApprovalData"
+import approvals from "../../assets/data/ProjectApprovalData"
 
 
 class Dashboard extends Component {
@@ -158,7 +158,7 @@ class Dashboard extends Component {
                         </Grid>
                         <Grid item xs={12} sm={12} md={4}>
                             <ProjectApprovals 
-                                approvalList={[]} 
+                                approvalList={approvals} 
                                 title="User Approvals for Projects"
                             />
                         </Grid>

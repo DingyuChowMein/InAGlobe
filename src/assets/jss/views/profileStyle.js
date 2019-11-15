@@ -1,14 +1,19 @@
 const styles = {
-    content: {
-        marginTop: "70px",
-        padding: "30px 15px",
-        minHeight: "calc(100vh - 123px)"
+    centering: {
+        display: "flex", 
+        alignItems: "center", 
+        justifyContent: "center", 
+        marginBottom: "20px"
     },
-    container: {
-        paddingRight: "15px",
-        paddingLeft: "15px",
-        marginRight: "auto",
-        marginLeft: "auto"
+    leftAlign: { 
+        display: "flex", 
+        alignItems: "center", 
+        justifyContent: "left", 
+        marginBottom: "20px", 
+        marginLeft: "20px"
+    },
+    mapsLinkIcon: {
+        marginLeft: "10px"
     }
 }
 

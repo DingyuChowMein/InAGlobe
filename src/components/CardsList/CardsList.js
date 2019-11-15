@@ -16,20 +16,25 @@ class CardsList extends Component {
 
     render() {
         const { classes, title, cardData, contentStruct, EmptyIcon, emptyText, groupBy } = this.props
+
         var cardsList = []
         if (groupBy) {
             const projectIds = [...new Set(cardData.map(item => item[groupBy]))]
+            
             projectIds.forEach(projectId => {
                 const filteredCards = cardData.filter(card => card.projectId === projectId)
-                cardsList.push(<ListSubheader disableSticky={true}>
-                    {`${filteredCards[0].projectName} (ID: ${projectId})`}
-                </ListSubheader>)
+
+                cardsList.push(
+                    <ListSubheader disableSticky={true}>
+                        {`${filteredCards[0].projectName} (ID: ${projectId})`}
+                    </ListSubheader>
+                )
+
                 cardsList = cardsList.concat(filteredCards.map((card, key) => (
                     <Card key={key} className={classes.card}>
                         {contentStruct(card)}
                     </Card>
                 )))
-                // cardsList.push(<Divider />)
             })
         } else {
             cardsList = cardData.map((card, key) => (
@@ -38,8 +43,6 @@ class CardsList extends Component {
                 </Card>
             ))
         }
-
-        console.log(cardsList)
 
         return (
             <div>

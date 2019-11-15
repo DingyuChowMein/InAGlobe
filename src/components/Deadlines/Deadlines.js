@@ -2,11 +2,11 @@ import React, { Component, Fragment } from "react"
 
 import { 
     withStyles,
-    Typography,
-    Grid,
     CardMedia,
     CardContent,
-    CardActionArea
+    CardActionArea,
+    Grid,
+    Typography,
 } from "@material-ui/core"
 import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions'
 

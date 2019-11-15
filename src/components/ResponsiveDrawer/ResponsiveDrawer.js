@@ -4,30 +4,34 @@ import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 
 // Material UI libraries
-import AppBar from '@material-ui/core/AppBar'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import Divider from '@material-ui/core/Divider'
-import Drawer from '@material-ui/core/Drawer'
-import Hidden from '@material-ui/core/Hidden'
-import IconButton from '@material-ui/core/IconButton'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import ListItemText from '@material-ui/core/ListItemText'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
-import { withStyles } from '@material-ui/core/styles'
-import MenuIcon from '@material-ui/icons/Menu'
+import { 
+    withStyles, 
+    AppBar, 
+    CssBaseline,
+    Divider,
+    Drawer,
+    Hidden,
+    IconButton,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    Toolbar,
+    Typography
+} from '@material-ui/core'
+import { Menu } from '@material-ui/icons'
 
 // Importing webpath data for drawer links
 import { drawerRoutes } from '../../routes'
+
+// Imports of different components in project
+import RegularButton from "../CustomButtons/RegularButton"
 
 // Importing images from assets
 import logo from '../../assets/img/logo.png'
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/components/responsiveDrawerStyle"
-import RegularButton from "../CustomButtons/RegularButton";
 
 class ResponsiveDrawer extends Component {
 
@@ -104,7 +108,7 @@ class ResponsiveDrawer extends Component {
                             onClick={this.handleDrawerToggle}
                             className={classes.menuButton}
                         >
-                            <MenuIcon />
+                            <Menu />
                         </IconButton>
                         <Typography variant="h6" noWrap>
                             {name}
