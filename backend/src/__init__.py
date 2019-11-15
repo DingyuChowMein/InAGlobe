@@ -137,7 +137,7 @@ def create_app():
             return new_response(response, code)
           
     class ConfirmEmail(Resource, CORS):
-        def options(self, token):
+        def options(self):
             response = make_response()
             response.headers.add("Access-Control-Allow-Origin", "*")
             response.headers.add('Access-Control-Allow-Headers', "*")
