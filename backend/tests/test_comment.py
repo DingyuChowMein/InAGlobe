@@ -61,6 +61,8 @@ def test_create_comment(app, auth, client, num_comments):
             assert project_comments is not [] and user_comments is not []
             assert set(project_comments) <= set(user_comments)
 
+# TODO cover edge cases for create comments (exceptions)
+
 
 ########################################################################################################################
 # Get comment tests
@@ -81,6 +83,8 @@ def test_get_comment(app, auth, client):
             assert c['ownerId'] == g.current_user.id
             assert c['ownerFirstName'] == g.current_user.first_name
             assert c['ownerLastName'] == g.current_user.last_name
+
+# TODO cover edge cases for get comments (exceptions)
 
 
 ########################################################################################################################
