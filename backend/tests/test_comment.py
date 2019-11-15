@@ -27,6 +27,12 @@ def get_comments(client, auth, project_id, email='student@ic.ac.uk'):
     })
 
 
+def delete_comment(client, auth, comment_id, email='student@ic.ac.uk'):
+    token = auth.get_token(email=email)
+    return client.delete('/comments/{}/'.format(comment_id), headers={
+        'Authorization': 'Bearer ' + token
+    })
+
 def load_projects(client, auth):
     [upload_project(client, auth, file=file) for file in FILES]
 
@@ -80,5 +86,49 @@ def test_get_comment(app, auth, client):
 ########################################################################################################################
 # Delete comment tests
 
-def test_delete_comment():
-    assert 0
+
+@pytest.mark.parametrize(('p_email', 'd_email', 'd_type', 'code', 'message'), (
+        ('student@ic.ac.uk', 'student@ic.ac.uk', '', 200, b'Comment deleted!'),
+        ('newstudent@ic.ac.uk', 'newstudent@ic.ac.uk', 'STUDENT', 200, b'Comment deleted!'),
+        ('academic@academia.com', 'academic@academia.com', '', 200, b'Comment deleted!'),
+        ('humanitarian@charity.org', 'humanitarian@charity.org', '', 200, b'Comment deleted!'),
+        ('admin@administrator.co', 'admin@administrator.co', '', 200, b'Comment deleted!'),
+        ('student@ic.ac.uk', 'newstudent@ic.ac.uk', 'STUDENT', 403, b'Insufficient permissions!'),
+        ('student@ic.ac.uk', 'academic@academia.com', '', 403, b'Insufficient permissions!'),
+        ('student@ic.ac.uk', 'humanitarian@charity.org', '', 403, b'Insufficient permissions!'),
+        ('student@ic.ac.uk', 'admin@administrator.co', '', 200, b'Comment deleted!'),
+))
+def test_delete_comment(app, auth, client, p_email, d_email, d_type, code, message):
+    with app.app_context():
+
+        if not db.session.query(User).filter(User.email == d_email).first():
+            auth.create_user(email=d_email, user_type=d_type)
+            auth.confirm_user(email=d_email)
+
+        load_projects(client, auth)
+        p = db.session.query(Project).first()
+        add_comment(client, auth, p.id, email=p_email)
+
+        # Current user is p_email, and they have only posted one comment
+        c = db.session.query(Comment).filter(Comment.owner_id == g.current_user.id).first()
+
+        rv = delete_comment(client, auth, c.id, email=d_email)
+
+        assert rv.status_code == code
+        assert message in rv.data
+
+        assert db.session.query(Comment).filter(Comment.owner_id == g.current_user.id).first() is None
+
+
+def test_delete_undefined_comment(app, client, auth):
+    with app.app_context():
+
+        load_projects(client, auth)
+        p = db.session.query(Project).first()
+
+        assert db.session.query(Comment).first() is None
+
+        rv = delete_comment(client, auth, comment_id=1)
+
+        assert rv.status_code == 404
+        assert b'Comment does not exist!' in rv.data
