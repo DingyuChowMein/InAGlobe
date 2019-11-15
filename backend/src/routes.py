@@ -121,20 +121,31 @@ def update_project(data, project_id):
         if data.items == {}:
             return {'message': 'No changes!'}, 204
 
-        project_fields = {
-            'title': p.title,
-            'shortDescription': p.short_description,
-            'detailedDescription': p.long_description,
-            'location': p.location,
-            'organisationName': p.organisation_name,
-            'organisationLogo': p.organisation_logo
-        }
+        # project_fields = {
+        #     'title': p.title,
+        #     'shortDescription': p.short_description,
+        #     'detailedDescription': p.long_description,
+        #     'location': p.location,
+        #     'organisationName': p.organisation_name,
+        #     'organisationLogo': p.organisation_logo
+        # }
 
         for k, v in data.items():
-            if k not in project_fields:
+            if k not in ['title', 'shortDescription', 'detailedDescription', 'location', 'organisationName', 'organisationLogo']:
                 return {'message': 'Bad request!'}, 400
             if v is not '':
-                project_fields[k] = v
+                if k == 'title':
+                    p.title = v
+                if k == 'shortDescription':
+                    p.short_description = v
+                if k == 'detailedDescription':
+                    p.long_description = v
+                if k == 'location':
+                    p.location = v
+                if k == 'organisationName':
+                    p.organisation_name = v
+                if k == 'organisationLogo':
+                    p.organisation_logo = v
 
         db.session.commit()
         return {'message': 'Project updated!'}, 200
