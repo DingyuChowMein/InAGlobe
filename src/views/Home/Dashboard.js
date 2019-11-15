@@ -160,7 +160,13 @@ class Dashboard extends Component {
                         <Grid item xs={12}>
                             <CardScrollView
                                 className={classes.root}
-                                cardData={[]}
+                                cardData={this.state.projects.map((project) => {
+                                    return {
+                                        title: project.title,
+                                        images: project.images,
+                                        id: project.id
+                                    }
+                                })}
                                 title="Projects to Approve"
                                 EmptyIcon={UpdateOutlined}
                                 emptyText="No Approvals Needed for New Projects"

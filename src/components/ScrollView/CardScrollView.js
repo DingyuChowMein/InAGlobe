@@ -19,6 +19,7 @@ import {
 } from "@material-ui/icons"
 
 import styles from "../../assets/jss/components/cardScrollViewStyle"
+import config from "../../config";
 
 
 class CardScrollView extends Component {
@@ -60,7 +61,7 @@ class CardScrollView extends Component {
                                 <CardMedia
                                     component="img"
                                     alt={card.title}
-                                    image={card.images[0]}
+                                    image={config.s3Bucket + card.images[0]}
                                     className={classes.cardMedia}
                                 />
                             </Grid>
