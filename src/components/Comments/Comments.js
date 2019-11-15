@@ -66,6 +66,7 @@ class Comments extends Component {
     post = () => {
         const today = new Date()
         this.setState({
+            postLoading: true,
             date: `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()}`
         })
 

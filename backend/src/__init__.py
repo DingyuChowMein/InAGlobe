@@ -87,7 +87,8 @@ def create_app():
         #     return new_response(response, code)
 
     class Comments(Resource):
-        def options(self):
+        # Please don't remove second argument, namely the identifier
+        def options(self, identifier):
             response = make_response()
             response.headers.add("Access-Control-Allow-Origin", "*")
             response.headers.add('Access-Control-Allow-Headers', "*")
@@ -136,8 +137,9 @@ def create_app():
             response, code = revoke_token()
             return new_response(response, code)
           
-    class ConfirmEmail(Resource, CORS):
-        def options(self):
+    class ConfirmEmail(Resource):
+        # Please don't remove second argument, namely the token
+        def options(self, token):
             response = make_response()
             response.headers.add("Access-Control-Allow-Origin", "*")
             response.headers.add('Access-Control-Allow-Headers', "*")

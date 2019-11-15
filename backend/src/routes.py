@@ -3,21 +3,24 @@ import os
 from flask import g, abort, render_template
 from . import db
 from .auth import token_auth, permission_required
-from .models import Project, File, User, Comment, Checkpoint, CheckpointFile, USER_TYPE, FILE_TYPE, PROJECT_STATUS, user_project_joining_table
+from .models import Project, File, User, Comment, Checkpoint, CheckpointFile, USER_TYPE, FILE_TYPE, PROJECT_STATUS, \
+    user_project_joining_table
 from .tokens import generate_confirmation_token, confirm_token
 from .emails import send_email
 from collections import defaultdict
 from sqlalchemy import or_, and_
 from datetime import datetime
 
+
 ###############################################################################
 
 @token_auth.login_required
 def get_dashboard_projects():
+    if g.current_user.get_permissions() == USER_TYPE['HUMANITARIAN']:
+        return get_projects_helper(Project.query.filter(Project.project_owner == g.current_user.get_id()).all())
     if g.current_user.get_permissions() == USER_TYPE['ADMIN']:
         return get_projects_helper(Project.query.filter(Project.status == PROJECT_STATUS['NEEDS_APPROVAL']).all())
     return get_projects_helper(g.current_user.projects)
-
 
 
 @token_auth.login_required
@@ -87,7 +90,7 @@ def upload_project(data):
                 file = File(project_id=project.id, link=link, type=FILE_TYPE['IMAGE'])
                 file.save()
 
-        #Create dashboard link for humanitarians
+        # Create dashboard link for humanitarians
         g.current_user.projects.append(project)
         db.session.commit()
 
@@ -96,8 +99,8 @@ def upload_project(data):
         return abort(400, 'Bad {} provided!'.format(e.__str__()))
     except Exception as e:
         return abort(400, '{} not valid!'.format(e.__str__()))
-      
-      
+
+
 @token_auth.login_required
 @permission_required(USER_TYPE['HUMANITARIAN'])
 def delete_project(project_id):
@@ -162,16 +165,15 @@ def approve_project(data):
 
     return {"message": message}, 200
 
-  
+
 @token_auth.login_required
 @permission_required(USER_TYPE['ADMIN'])
 def approve_project_join(data):
-
     stm = user_project_joining_table.update().where(
-            and_(
-                user_project_joining_table.c.user_id == data['userId'],
-                user_project_joining_table.c.project_id == data['projectId'])).\
-            values({user_project_joining_table.c.approved: 1 - user_project_joining_table.c.approved})
+        and_(
+            user_project_joining_table.c.user_id == data['userId'],
+            user_project_joining_table.c.project_id == data['projectId'])). \
+        values({user_project_joining_table.c.approved: 1 - user_project_joining_table.c.approved})
 
     db.session.execute(stm)
     db.session.commit()
@@ -183,9 +185,9 @@ def approve_project_join(data):
 @permission_required(USER_TYPE['ADMIN'])
 def get_joining_requests():
     requests = db.session.query(user_project_joining_table, User, Project) \
-        .filter_by(approved=0)\
-        .join(User, User.id == user_project_joining_table.c.user_id)\
-        .join(Project, Project.id == user_project_joining_table.c.project_id)\
+        .filter_by(approved=0) \
+        .join(User, User.id == user_project_joining_table.c.user_id) \
+        .join(Project, Project.id == user_project_joining_table.c.project_id) \
         .all()
 
     requests_json = [{
@@ -199,7 +201,7 @@ def get_joining_requests():
     } for request in requests]
 
     return {"requests": requests_json}, 200
- 
+
 
 @token_auth.login_required
 @permission_required(USER_TYPE['ADMIN'])
@@ -234,13 +236,13 @@ def create_user(data):
 
         new_user.hash_password(data['password'])
         new_user.save()
-        
+
         token = generate_confirmation_token(new_user.email)
         confirm_url = os.environ['SITE_URL'] + f"login/confirm/{token}"
         html = render_template('confirm_email.html', confirm_url=confirm_url)
         subject = "Please confirm your email for Inaglobe"
         send_email(new_user.email, subject, html)
-        
+
         return {'message': 'User created!'}, 201
 
     except ValueError as e:
@@ -248,7 +250,7 @@ def create_user(data):
     except Exception as e:
         return abort(400, '{} not valid!'.format(e.__str__()))
 
-  
+
 def confirm_email(token):
     try:
         email = confirm_token(token)
@@ -264,12 +266,14 @@ def confirm_email(token):
         user.save()
     return {'message': 'You have confirmed your account!'}, 200
 
+
 def confirm_reset_password_token(token):
     try:
         email = confirm_token(token)
         user = User.query.filter_by(email=email).first_or_404()
     except:
         return {'message': 'The reset password link is invalid or has expired'}, 404
+
 
 def send_password_reset_email(data):
     email = data['email']
@@ -279,6 +283,7 @@ def send_password_reset_email(data):
     subject = "Please reset your password"
     send_email(email, subject, html)
     return {'message': 'Email sent!'}, 200
+
 
 def reset_password(token, data):
     try:
@@ -346,6 +351,7 @@ def delete_comment(comment_id):
     else:
         return {'message': 'Insufficient permissions!'}, 403
 
+
 def get_projects_helper(projects):
     files = File.query.all()
     checkpoints = Checkpoint.query.all()
@@ -389,8 +395,8 @@ def get_projects_helper(projects):
             "title": c.title,
             "subtitle": c.subtitle,
             "text": c.text,
-            "documents":checkpoint_documents_map[c.id],
-            "images":checkpoint_images_map[c.id]
+            "documents": checkpoint_documents_map[c.id],
+            "images": checkpoint_images_map[c.id]
         }
         checkpoints_map[c.project_id].append(cJson)
 
@@ -410,6 +416,5 @@ def get_projects_helper(projects):
         "images": images_map[project.id],
         "checkpoints": checkpoints_map[project.id],
     } for project in projects]
-
 
     return {'projects': projects_json}, 200
