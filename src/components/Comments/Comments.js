@@ -48,14 +48,18 @@ class Comments extends Component {
     }
 
     componentDidMount() {
-        commentsService.getComments(this.props.projectId)
-            .then(c => c.json())
-            .then(json => {
-                console.log(json)
-                this.setState({
-                    comments: json.comments
-                })
-            }).catch(err => console.log(err))
+        setInterval(() => {
+            commentsService.getComments(this.props.projectId)
+                .then(c => c.json())
+                .then(json => {
+                        console.log(json)
+                        this.setState({
+                            comments: json.comments
+                        })
+                    }
+                )
+                .catch(err => console.log(err))
+        }, 3000)
     }
 
 
@@ -76,20 +80,15 @@ class Comments extends Component {
             .then(response => response.json())
             .then(response => {
                 console.log(response)
-                this.setState(() => {
-                    const updated_comments = this.state.comments.concat(response.comment)
-                    return {
-                        comments: updated_comments,
-                        postLoading: false,
-                        text: ""
-                    }
+                this.setState({
+                    postLoading: false,
+                    text: ""
                 })
             })
             .catch(err => console.log(err))
     }
 
     deleteComment = (commentId) => {
-        this.setState({comments: this.state.comments.filter(comment => comment.commentId !== commentId)})
         commentsService.deleteComment(commentId)
             .then(response => {
                 console.log(response)
