@@ -7,7 +7,6 @@ before_install:
 
 install:
   - pip install -r requirements.txt
-  - pip install coverage
   - npm ci
   - npm install -g serve
 
@@ -21,7 +20,7 @@ jobs:
     name: frontend tests
     script: npm test
 
-  - script: sh test_scripts/backendTests.sh
+  - script: pytest backend/
     name:  backend tests
 
   - stage: deploy_react
