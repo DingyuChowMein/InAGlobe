@@ -136,7 +136,7 @@ def update_project(data, project_id):
             if v is not '':
                 project_fields[k] = v
 
-        db.commit()
+        db.session.commit()
         return {'message': 'Project updated!'}, 200
     else:
         return {'message': 'Insufficient permissions!'}, 403
