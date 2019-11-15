@@ -19,7 +19,7 @@ function getProjects() {
 function postProject(data) {
     const token = JSON.parse(localStorage.getItem('user')).token;
     const bearer = 'Bearer ' + token;
-    fetch(config.apiUrl + '/projects/', {
+    return fetch(config.apiUrl + '/projects/', {
         method: 'post',
         headers: {
             'Authorization': bearer,
