@@ -265,7 +265,6 @@ class SignUp extends Component {
                                         labelId="userTypeLabel"
                                         id="userType"
                                         name="userType"
-                                        value={this.state.userType}
                                         onChange={this.handleFormChange}
                                         labelWidth={this.state.labelWidth}
                                     >
