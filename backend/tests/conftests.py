@@ -25,6 +25,7 @@ def app():
     os.environ['APP_MAIL_PASSWORD'] = '..'
     os.environ['FLASK_ENV'] = 'testing'
     os.environ['SECURITY_PASSWORD_SALT'] = 'salty'
+    os.environ['SITE_URL'] = 'localhost:3000/'
 
     #create app
     app = create_app()
