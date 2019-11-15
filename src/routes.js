@@ -15,8 +15,9 @@ import ProjectList from "./views/ProjectList/ProjectList"
 import AddProposal from "./views/AddProposal/AddProposal"
 import ProposalMainPage from "./views/ProposalPage/ProposalMainPage"
 import ProposalPreviewPage from './views/ProposalPage/ProposalPreviewPage'
-import Profile from './views/UserProfile/Profile'
-import AddCheckpoint from "./views/AddCheckpoint/AddCheckpoint";
+import AddCheckpoint from "./views/AddCheckpoint/AddCheckpoint"
+import EditProfile from "./views/UserProfile/EditProfile"
+import UserProfile from "./views/UserProfile/UserProfile"
 
 const loginRoutes = [
     {
@@ -39,6 +40,25 @@ const loginRoutes = [
         icon: PersonAdd,
         component: ConfirmEmail,
         layout: "/login"
+    }
+]
+
+const profileRoutes = [
+    {
+        path: "/userprofile/:id",
+        name: "User Profile",
+        component: UserProfile,
+        icon: null,
+        layout: "/main",
+        userLevel: 3
+    },
+    {
+        path: "/editprofile",
+        name: "Edit Profile",
+        component: EditProfile,
+        icon: null,
+        layout: "/main",
+        userLevel: 3
     }
 ]
 
@@ -98,13 +118,13 @@ const drawerRoutes = [
         path: "/userprofile",
         name: "User Profile",
         icon: PersonOutline,
-        component: Profile,
+        component: UserProfile,
         layout: "/main",
         userLevel: 3
     }
 ];
 
-const mainRoutes = [...drawerRoutes, ...proposalRoutes]
+const mainRoutes = [...drawerRoutes, ...proposalRoutes, ...profileRoutes]
 
 const routes = {
     auth: loginRoutes,

@@ -1,6 +1,6 @@
 // Main ReactJS libraries
-import React, {Component} from 'react'
-import {withRouter} from "react-router-dom"
+import React, { Component } from 'react'
+import { withRouter } from "react-router-dom"
 
 // Material UI libraries
 import { 
@@ -25,7 +25,7 @@ import RegularButton from "../../components/CustomButtons/RegularButton"
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/signInSideStyle"
 
-import {userService} from "../../services/userService"
+import { userService } from "../../services/userService"
 
 class SignInSide extends Component {
 

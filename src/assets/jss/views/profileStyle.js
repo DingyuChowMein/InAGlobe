@@ -12,9 +12,30 @@ const styles = {
         marginBottom: "20px", 
         marginLeft: "20px"
     },
+    rightAlign: { 
+        direction: "rtl",
+        display: "flex", 
+        alignItems: "center", 
+        justifyContent: "right", 
+        marginBottom: "20px", 
+        marginLeft: "20px"
+    },
     mapsLinkIcon: {
         marginLeft: "10px"
+    },
+    albumDiv: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'space-around',
+        overflow: 'hidden',
+    },
+    gridList: {
+        // overflow: "hidden",
+        flexWrap: 'nowrap',
+        // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
+        transform: 'translateZ(0)',
     }
+
 }
 
 export default styles

@@ -8,6 +8,11 @@ const exampleProfile = {
         "https://thenudge.com/wp-content/uploads/2018/10/heddon-street-kitchen-gordon-ramsay-restaurant.jpg",
         "https://static.standard.co.uk/s3fs-public/thumbnails/image/2019/03/15/10/lucky-cat-1503a.jpg?width=1000&height=614&fit=bounds&format=pjpg&auto=webp&quality=70&crop=16:9,offset-y0.5",
         "https://images.squaremeal.co.uk/cloud/restaurants/233/restaurant-gordon-ramsay-2016-web-interior.jpg?w=900&h=600&fit=crop",
+        "http://www.bookatable.co.uk/blog/wp-content/uploads/sites/2/2019/03/the-narrow.jpg",
+        "https://www.gordonramsay.com/assets/Carousels/_resampled/CroppedFocusedImage63060050-50-Mobile-0076-BSK-Singapore.jpg",
+        "https://thenudge.com/wp-content/uploads/2018/10/heddon-street-kitchen-gordon-ramsay-restaurant.jpg",
+        "https://static.standard.co.uk/s3fs-public/thumbnails/image/2019/03/15/10/lucky-cat-1503a.jpg?width=1000&height=614&fit=bounds&format=pjpg&auto=webp&quality=70&crop=16:9,offset-y0.5",
+        "https://images.squaremeal.co.uk/cloud/restaurants/233/restaurant-gordon-ramsay-2016-web-interior.jpg?w=900&h=600&fit=crop",
         "http://www.bookatable.co.uk/blog/wp-content/uploads/sites/2/2019/03/the-narrow.jpg"
     ],
     email: "gordonramsay@hellskitchen.co.uk",

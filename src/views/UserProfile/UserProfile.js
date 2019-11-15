@@ -1,34 +1,70 @@
 import React, { Component } from 'react'
+import ScrollMenu from "react-horizontal-scrolling-menu"
 
 import { 
     withStyles, 
     Avatar, 
-    Grid, 
-    GridList,
+    Grid,
+    Hidden,
     Link, 
     Typography,
     IconButton,
 } from "@material-ui/core"
-import { LocationOn, ArrowBackIos, ArrowForwardIos } from "@material-ui/icons"
+import { 
+    ArrowBackIos, 
+    ArrowForwardIos, 
+    Create, 
+    LocationOn 
+} from "@material-ui/icons"
 
 import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer'
 
 import styles from "../../assets/jss/views/profileStyle"
 
 import exampleProfile from "../../assets/data/UserProfileData"
-import PerfectScrollbar from 'perfect-scrollbar'
 
 class Profile extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            scrollValue: 0
+            width: window.innerWidth,
+            data: {
+                userId: props.match.params.id,
+                firstName: "",
+                lastName: "",
+                userType: "", 
+                profilePic: "", 
+                email: "", 
+                location: "", 
+                shortDescription: "", 
+                longDescription: "", 
+                album: []
+            }
         }
+        this.albumList = null
+    }
+
+    updateDimensions = () => {
+        this.setState({ 
+            width: window.innerWidth
+        })
+    }
+    componentDidMount() {
+        window.addEventListener('resize', this.updateDimensions)
+        if (this.list) this.list.scrollTo(0)
+    }
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateDimensions)
     }
 
     render() {
         const { classes } = this.props
         const { firstName, lastName, userType, profilePic, email, location, shortBio, longBio, album } = exampleProfile
+
+        if (this.state.data.userId) {
+            console.log(this.state.data.userId)
+            console.log("It exists!")
+        }
 
         let userTypeText
         switch (userType) {
@@ -48,9 +84,59 @@ class Profile extends Component {
                 console.log("Big User Type Error!!!!")
         }
 
+        const scrollMenu = (
+            <ScrollMenu 
+                ref={element => this.albumList = element}
+                data={
+                    album.map((pic, index) => (
+                        <img
+                            key={index}
+                            alt={`Album Data ${index}`}
+                            src={pic}
+                            style={{ width: "300px", height: "200px", marginRight: "20px" }}
+                        />
+                    ))
+                }
+                arrowLeft={
+                    <IconButton aria-label="scroll-left">
+                        <ArrowBackIos fontSize="small"/>
+                    </IconButton>
+                }
+                arrowRight={
+                    <IconButton aria-label="scroll-right">
+                        <ArrowForwardIos fontSize="small"/>
+                    </IconButton>
+                }
+                hideArrows={true}
+                hideSingleArrow={true}
+                alignOnResize={true}
+                scrollToSelected={true}
+                transition={0.6}
+                innerWrapperStyle={{
+                    marginTop: "0", 
+                    marginBottom: "10px"
+                }}
+            />
+        )
+
         return (
             <ResponsiveDrawer name={"User Profile"}>
                 <Grid container>
+                    {this.state.data.userId
+                        ? 
+                        null
+                        :
+                        <Grid item xs={12} className={classes.rightAlign}>
+                            <IconButton
+                                onClick={() => this.props.history.push("/main/editprofile")}
+                            >
+                                <Create fontSize="medium" />
+                            </IconButton>
+                            <Typography component="h5" variant="h5" style={{ color: "grey", marginRight: "20px" }}>
+                                {":Edit Profile"}
+                            </Typography>
+                        </Grid>
+                    }
                     <Grid item xs={12} className={classes.centering}>
                         <Avatar 
                             alt="Profile Picture"
@@ -110,28 +196,22 @@ class Profile extends Component {
                         </div>
                     </Grid>
                     <Grid item xs={12} className={classes.leftAlign}>
-                        <IconButton
-                            onClick={() => this.state.albumList.scrollTo(this)}
-                        >
-                            <ArrowBackIos fontSize="large"/>
-                        </IconButton>
-                        <PerfectScrollbar component="div">
-                            <GridList
-                                ref={albumList => this.setState({ albumList: albumList })}
-                                cols={2.5}
-                            >
-                                {album.map((pic, index) => (
-                                    <img src={pic} alt={index} />
-                                ))}
-                            </GridList>
-                        </PerfectScrollbar>
-                        <IconButton
-                            onClick={() => this.setState({
-                                scrollValue: this.state.scrollValue + 50
-                            })}
-                        >
-                            <ArrowForwardIos fontSize="large"/>
-                        </IconButton>
+                        <div>
+                            <Typography component="h5" variant="h5">
+                                <b>Album Pictures: </b>
+                            </Typography>
+                            <br />
+                            <Hidden xsDown implementation="css">
+                                <div style={{ width: `calc(${this.state.width}px - 350px)` }}>
+                                    {scrollMenu}
+                                </div>
+                            </Hidden>
+                            <Hidden smUp implementation="css">
+                                <div style={{ width: `calc(${this.state.width}px - 85px)` }}>
+                                    {scrollMenu}
+                                </div>
+                            </Hidden>
+                        </div>
                     </Grid>
                 </Grid>
             </ResponsiveDrawer>

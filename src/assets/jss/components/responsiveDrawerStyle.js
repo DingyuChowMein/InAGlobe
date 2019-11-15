@@ -66,6 +66,18 @@ const styles = theme => ({
         position: "fixed",
         paddingLeft: "20px",
         paddingBottom: "20px"
+	},
+	listItemText: {
+		fontSize: "1.4em"
+	},
+	drawerSectionSize: {
+		paddingTop: "10px",
+		height: "50px"
+	},
+	centering: {
+        display: "flex", 
+        alignItems: "center", 
+        justifyContent: "left", 
 	}
 });
 

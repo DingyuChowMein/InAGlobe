@@ -1,6 +1,7 @@
 // Main ReactJS libraries
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import PerfectScrollbar from 'react-perfect-scrollbar'
 import { withRouter } from 'react-router-dom'
 
 // Material UI libraries
@@ -8,7 +9,6 @@ import {
     withStyles, 
     AppBar, 
     CssBaseline,
-    Divider,
     Drawer,
     Hidden,
     IconButton,
@@ -32,6 +32,7 @@ import logo from '../../assets/img/logo.png'
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/components/responsiveDrawerStyle"
+import 'react-perfect-scrollbar/dist/css/styles.css'
 
 class ResponsiveDrawer extends Component {
 
@@ -69,7 +70,6 @@ class ResponsiveDrawer extends Component {
                         <p className={classes.logoTextFont}>InAGlobe</p>
                     </span>
                 </div>
-                <Divider />
                 <List>
                     {drawerRoutes.map(route => (
                         route.icon !== null && route.userLevel >= this.state.userPermissions
@@ -78,18 +78,23 @@ class ResponsiveDrawer extends Component {
                             button 
                             onClick={() => this.redirectTo(route.layout + route.path)}
                             key={route.name}
+                            className={classes.centering}
                         >
                             {this.state.mobileOpen ? 
-                            <ListItemIcon ><route.icon /></ListItemIcon> : 
-                            <ListItemIcon className={classes.iconColor}><route.icon /></ListItemIcon>}
+                            <ListItemIcon><route.icon fontSize="large" /></ListItemIcon> : 
+                            <ListItemIcon className={classes.iconColor}><route.icon fontSize="large" /></ListItemIcon>}
 
-                            <ListItemText primary={route.name} />
+                            <ListItemText 
+                                primary={route.name}
+                                classes={{ 
+                                    primary: classes.listItemText, 
+                                    root: classes.drawerSectionSize 
+                                }} />
                         </ListItem>
                         : 
                         null
                     ))}
                 </List>
-                <Divider />
                 <div className={classes.logoutButton}>
                     <RegularButton onClick={() => this.props.history.push("/login")} color="primary">LogOut</RegularButton>
                 </div>
@@ -97,9 +102,9 @@ class ResponsiveDrawer extends Component {
         )
 
         return (
-            <div className={classes.root}>
+            <PerfectScrollbar component="div" className={classes.root}>
                 <CssBaseline />
-                <AppBar position="fixed" color="secondary" className={classes.appBar}>
+                <AppBar position="fixed" color="secondary" className={classes.appBar} elevation={0}>
                     <Toolbar>
                         <IconButton
                             color="inherit"
@@ -151,12 +156,12 @@ class ResponsiveDrawer extends Component {
                     </Hidden>
                 </nav>
 
-
+            
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
                     {this.props.children}
                 </main>
-            </div>
+            </PerfectScrollbar>
         )
     }
 }
