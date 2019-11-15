@@ -15,6 +15,9 @@ import { projectService } from "../../services/projectsService"
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/projectListStyle"
 
+// Import Search
+// import search from "./search"
+
 class ProjectList extends Component {
     constructor(props) {
         super(props)

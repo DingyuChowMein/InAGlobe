@@ -18,6 +18,7 @@ import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
 import MenuIcon from '@material-ui/icons/Menu'
+import Search from '../Search/Search'
 
 // Importing webpath data for drawer links
 import { drawerRoutes } from '../../routes'
@@ -28,6 +29,7 @@ import logo from '../../assets/img/logo.png'
 // Importing class's stylesheet
 import styles from "../../assets/jss/components/responsiveDrawerStyle"
 import RegularButton from "../CustomButtons/RegularButton";
+
 
 class ResponsiveDrawer extends Component {
 
@@ -51,7 +53,7 @@ class ResponsiveDrawer extends Component {
         const history = this.props.history
         history.push(link)
     }
-    
+
     render() {
         const { classes, container, name } = this.props
 
@@ -70,18 +72,18 @@ class ResponsiveDrawer extends Component {
                     {drawerRoutes.map(route => (
                         route.icon !== null && route.userLevel >= this.state.userPermissions
                         ?
-                        <ListItem 
-                            button 
+                        <ListItem
+                            button
                             onClick={() => this.redirectTo(route.layout + route.path)}
                             key={route.name}
                         >
-                            {this.state.mobileOpen ? 
-                            <ListItemIcon ><route.icon /></ListItemIcon> : 
+                            {this.state.mobileOpen ?
+                            <ListItemIcon ><route.icon /></ListItemIcon> :
                             <ListItemIcon className={classes.iconColor}><route.icon /></ListItemIcon>}
 
                             <ListItemText primary={route.name} />
                         </ListItem>
-                        : 
+                        :
                         null
                     ))}
                 </List>
@@ -112,8 +114,8 @@ class ResponsiveDrawer extends Component {
 
                     </Toolbar>
                 </AppBar>
-                <nav 
-                    className={classes.drawer} 
+                <nav
+                    className={classes.drawer}
                     aria-label="mailbox folders">
                     {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
                     <Hidden smUp implementation="css">
@@ -151,7 +153,10 @@ class ResponsiveDrawer extends Component {
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
                     {this.props.children}
+
                 </main>
+              <Search/>
+
             </div>
         )
     }
