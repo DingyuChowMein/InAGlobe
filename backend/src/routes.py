@@ -115,6 +115,48 @@ def delete_project(project_id):
 
 
 @token_auth.login_required
+@permission_required(USER_TYPE['HUMANITARIAN'])
+def update_project(data, project_id):
+    p = db.session.query(Project).filter(Project.id == project_id).first()
+    if p is None:
+        return {'message': 'Project does not exist!'}, 404
+    if p in g.current_user.projects or g.current_user.is_admin():
+        if data.items == {}:
+            return {'message': 'No changes!'}, 204
+
+        # project_fields = {
+        #     'title': p.title,
+        #     'shortDescription': p.short_description,
+        #     'detailedDescription': p.long_description,
+        #     'location': p.location,
+        #     'organisationName': p.organisation_name,
+        #     'organisationLogo': p.organisation_logo
+        # }
+
+        for k, v in data.items():
+            if k not in ['title', 'shortDescription', 'detailedDescription', 'location', 'organisationName', 'organisationLogo']:
+                return {'message': 'Bad request!'}, 400
+            if v is not '':
+                if k == 'title':
+                    p.title = v
+                if k == 'shortDescription':
+                    p.short_description = v
+                if k == 'detailedDescription':
+                    p.long_description = v
+                if k == 'location':
+                    p.location = v
+                if k == 'organisationName':
+                    p.organisation_name = v
+                if k == 'organisationLogo':
+                    p.organisation_logo = v
+
+        db.session.commit()
+        return {'message': 'Project updated!'}, 200
+    else:
+        return {'message': 'Insufficient permissions!'}, 403
+
+
+@token_auth.login_required
 def upload_checkpoint(data, project_id):
     if not project_id:
         return {'message': "No project id"}
