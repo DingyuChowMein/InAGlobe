@@ -59,15 +59,17 @@ class Profile extends Component {
 
     render() {
         const { classes } = this.props
-        const { firstname, lastname, permission, profile_picture, email, location, short_description, long_description, album } = JSON.parse(localStorage.getItem("user"))
+        const { userid, firstname, lastname, permissions, profile_picture, email, location, short_description, long_description, album } = JSON.parse(localStorage.getItem("user"))
 
-        if (this.state.data.userId) {
-            console.log(this.state.data.userId)
+        console.log(JSON.parse(localStorage.getItem("user")))
+
+        if (userid) {
+            console.log(userid)
             console.log("It exists!")
         }
 
         let userTypeText
-        switch (permission) {
+        switch (permissions) {
             case 0:
                 userTypeText = "Admin"
                 break
@@ -84,45 +86,47 @@ class Profile extends Component {
                 console.log("Big User Type Error!!!!")
         }
 
-        const scrollMenu = (
-            <ScrollMenu 
-                ref={element => this.albumList = element}
-                data={
-                    album.map((pic, index) => (
-                        <img
-                            key={index}
-                            alt={`Album Data ${index}`}
-                            src={pic}
-                            style={{ width: "300px", height: "200px", marginRight: "20px" }}
-                        />
-                    ))
-                }
-                arrowLeft={
-                    <IconButton aria-label="scroll-left">
-                        <ArrowBackIos fontSize="small"/>
-                    </IconButton>
-                }
-                arrowRight={
-                    <IconButton aria-label="scroll-right">
-                        <ArrowForwardIos fontSize="small"/>
-                    </IconButton>
-                }
-                hideArrows={true}
-                hideSingleArrow={true}
-                alignOnResize={true}
-                scrollToSelected={true}
-                transition={0.6}
-                innerWrapperStyle={{
-                    marginTop: "0", 
-                    marginBottom: "10px"
-                }}
-            />
-        )
+        var scrollMenu = null
+        if (album) {
+            scrollMenu = (
+                <ScrollMenu 
+                    ref={element => this.albumList = element}
+                    data={album.map((pic, index) => (
+                            <img
+                                key={index}
+                                alt={`Album Data ${index}`}
+                                src={pic}
+                                style={{ width: "300px", height: "200px", marginRight: "20px" }}
+                            />
+                    ))}
+                    arrowLeft={
+                        <IconButton aria-label="scroll-left">
+                            <ArrowBackIos fontSize="small"/>
+                        </IconButton>
+                    }
+                    arrowRight={
+                        <IconButton aria-label="scroll-right">
+                            <ArrowForwardIos fontSize="small"/>
+                        </IconButton>
+                    }
+                    hideArrows={true}
+                    hideSingleArrow={true}
+                    alignOnResize={true}
+                    scrollToSelected={true}
+                    transition={0.6}
+                    innerWrapperStyle={{
+                        marginTop: "0", 
+                        marginBottom: "10px"
+                    }}
+                />
+            )
+        }
+        
 
         return (
             <ResponsiveDrawer name={"User Profile"}>
                 <Grid container>
-                    {this.state.data.userId
+                    {userid
                         ? 
                         null
                         :
