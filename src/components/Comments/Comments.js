@@ -111,12 +111,9 @@ class Comments extends Component {
             .then(response => {
                 console.log(response);
                 const array = [...this.state.comments];
-                // const index = array.indexOf(commentId);
-                const index = array.findIndex(function(item, i){
+                const index = array.findIndex(function(item){
                     return item.commentId === commentId
                 });
-                console.log(array);
-                console.log(index);
                 if (index !== -1) {
                     array.splice(index, 1);
                     console.log(array);
