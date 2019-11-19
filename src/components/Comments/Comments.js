@@ -35,7 +35,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css'
 class Comments extends Component {
 
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             text: "",
             dialogBoxOpened: false,
@@ -44,22 +44,27 @@ class Comments extends Component {
             comments: [],
             userType: JSON.parse(localStorage.getItem('user')).permissions,
             userId: JSON.parse(localStorage.getItem('user')).userid
-        }
+        };
+        this.eventSource = new EventSource(config.apiUrl + '/comment-stream/' + this.props.projectId);
     }
 
     componentDidMount() {
-        setInterval(() => {
-            commentsService.getComments(this.props.projectId)
-                .then(c => c.json())
-                .then(json => {
-                        console.log(json)
-                        this.setState({
-                            comments: json.comments
-                        })
-                    }
-                )
-                .catch(err => console.log(err))
-        }, 3000)
+        commentsService.getComments(this.props.projectId)
+            .then(c => c.json())
+            .then(json => {
+                    console.log(json);
+                    this.setState({
+                        comments: json.comments
+                    })
+                })
+            .catch(err => console.log(err));
+        this.eventSource.addEventListener('commentstream', (json) => {
+            console.log(json.data);
+            // this.setState(prevState => ({
+            //     comments: prevState.comments.concat([json.comments])
+            // }))
+        });
+        this.eventSource.addEventListener('error', (err) => {console.log(err)})
     }
 
 
