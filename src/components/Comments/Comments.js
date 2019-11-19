@@ -59,10 +59,16 @@ class Comments extends Component {
                 })
             .catch(err => console.log(err));
         this.eventSource.addEventListener('commentstream', (json) => {
-            console.log(json.data);
-            // this.setState(prevState => ({
-            //     comments: prevState.comments.concat([json.comments])
-            // }))
+            const v = JSON.parse(json.data);
+            if (v.message.equals('Comment deleted!')) {
+                this.setState({
+                    comments: this.state.comments.remove(v.comment)
+                })
+            } else if (v.message.equals('Comment added!')) {
+                this.setState({
+                    comments: this.state.comments.concat(v.comment)
+                })
+            }
         });
         this.eventSource.addEventListener('error', (err) => {console.log(err)})
     }
