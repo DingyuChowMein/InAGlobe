@@ -52,10 +52,8 @@ def delete_comment(comment_id):
     if comment is None:
         return {'message': 'Comment does not exist!'}, 404
     if comment in g.current_user.comments or g.current_user.is_admin():
-        response = {'message': 'Comment deleted!'}
         comment.delete()
-        red.publish('comment{}'.format(''), '{}'.format(dumps(response)))
-        return response, 200
+        return {'message': 'Comment deleted!'}, 200
     else:
         return {'message': 'Insufficient permissions!'}, 403
 

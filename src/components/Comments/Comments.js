@@ -60,10 +60,17 @@ class Comments extends Component {
             .catch(err => console.log(err));
         this.eventSource.addEventListener('commentstream', (json) => {
             const v = JSON.parse(json.data);
+            console.log(v);
             if (v.message === 'Comment deleted!') {
-                this.setState({
-                    comments: this.state.comments.remove(v.comment)
-                })
+                const array = [...this.state.comments];
+                const index = array.indexOf(v.comment);
+                if (index !== -1) {
+                    array.splice(index, 1);
+                    console.log(array);
+                    this.setState({
+                        comments: array
+                    });
+                }
             } else if (v.message === 'Comment added!') {
                 this.setState({
                     comments: this.state.comments.concat(v.comment)
@@ -78,14 +85,14 @@ class Comments extends Component {
         this.setState({
             [e.target.id]: e.target.value
         })
-    }
+    };
 
     post = () => {
         const today = new Date()
         this.setState({
             postLoading: true,
             date: `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()}`
-        })
+        });
 
         commentsService.postComment(this.props.projectId, this.state.text)
             .then(response => response.json())
@@ -97,22 +104,36 @@ class Comments extends Component {
                 })
             })
             .catch(err => console.log(err))
-    }
+    };
 
     deleteComment = (commentId) => {
         commentsService.deleteComment(commentId)
             .then(response => {
-                console.log(response)
+                console.log(response);
+                const array = [...this.state.comments];
+                // const index = array.indexOf(commentId);
+                const index = array.findIndex(function(item, i){
+                    return item.commentId === commentId
+                });
+                console.log(array);
+                console.log(index);
+                if (index !== -1) {
+                    array.splice(index, 1);
+                    console.log(array);
+                    this.setState({
+                        comments: array
+                    });
+                }
             })
             .catch(err => {
                 console.log(err)
             })
 
-    }
+    };
 
     hasPermissions = (ownerId) => {
         return (this.state.userType === 0 || this.state.userId === ownerId)
-    }
+    };
 
     renderConfirmDialog = () => {
         return (

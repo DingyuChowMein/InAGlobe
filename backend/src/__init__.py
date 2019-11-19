@@ -108,6 +108,7 @@ def create_app():
 
         def delete(self, identifier):
             response, code = delete_comment(identifier)
+            app.logger.info('comment deleted')
             return make_response(response, code)
 
     class CommentStream(Resource):
