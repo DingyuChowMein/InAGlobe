@@ -56,10 +56,16 @@ def delete_comment(comment_id):
 
 
 def comment_stream(app, project_id):
+    from json import loads
     pubsub = red.pubsub()
     pubsub.subscribe('comment{}'.format(project_id))
     app.logger.info('subscribed to comment{}'.format(project_id))
     while True:
         for message in pubsub.listen():
-            app.logger.info('comment_stream -> channel12 : {}'.format(message))
-            yield 'event: commentstream\ndata: {}\n\n'.format(message)
+            byte_data = message.get('data')
+            try:
+                string_data = byte_data.decode('utf-8')
+                app.logger.info(string_data)
+                yield 'event: commentstream\ndata: {}\n\n'.format(string_data)
+            except (UnicodeDecodeError, AttributeError):
+                pass
