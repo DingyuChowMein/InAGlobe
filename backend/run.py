@@ -1,4 +1,5 @@
-from src import create_app, db
+import logging
+from src import create_app, db, red
 
 app = create_app()
 
@@ -8,8 +9,13 @@ from src.models import Project, File, User, Comment
 # run flask shell
 @app.shell_context_processor
 def make_shell_context():
-    return {'db': db, 'Project': Project, 'File': File, 'User': User, 'Comment': Comment}
+    return {'db': db, 'red': red, 'Project': Project, 'File': File, 'User': User, 'Comment': Comment}
 
 
 if __name__ == "__main__":
     app.run()
+
+if __name__ != "__main__":
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
