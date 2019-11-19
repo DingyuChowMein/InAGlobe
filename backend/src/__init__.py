@@ -101,15 +101,17 @@ def create_app():
             return make_response(response, code)
 
         def post(self, identifier):
+            from json import dumps
             response, code = add_comment(request.get_json(), identifier)
-            red.publish('comment{}'.format(identifier), u'{}'.format(response))
+            red.publish('comment{}'.format(identifier), '{}'.format(dumps(response)))
             app.logger.info('comment post')
             app.logger.info('publish to channel comment{}'.format(identifier))
             return make_response(response, code)
 
         def delete(self, identifier):
+            from json import dumps
             response, code = delete_comment(identifier)
-            red.publish('comment{}'.format(''), u'{}'.format(response))
+            red.publish('comment{}'.format(''), '{}'.format(dumps(response)))
             return make_response(response, code)
 
     class CommentStream(Resource):
