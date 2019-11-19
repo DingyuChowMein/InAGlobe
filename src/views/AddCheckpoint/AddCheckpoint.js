@@ -46,8 +46,8 @@ class AddCheckpoint extends Component {
 
     post = () => {
         const id = generateId()
-        this.state.data.documents = upload(this.state.data.documents, id + '/Documents')
-        this.state.data.images = upload(this.state.data.images, id + '/Images')
+        this.setState({data: {documents:upload(this.state.data.documents, id + '/Documents')}});
+        this.setState({data: {images: upload(this.state.data.images, id + '/Images')}});
         console.log(this.state.data)
         const {match} = this.props
         checkpointService.postCheckpoint(match.params.id, this.state.data)
