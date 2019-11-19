@@ -14,6 +14,7 @@ def add_comment(data, project_id):
         owner_first_name=g.current_user.first_name,
         owner_last_name=g.current_user.last_name
     )
+    comment.save()
     comment_json = {
         "commentId": comment.id,
         "text": comment.text,
@@ -22,7 +23,6 @@ def add_comment(data, project_id):
         "ownerLastName": comment.owner_last_name,
         "date": comment.date_time.strftime("%Y-%m-%d %H:%M:%S")
     }
-    comment.save()
     response = {'message': 'Comment added!', 'comment': comment_json}
     red.publish('comment{}'.format(project_id), '{}'.format(dumps(response)))
     g.current_user.comments.append(comment)
