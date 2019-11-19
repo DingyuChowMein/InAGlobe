@@ -1,13 +1,16 @@
+import logging
 import os
 
-from flask import Flask, request, make_response
+from flask import Flask, request, make_response, Response
 from flask_cors import CORS, cross_origin
 from flask_mail import Mail
 from flask_restful import Api, Resource
 from flask_sqlalchemy import SQLAlchemy
+from redis import Redis, StrictRedis
 
 # initialise sql-alchemy
 db = SQLAlchemy()
+red = StrictRedis()
 mail = Mail()
 
 
@@ -24,20 +27,20 @@ def create_app():
     mail.init_app(app)
     api = Api(app)
     CORS(app)
-    app.config['CORS_HEADERS'] = 'Content-Type'
+    app.redis = Redis.from_url(app.config['REDIS_URL'])
 
     from .routes import (
         get_projects, upload_project, approve_project,
         upload_checkpoint,
         get_users, create_user, confirm_email, confirm_reset_password_token,
         reset_password, send_password_reset_email,
-        add_comment, get_comments,
         get_dashboard_projects, select_project,
         get_joining_requests, approve_project_join,
-        delete_project, delete_comment,
-        update_project
+        delete_project, update_project
     )
+    from .comments import add_comment, get_comments, delete_comment, comment_stream
     from .tokens import get_token, revoke_token
+
     # # Override pre-flight request to fix CORS issue
     # class CORS(object):
     #     def options(self, *args):
@@ -80,8 +83,6 @@ def create_app():
 
         def post(self):
             response, code = upload_project(request.get_json())
-            # print("IN POST \n \n")
-            # print(request.get_json())
             return make_response(response, code)
 
         def delete(self, identifier):
@@ -93,26 +94,29 @@ def create_app():
             return make_response(response, code)
 
     class Comments(Resource):
-        # Please don't remove second argument, namely the identifier
-        # def options(self, identifier):
-        #     response = make_response()
-        #     response.headers.add("Access-Control-Allow-Origin", "*")
-        #     response.headers.add('Access-Control-Allow-Headers', "*")
-        #     response.headers.add('Access-Control-Allow-Methods', "*")
-        #     return response
-
         @cross_origin()
         def get(self, identifier):
             response, code = get_comments(identifier)
+            app.logger.info('comment get')
             return make_response(response, code)
 
         def post(self, identifier):
             response, code = add_comment(request.get_json(), identifier)
+            red.publish('comment{}'.format(identifier), u'{}'.format(response))
+            app.logger.info('comment post')
+            app.logger.info('publish to channel comment{}'.format(identifier))
             return make_response(response, code)
 
         def delete(self, identifier):
             response, code = delete_comment(identifier)
+            red.publish('comment{}'.format(''), u'{}'.format(response))
             return make_response(response, code)
+
+    class CommentStream(Resource):
+        @cross_origin()
+        def get(self, identifier):
+            app.logger.info('comment stream MARK')
+            return Response(comment_stream(app, identifier), mimetype='text/event-stream')
 
     class Users(Resource):
         def get(self):
@@ -124,13 +128,6 @@ def create_app():
             return make_response(response, code)
 
     class Checkpoints(Resource):
-        def options(self):
-            response = make_response()
-            response.headers.add("Access-Control-Allow-Origin", "*")
-            response.headers.add('Access-Control-Allow-Headers', "*")
-            response.headers.add('Access-Control-Allow-Methods', "*")
-            return response
-
         def post(self, identifier):
             response, code = upload_checkpoint(request.get_json(), identifier)
             return make_response(response, code)
@@ -145,26 +142,11 @@ def create_app():
             return make_response(response, code)
 
     class ConfirmEmail(Resource):
-        # Please don't remove second argument, namely the token
-        def options(self, token):
-            response = make_response()
-            response.headers.add("Access-Control-Allow-Origin", "*")
-            response.headers.add('Access-Control-Allow-Headers', "*")
-            response.headers.add('Access-Control-Allow-Methods', "*")
-            return response
-
         def get(self, token):
             response, code = confirm_email(token)
             return make_response(response, code)
 
     class ResetPassword(Resource):
-        def options(self, token=None):
-            response = make_response()
-            response.headers.add("Access-Control-Allow-Origin", "*")
-            response.headers.add('Access-Control-Allow-Headers', "*")
-            response.headers.add('Access-Control-Allow-Methods', "*")
-            return response
-
         def get(self, token):
             response, code = confirm_reset_password_token(token)
             return make_response(response, code)
@@ -188,5 +170,6 @@ def create_app():
     api.add_resource(ResetPassword, '/resetpassword/', '/resetpassword/<token>/')
     api.add_resource(Dashboard, '/dashboard/')
     api.add_resource(Checkpoints, '/checkpoint/<int:identifier>/')
+    api.add_resource(CommentStream, '/comment-stream/<int:identifier>')
 
     return app
