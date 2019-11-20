@@ -68,12 +68,13 @@ def delete_comment(comment_id):
         return {'message': 'Insufficient permissions!'}, 403
 
 
-def comment_stream(app, project_id, runstream):
-    pubsub = red.pubsub()
-    pubsub.subscribe('comment{}'.format(project_id))
+@token_auth.login_required
+def comment_stream(app, project_id, run_stream):
+    pub_sub = red.pubsub()
+    pub_sub.subscribe('comment{}'.format(project_id))
     app.logger.info('subscribed to comment{}'.format(project_id))
-    while runstream:
-        for message in pubsub.listen():
+    while run_stream:
+        for message in pub_sub.listen():
             byte_data = message.get('data')
             try:
                 string_data = byte_data.decode('utf-8')

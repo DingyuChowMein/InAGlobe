@@ -1,6 +1,7 @@
 import React, {Component} from "react"
 import {confirmAlert} from 'react-confirm-alert'
 import Spinner from 'react-spinner-material'
+import { NativeEventSource, EventSourcePolyfill } from 'event-source-polyfill';
 
 import {
     withStyles,
@@ -45,7 +46,11 @@ class Comments extends Component {
             userType: JSON.parse(localStorage.getItem('user')).permissions,
             userId: JSON.parse(localStorage.getItem('user')).userid
         };
-        this.eventSource = new EventSource(config.apiUrl + '/comment-stream/' + this.props.projectId);
+        this.eventSource = new EventSourcePolyfill(config.apiUrl + '/comment-stream/' + this.props.projectId, {
+            headers: {
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('user')).token
+            }
+        });
     }
 
     componentDidMount() {
