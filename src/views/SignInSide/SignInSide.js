@@ -108,6 +108,7 @@ class SignInSide extends Component {
                                     autoComplete="email"
                                     onChange={this.handleFormChange}
                                     autoFocus
+                                    onKeyPress={event => event.key === "Enter" ? this.loginPressed() : null}
                                 />
                                 <TextField
                                     variant="outlined"
@@ -120,6 +121,7 @@ class SignInSide extends Component {
                                     id="password"
                                     autoComplete="current-password"
                                     onChange={this.handleFormChange}
+                                    onKeyPress={event => event.key === "Enter" ? this.loginPressed() : null}
                                 />
                                 <FormControlLabel
                                     control={<Checkbox value="remember" color="primary"/>}

@@ -197,7 +197,7 @@ def create_app():
     api.add_resource(Projects, '/projects/', '/projects/<int:identifier>/')
     api.add_resource(Comments, '/comments/', '/comments/<int:identifier>/')
     api.add_resource(User, '/user/<int:identifier>/')
-    api.add_resource(Users, '/user/')
+    api.add_resource(Users, '/users/')
     api.add_resource(Tokens, '/users/tokens/')
     api.add_resource(Approvals, '/approve/')
     api.add_resource(JoiningApproval, '/joiningApprove/')

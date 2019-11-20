@@ -49,7 +49,7 @@ function signUp(firstName, lastName, email, password, userType) {
 }
 
 function getProfile(userId) {
-    console.log(config.apiUrl + `/users/${userId}`)
+    console.log(config.apiUrl + `/user/${userId}/`)
     const bearer = 'Bearer ' + JSON.parse(localStorage.getItem('user')).token
     const requestOptions = {
         method: "GET",
@@ -58,12 +58,12 @@ function getProfile(userId) {
         }
     }
 
-    return fetch(config.apiUrl + `/users/${userId}/`, requestOptions)
+    return fetch(config.apiUrl + `/user/${userId}/`, requestOptions)
         .then(handleResponse)
 }
 
 function updateProfile(userId, data) {
-    console.log(config.apiUrl + `/users/${userId}`)
+    console.log(config.apiUrl + `/user/${userId}/`)
     const bearer = 'Bearer ' + JSON.parse(localStorage.getItem('user')).token
     const requestOptions = {
         method: "PATCH",
@@ -74,12 +74,12 @@ function updateProfile(userId, data) {
         body: JSON.stringify(data)
     }
 
-    return fetch(config.apiUrl + `/users/${userId}/`, requestOptions)
+    return fetch(config.apiUrl + `/user/${userId}/`, requestOptions)
         .then(handleResponse)
 }
 
 function deleteProfile(userId) {
-    console.log(config.apiUrl + `/users/${userId}`)
+    console.log(config.apiUrl + `/user/${userId}/`)
     const bearer = 'Bearer ' + JSON.parse(localStorage.getItem('user')).token
     const requestOptions = {
         method: "DELETE",
@@ -88,7 +88,7 @@ function deleteProfile(userId) {
         }
     }
 
-    return fetch(config.apiUrl + `/users/${userId}/`, requestOptions)
+    return fetch(config.apiUrl + `/user/${userId}/`, requestOptions)
         .then(handleResponse)
 }
 

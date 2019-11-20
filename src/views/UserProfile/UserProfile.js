@@ -40,7 +40,7 @@ class Profile extends Component {
                 location: "", 
                 shortDescription: "", 
                 longDescription: "", 
-                pictures: null,
+                images: null,
                 documents: null
             }
         }
@@ -54,9 +54,10 @@ class Profile extends Component {
     }
 
     get = (id) => {
-        userService.getProfile(id)
+        return userService.getProfile(id)
             .then(data => {
                 console.log(data)
+                console.log("It comes here!")
                 return data
             })
             .catch(console.log)
@@ -65,7 +66,8 @@ class Profile extends Component {
     componentDidMount() {
         window.addEventListener('resize', this.updateDimensions)
         if (this.pictureList) this.pcitureList.scrollTo(0)
-        const currentUser = pick(JSON.parse(localStorage.getItem("user"), ["userId", "firstName", "lastName", "permissions", "profilePicture", "email", "location", "shortDescription", "longDescription", "pictures", "documents"]))
+        const currentUser = JSON.parse(localStorage.getItem("user"))
+        delete currentUser.token
         this.setState({
             data: this.props.match.params.id ? this.get(this.props.match.params.id) : currentUser
         })
@@ -75,6 +77,8 @@ class Profile extends Component {
     }
 
     render() {
+        console.log("I am here!")
+        console.log(this.state.data)
         const { classes } = this.props
         const {
             firstName, 
