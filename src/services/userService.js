@@ -6,7 +6,7 @@ import { authHeader } from '../helpers/auth-header'
 // const apiUrl = 'https://inaglobe-api.herokuapp.com'
 
 export const userService = {
-    login, signUp, updateProfile, logout, confirm, send_reset_email, reset_password
+    login, signUp, getProfile, updateProfile, deleteProfile, logout, confirm, send_reset_email, reset_password
 }
 
 function logout() {
@@ -20,7 +20,7 @@ function logout() {
         }
         console.log(config.apiUrl + '/users/tokens/')
         fetch(config.apiUrl + '/users/tokens/', requestOptions)
-            .then(response => console.log(response))
+            .then(handleResponse)
 
         localStorage.clear()
         console.log("Logged out")
@@ -45,21 +45,51 @@ function signUp(firstName, lastName, email, password, userType) {
     }
 
     return fetch(config.apiUrl + '/users/', requestOptions)
-        .then(response => response.statusText)
+        .then(handleResponse)
 }
 
-function updateProfile(userId, token, data) {
-    console.log(config.apiUrl + "/users/")
+function getProfile(userId) {
+    console.log(config.apiUrl + `/users/${userId}`)
+    const bearer = 'Bearer ' + JSON.parse(localStorage.getItem('user')).token
+    const requestOptions = {
+        method: "GET",
+        headers: {
+            'Authorisation': bearer
+        }
+    }
+
+    return fetch(config.apiUrl + `/users/${userId}/`, requestOptions)
+        .then(handleResponse)
+}
+
+function updateProfile(userId, data) {
+    console.log(config.apiUrl + `/users/${userId}`)
+    const bearer = 'Bearer ' + JSON.parse(localStorage.getItem('user')).token
     const requestOptions = {
         method: "PATCH",
         headers: {
+            "Authorisation": bearer,
             "Content-type": "application/json"
         },
         body: JSON.stringify(data)
     }
 
     return fetch(config.apiUrl + `/users/${userId}/`, requestOptions)
-        .then(response => response.statusText)
+        .then(handleResponse)
+}
+
+function deleteProfile(userId) {
+    console.log(config.apiUrl + `/users/${userId}`)
+    const bearer = 'Bearer ' + JSON.parse(localStorage.getItem('user')).token
+    const requestOptions = {
+        method: "DELETE",
+        headers: {
+            "Authorisation": bearer
+        }
+    }
+
+    return fetch(config.apiUrl + `/users/${userId}/`, requestOptions)
+        .then(handleResponse)
 }
 
 function login(email, password) {

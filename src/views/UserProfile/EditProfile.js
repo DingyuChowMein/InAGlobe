@@ -27,7 +27,7 @@ import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer
 // Importing the helper functions from other files
 import upload from "../../s3"
 import { generateId } from "../../helpers/utils"
-import { projectService } from "../../services/projectsService"
+import { userService } from "../../services/userService"
 import cloneDeep from "lodash.clonedeep"
 
 // Importing class's stylesheet
@@ -42,25 +42,12 @@ class EditProfile extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            data: {
-                userId: props.match.params.id,
-                firstName: "",
-                lastName: "",
-                userType: "", 
-                profilePic: "", 
-                email: "", 
-                location: "", 
-                shortDescription: "", 
-                longDescription: "",
-                documents: [],
-                images: []
-            },
+            data: JSON.parse(localStorage.getItem("user")),
             previewOpen: false,
             submissionOpen: false,
             submissionResult: "",
             submitting: false,
         }
-        this.initialValues = JSON.parse(localStorage.getItem("user"))
         registerPlugin(FilePondPluginImagePreview)
         registerPlugin(FilePondPluginFileValidateType)
     }
@@ -85,7 +72,7 @@ class EditProfile extends Component {
             modifiedData.documents = upload(modifiedData.documents, id + '/Documents')
             modifiedData.images = upload(modifiedData.images, id + '/Images')
             console.log(modifiedData)
-            projectService.postProject(modifiedData)
+            userService.updateProfile(modifiedData)
                 .then(response => {
                     console.log(response)
                     this.setState({
@@ -105,24 +92,12 @@ class EditProfile extends Component {
 
     resetData = () => {
         this.setState({
-
+            data: JSON.parse(localStorage.getItem("user"))
         })
     }
 
     render() {
         const { classes } = this.props
-        const { 
-            userid, 
-            firstname, 
-            lastname, 
-            permissions, 
-            profile_picture, 
-            email, 
-            location, 
-            short_description, 
-            long_description, 
-            album 
-        } = JSON.parse(localStorage.getItem("user"))
 
         return (
             <div>
@@ -137,7 +112,7 @@ class EditProfile extends Component {
                             </RegularButton>
                             <RegularButton
                                 color="primary"
-                                onClick={() => }
+                                onClick={() => null}
                             >
                                 Submit Changes
                             </RegularButton>

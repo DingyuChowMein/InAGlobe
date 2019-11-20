@@ -26,7 +26,7 @@ class ProjectList extends Component {
     componentDidMount() {
         projectService.getProjects()
             .then(data => {
-                console.log(data);
+                console.log(data)
                 data.projects.forEach(project => project.status = (project.status === 0 ? "Needs Approval" : "Approved"))
                 this.setState({
                     projects: data.projects

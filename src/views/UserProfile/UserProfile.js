@@ -22,24 +22,27 @@ import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer
 import styles from "../../assets/jss/views/userProfileStyle"
 
 import exampleProfile from "../../assets/data/UserProfileData"
+import { userService } from "../../services/userService"
+import pick from "lodash.pick"
 
 class Profile extends Component {
     constructor(props) {
         super(props)
         this.state = {
             width: window.innerWidth,
-            // data: {
-            //     userId: props.match.params.id,
-            //     firstName: "",
-            //     lastName: "",
-            //     userType: "", 
-            //     profilePic: "", 
-            //     email: "", 
-            //     location: "", 
-            //     shortDescription: "", 
-            //     longDescription: "", 
-            //     album: []
-            // }
+            data: {
+                userId: "",
+                firstName: "",
+                lastName: "",
+                userType: "", 
+                profilePic: "", 
+                email: "", 
+                location: "", 
+                shortDescription: "", 
+                longDescription: "", 
+                picture: [],
+                documents: []
+            }
         }
         this.albumList = null
     }
@@ -49,9 +52,23 @@ class Profile extends Component {
             width: window.innerWidth
         })
     }
+
+    get = (id) => {
+        userService.getProfile(id)
+            .then(data => {
+                console.log(data)
+                return data
+            })
+            .catch(console.log)
+    }
+
     componentDidMount() {
         window.addEventListener('resize', this.updateDimensions)
         if (this.list) this.list.scrollTo(0)
+        const currentUser = pick(JSON.parse(localStorage.getItem("user"), ["userId", "firstName", "lastName", "userType", "profilePic", "email", "location", "shortDescription", "longDescription"]))
+        this.setState({
+            data: this.props.match.params.id ? this.get(this.props.match.params.id) : currentUser
+        })
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateDimensions)
@@ -59,8 +76,7 @@ class Profile extends Component {
 
     render() {
         const { classes } = this.props
-        const { 
-            userid, 
+        const {
             firstname, 
             lastname, 
             permissions, 
@@ -70,7 +86,7 @@ class Profile extends Component {
             short_description, 
             long_description, 
             album 
-        } = JSON.parse(localStorage.getItem("user"))
+        } = this.state.data
 
         let userTypeText
         switch (permissions) {
@@ -226,7 +242,6 @@ class Profile extends Component {
                         :
                         null
                     }
-                    
                 </Grid>
             </ResponsiveDrawer>
         )
