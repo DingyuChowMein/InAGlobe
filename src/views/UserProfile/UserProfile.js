@@ -77,8 +77,6 @@ class Profile extends Component {
     }
 
     render() {
-        console.log("I am here!")
-        console.log(this.state.data)
         const { classes } = this.props
         const {
             firstName, 
