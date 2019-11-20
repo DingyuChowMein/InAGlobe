@@ -13,7 +13,7 @@ def verify_password(email, password):
     # email unique so there can only be one
     user = User.query.filter_by(email=email).first()
     if user is None:
-        return abort(404, 'User does not exist!')
+        return abort(404, 'Incorrect email!')
     if not user.confirmed:
         return abort(500, 'User is not verified!')
     g.current_user = user
