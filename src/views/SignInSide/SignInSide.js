@@ -66,7 +66,9 @@ class SignInSide extends Component {
                     })
                 } else {
                     this.props.history.push("/main")
-                    this.state.loginFailed = false
+                    this.setState({
+                        loginFailed: false
+                    })
                 }
             })
             .catch(err => {

@@ -34,6 +34,19 @@ const styles = {
         flexWrap: 'nowrap',
         // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
         transform: 'translateZ(0)',
+    },
+    scrollViewImage: {
+        width: "300px", 
+        height: "200px", 
+        marginRight: "20px"
+    },
+    editProfile: {
+        color: "grey",
+        marginRight: "20px"
+    },
+    avatar: {
+        height: "250px", 
+        width: "250px"
     }
 
 }

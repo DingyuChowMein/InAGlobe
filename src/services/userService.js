@@ -54,7 +54,7 @@ function getProfile(userId) {
     const requestOptions = {
         method: "GET",
         headers: {
-            'Authorisation': bearer
+            'Authorization': bearer
         }
     }
 
@@ -68,7 +68,7 @@ function updateProfile(userId, data) {
     const requestOptions = {
         method: "PATCH",
         headers: {
-            "Authorisation": bearer,
+            "Authorization": bearer,
             "Content-type": "application/json"
         },
         body: JSON.stringify(data)
@@ -84,7 +84,7 @@ function deleteProfile(userId) {
     const requestOptions = {
         method: "DELETE",
         headers: {
-            "Authorisation": bearer
+            "Authorization": bearer
         }
     }
 
@@ -149,6 +149,7 @@ function send_reset_email(email) {
 }
 
 function handleResponse(response) {
+    console.log(response)
     return response.text().then(text => {
         const data = text && JSON.parse(text)
         if (!response.ok) {

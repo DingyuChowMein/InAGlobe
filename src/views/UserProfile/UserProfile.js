@@ -34,17 +34,17 @@ class Profile extends Component {
                 userId: "",
                 firstName: "",
                 lastName: "",
-                userType: "", 
-                profilePic: "", 
+                permissions: null, 
+                profilePicture: "", 
                 email: "", 
                 location: "", 
                 shortDescription: "", 
                 longDescription: "", 
-                picture: [],
-                documents: []
+                pictures: null,
+                documents: null
             }
         }
-        this.albumList = null
+        this.pictureList = null
     }
 
     updateDimensions = () => {
@@ -64,8 +64,8 @@ class Profile extends Component {
 
     componentDidMount() {
         window.addEventListener('resize', this.updateDimensions)
-        if (this.list) this.list.scrollTo(0)
-        const currentUser = pick(JSON.parse(localStorage.getItem("user"), ["userId", "firstName", "lastName", "userType", "profilePic", "email", "location", "shortDescription", "longDescription"]))
+        if (this.pictureList) this.pcitureList.scrollTo(0)
+        const currentUser = pick(JSON.parse(localStorage.getItem("user"), ["userId", "firstName", "lastName", "permissions", "profilePicture", "email", "location", "shortDescription", "longDescription", "pictures", "documents"]))
         this.setState({
             data: this.props.match.params.id ? this.get(this.props.match.params.id) : currentUser
         })
@@ -77,15 +77,16 @@ class Profile extends Component {
     render() {
         const { classes } = this.props
         const {
-            firstname, 
-            lastname, 
+            firstName, 
+            lastName, 
             permissions, 
-            profile_picture, 
+            profilePicture, 
             email, 
             location, 
-            short_description, 
-            long_description, 
-            album 
+            shortDescription, 
+            longDescription, 
+            pictures,
+            documents 
         } = this.state.data
 
         let userTypeText
@@ -107,16 +108,16 @@ class Profile extends Component {
         }
 
         var scrollMenu = null
-        if (album) {
+        if (pictures) {
             scrollMenu = (
                 <ScrollMenu 
-                    ref={element => this.albumList = element}
-                    data={album.map((pic, index) => (
+                    ref={element => this.pictureList = element}
+                    data={pictures.map((pic, index) => (
                             <img
                                 key={index}
                                 alt={`Album Data ${index}`}
                                 src={pic}
-                                style={{ width: "300px", height: "200px", marginRight: "20px" }}
+                                className={classes.scrollViewImage}
                             />
                     ))}
                     arrowLeft={
@@ -156,7 +157,7 @@ class Profile extends Component {
                             >
                                 <Create fontSize="medium" />
                             </IconButton>
-                            <Typography component="h5" variant="h5" style={{ color: "grey", marginRight: "20px" }}>
+                            <Typography component="h5" variant="h5" className={classes.editProfile}>
                                 {":Edit Profile"}
                             </Typography>
                         </Grid>
@@ -164,13 +165,13 @@ class Profile extends Component {
                     <Grid item xs={12} className={classes.centering}>
                         <Avatar 
                             alt="Profile Picture"
-                            src={profile_picture}
-                            style={{ height: "250px", width: "250px" }}
+                            src={profilePicture}
+                            className={classes.avatar}
                         />
                     </Grid>
                     <Grid item xs={12} className={classes.centering}>
                         <Typography component="h3" variant="h2">
-                            {`${firstname} ${lastname}`}
+                            {`${firstName} ${lastName}`}
                         </Typography>
                     </Grid>
                     <Grid item xs={12} className={classes.leftAlign}>
@@ -191,7 +192,7 @@ class Profile extends Component {
                             {location}
                         </Typography>
                         <Link 
-                            href={`https://www.google.com/maps/search/${location.replace(" ", "+")}`}
+                            href={`https://www.google.com/maps/search/${location ? location.replace(" ", "+") : ""}`}
                             className={classes.mapsLinkIcon}
                         >
                             <LocationOn />
@@ -204,7 +205,7 @@ class Profile extends Component {
                             </Typography>
                             <br />
                             <Typography component="span" variant="body1">
-                                {short_description}
+                                {shortDescription}
                             </Typography>
                         </div>
                     </Grid>
@@ -215,11 +216,11 @@ class Profile extends Component {
                             </Typography>
                             <br />
                             <Typography component="span" variant="body1">
-                                {long_description}
+                                {longDescription}
                             </Typography>
                         </div>
                     </Grid>
-                    {album 
+                    {pictures 
                         ? 
                         <Grid item xs={12} className={classes.leftAlign}>
                             <div>

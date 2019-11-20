@@ -271,15 +271,15 @@ def get_user(identifier):
             images_list.append(f.link)
 
     return {
-               'firstname': user.first_name,
-               'lastname': user.last_name,
+               'firstName': user.first_name,
+               'lastName': user.last_name,
                'permissions': user.get_permissions(),
-               'userid': user.get_id(),
-               'profile_picture': user.profile_picture,
+               'userId': user.get_id(),
+               'profilePicture': user.profile_picture,
                'location': user.location,
                'email': user.email,
-               'short_description': user.short_description,
-               'long_description': user.long_description,
+               'shortDescription': user.short_description,
+               'longDescription': user.long_description,
                "documents": documents_list,
                "images": images_list,
            }, 200
