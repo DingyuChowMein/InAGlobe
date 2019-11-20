@@ -29,26 +29,13 @@ def create_app():
     CORS(app)
     app.redis = Redis.from_url(app.config['REDIS_URL'])
 
-    from .routes import (
-        get_projects, upload_project, approve_project,
-        upload_checkpoint,
-        get_users, create_user, confirm_email, confirm_reset_password_token,
-        reset_password, send_password_reset_email,
-        get_dashboard_projects, select_project,
-        get_joining_requests, approve_project_join,
-        delete_project, update_project
-    )
+    from .projects import (get_projects, upload_project, approve_project, upload_checkpoint, get_dashboard_projects,
+                           select_project, get_joining_requests, approve_project_join, delete_project, update_project,
+                           project_stream)
+    from .users import (get_users, create_user, confirm_email, confirm_reset_password_token, reset_password,
+                        send_password_reset_email)
     from .comments import add_comment, get_comments, delete_comment, comment_stream
     from .tokens import get_token, revoke_token
-
-    # # Override pre-flight request to fix CORS issue
-    # class CORS(object):
-    #     def options(self, *args):
-    #         response = make_response()
-    #         response.headers.add("Access-Control-Allow-Origin", "*")
-    #         response.headers.add('Access-Control-Allow-Headers', "*")
-    #         response.headers.add('Access-Control-Allow-Methods', "*")
-    #         return response
 
     # Define api
     class Approvals(Resource):
@@ -93,6 +80,20 @@ def create_app():
             response, code = update_project(request.get_json(), identifier)
             return make_response(response, code)
 
+    class ProjectStream(Resource):
+        def __init__(self):
+            # This works if a different projecttream instance is generated for each unique identifier
+            self.run_stream = True
+
+        @cross_origin()
+        def get(self, identifier):
+            app.logger.info('comment stream MARK')
+            return Response(project_stream(app, identifier, self.run_stream), mimetype='text/event-stream')
+
+        def delete(self):
+            # TODO handle closing the event stream
+            self.run_stream = False
+
     class Comments(Resource):
         @cross_origin()
         def get(self, identifier):
@@ -112,19 +113,18 @@ def create_app():
             return make_response(response, code)
 
     class CommentStream(Resource):
-
         def __init__(self):
             # This works if a different commentStream instance is generated for each unique identifier
-            self.runstream = True
+            self.run_stream = True
 
         @cross_origin()
         def get(self, identifier):
             app.logger.info('comment stream MARK')
-            return Response(comment_stream(app, identifier, self.runstream), mimetype='text/event-stream')
+            return Response(comment_stream(app, identifier, self.run_stream), mimetype='text/event-stream')
 
         def delete(self):
             # TODO handle closing the event stream
-            self.runstream = False
+            self.run_stream = False
 
     class Users(Resource):
         def get(self):
@@ -179,5 +179,6 @@ def create_app():
     api.add_resource(Dashboard, '/dashboard/')
     api.add_resource(Checkpoints, '/checkpoint/<int:identifier>/')
     api.add_resource(CommentStream, '/comment-stream/<int:identifier>')
+    api.add_resource(ProjectStream, '/project-stream/<int:identifier>')
 
     return app
