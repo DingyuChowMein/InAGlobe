@@ -112,10 +112,18 @@ def create_app():
             return make_response(response, code)
 
     class CommentStream(Resource):
+
+        def __init__(self):
+            # This works if a different commentStream instance is generated for each unique identifier
+            self.runstream = True
+
         @cross_origin()
         def get(self, identifier):
             app.logger.info('comment stream MARK')
-            return Response(comment_stream(app, identifier), mimetype='text/event-stream')
+            return Response(comment_stream(app, identifier, self.runstream), mimetype='text/event-stream')
+
+        def delete(self):
+            self.runstream = False
 
     class Users(Resource):
         def get(self):

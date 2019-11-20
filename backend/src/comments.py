@@ -24,7 +24,7 @@ def add_comment(data, project_id):
         "date": comment.date_time.strftime("%Y-%m-%d %H:%M:%S")
     }
     response = {'message': 'Comment added!', 'comment': comment_json}
-    red.publish('comment{}'.format(project_id), '{}'.format(dumps(response)))
+    red.publish('comment{}'.format(project_id), dumps(response))
     g.current_user.comments.append(comment)
     db.session.commit()
     return response, 201
@@ -52,17 +52,27 @@ def delete_comment(comment_id):
     if comment is None:
         return {'message': 'Comment does not exist!'}, 404
     if comment in g.current_user.comments or g.current_user.is_admin():
+        comment_json = {
+            "commentId": comment.id,
+            "text": comment.text,
+            "ownerId": comment.owner_id,
+            "ownerFirstName": comment.owner_first_name,
+            "ownerLastName": comment.owner_last_name,
+            "date": comment.date_time.strftime("%Y-%m-%d %H:%M:%S")
+        }
+        response = {'message': 'Comment deleted!', 'comment': comment_json}
+        red.publish('comment{}'.format(comment.project_id), dumps(response))
         comment.delete()
-        return {'message': 'Comment deleted!'}, 200
+        return response, 200
     else:
         return {'message': 'Insufficient permissions!'}, 403
 
 
-def comment_stream(app, project_id):
+def comment_stream(app, project_id, runstream):
     pubsub = red.pubsub()
     pubsub.subscribe('comment{}'.format(project_id))
     app.logger.info('subscribed to comment{}'.format(project_id))
-    while True:
+    while runstream:
         for message in pubsub.listen():
             byte_data = message.get('data')
             try:

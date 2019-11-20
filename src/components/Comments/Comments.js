@@ -63,7 +63,9 @@ class Comments extends Component {
             console.log(v);
             if (v.message === 'Comment deleted!') {
                 const array = [...this.state.comments];
-                const index = array.indexOf(v.comment);
+                const index = array.findIndex(function(item){
+                    return item.commentId === v.comment.commentId
+                });
                 if (index !== -1) {
                     array.splice(index, 1);
                     console.log(array);
@@ -110,17 +112,6 @@ class Comments extends Component {
         commentsService.deleteComment(commentId)
             .then(response => {
                 console.log(response);
-                const array = [...this.state.comments];
-                const index = array.findIndex(function(item){
-                    return item.commentId === commentId
-                });
-                if (index !== -1) {
-                    array.splice(index, 1);
-                    console.log(array);
-                    this.setState({
-                        comments: array
-                    });
-                }
             })
             .catch(err => {
                 console.log(err)
