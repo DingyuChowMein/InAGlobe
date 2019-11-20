@@ -354,6 +354,18 @@ def update_user(data, user_id):
                     u.short_description = v
                 elif k == "longDescription":
                     u.long_description = v
+                elif k == "images":
+                    UserFile.query.filter(
+                        and_(UserFile.user_id == user_id, UserFile.type == FILE_TYPE['IMAGE'])).delete()
+                    for link in v:
+                        file = UserFile(user_id=user_id, link=link, type=FILE_TYPE['IMAGE'])
+                        file.save()
+                elif k == "documents":
+                    UserFile.query.filter(
+                        and_(UserFile.user_id == user_id, UserFile.type == FILE_TYPE['DOCUMENT'])).delete()
+                    for link in v:
+                        file = UserFile(user_id=user_id, link=link, type=FILE_TYPE['DOCUMENT'])
+                        file.save()
 
         db.session.commit()
         return {'message': 'Project updated!'}, 200
