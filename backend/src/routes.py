@@ -254,7 +254,7 @@ def get_users():
     return {'users': users_json}, 200
 
 
-# @token_auth.login_required
+@token_auth.login_required
 def get_user(identifier):
     user = User.query.filter_by(id=identifier).first()
     if user is None:
