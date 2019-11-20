@@ -134,7 +134,8 @@ def update_project(data, project_id):
         # }
 
         for k, v in data.items():
-            if k not in ['title', 'shortDescription', 'detailedDescription', 'location', 'organisationName', 'organisationLogo']:
+            if k not in ['title', 'shortDescription', 'detailedDescription', 'location', 'organisationName',
+                         'organisationLogo']:
                 return {'message': 'Bad request!'}, 400
             if v is not '':
                 if k == 'title':
@@ -251,6 +252,25 @@ def get_users():
     users = User.query.all()
     users_json = [{'Id': user.id, 'Email': user.email, 'UserType': user.user_type} for user in users]
     return {'users': users_json}, 200
+
+
+@token_auth.login_required
+def get_user(identifier):
+    user = User.query.filter_by(id=identifier).first()
+    if user is None:
+        return {'message': 'User does not exist!'}, 404
+
+    return {
+               'firstname': user.first_name,
+               'lastname': user.last_name,
+               'permissions': user.get_permissions(),
+               'userid': user.get_id(),
+               'profile_picture': user.profile_picture,
+               'location': user.location,
+               'email': user.email,
+               'short_description': user.short_description,
+               'long_description': user.long_description
+           }, 200
 
 
 def create_user(data):
