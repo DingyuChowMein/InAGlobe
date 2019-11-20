@@ -123,6 +123,7 @@ def create_app():
             return Response(comment_stream(app, identifier, self.runstream), mimetype='text/event-stream')
 
         def delete(self):
+            # TODO handle closing the event stream
             self.runstream = False
 
     class Users(Resource):
