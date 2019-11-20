@@ -32,6 +32,7 @@ USER_TYPE = {
     'STUDENT': 3
 }
 
+
 class Model:
     __table_args__ = {'extend_existing': True}
 
@@ -50,16 +51,17 @@ class Model:
 
 
 user_project_joining_table = db.Table('UserProjects', db.Model.metadata,
-    db.Column('user_id', db.Integer, ForeignKey('Users.id')),
-    db.Column('project_id', db.Integer, ForeignKey('Projects.id')),
-    db.Column('approved', db.Integer, default=0),
-    db.Column('date_time', db.DateTime, default=datetime.now())
-)
+                                      db.Column('user_id', db.Integer, ForeignKey('Users.id')),
+                                      db.Column('project_id', db.Integer, ForeignKey('Projects.id')),
+                                      db.Column('approved', db.Integer, default=0),
+                                      db.Column('date_time', db.DateTime, default=datetime.now())
+                                      )
 
 user_comment_joining_table = db.Table('UserComments', db.Model.metadata,
-    db.Column('user_id', db.Integer, ForeignKey('Users.id')),
-    db.Column('comment_id', db.Integer, ForeignKey('Comments.id'))
-)
+                                      db.Column('user_id', db.Integer, ForeignKey('Users.id')),
+                                      db.Column('comment_id', db.Integer, ForeignKey('Comments.id'))
+                                      )
+
 
 # checkpoint_project_joining_table = db.Table('CheckpointProjects', db.Model.metadata,
 #     db.Column('project_id', db.Integer, ForeignKey('Projects.id')),
@@ -87,6 +89,14 @@ class File(Model, db.Model):
     type = db.Column(db.Integer, default=FILE_TYPE['DOCUMENT'])
 
 
+class UserFile(Model, db.Model):
+    __tablename__ = 'UserFiles'
+
+    user_id = db.Column(db.Integer, ForeignKey('Users.id'))
+    link = db.Column(db.String(LINK_FIELD_LENGTH), nullable=False)
+    type = db.Column(db.Integer, default=FILE_TYPE['DOCUMENT'])
+
+
 class User(Model, db.Model):
     __tablename__ = 'Users'
 
@@ -102,14 +112,14 @@ class User(Model, db.Model):
     token_expiration = db.Column(db.DateTime)
     user_type = db.Column(db.Integer, default=USER_TYPE['STUDENT'])
     projects = db.relationship('Project', secondary=user_project_joining_table,
-                               backref=db.backref('users', lazy='dynamic'),  uselist=True)
+                               backref=db.backref('users', lazy='dynamic'), uselist=True)
 
     comments = db.relationship('Comment', secondary=user_comment_joining_table,
                                backref=db.backref('users', lazy='dynamic'), uselist=True)
 
     confirmed = db.Column(db.Boolean, nullable=False, default=False)
     confirmed_on = db.Column(db.DateTime, nullable=True)
-    
+
     def hash_password(self, password):
         self.password_hash = generate_password_hash(password, method='sha256')
 
@@ -167,6 +177,7 @@ class Comment(Model, db.Model):
     @staticmethod
     def get_all_comments_for_project_id(proj_id):
         return File.query.filter_by(project_id=proj_id).all()
+
 
 class Checkpoint(Model, db.Model):
     __tablename__ = 'Checkpoints'

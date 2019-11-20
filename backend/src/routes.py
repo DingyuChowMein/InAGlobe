@@ -4,7 +4,7 @@ from flask import g, abort, render_template
 from . import db
 from .auth import token_auth, permission_required
 from .models import Project, File, User, Comment, Checkpoint, CheckpointFile, USER_TYPE, FILE_TYPE, PROJECT_STATUS, \
-    user_project_joining_table
+    user_project_joining_table, UserFile
 from .tokens import generate_confirmation_token, confirm_token
 from .emails import send_email
 from collections import defaultdict
@@ -254,11 +254,21 @@ def get_users():
     return {'users': users_json}, 200
 
 
-@token_auth.login_required
+# @token_auth.login_required
 def get_user(identifier):
     user = User.query.filter_by(id=identifier).first()
     if user is None:
         return {'message': 'User does not exist!'}, 404
+
+    files = UserFile.query.filter_by(user_id=identifier).all()
+    documents_list = []
+    images_list = []
+
+    for f in files:
+        if f.type == FILE_TYPE['DOCUMENT']:
+            documents_list.append(f.link)
+        elif f.type == FILE_TYPE['IMAGE']:
+            images_list.append(f.link)
 
     return {
                'firstname': user.first_name,
@@ -269,7 +279,9 @@ def get_user(identifier):
                'location': user.location,
                'email': user.email,
                'short_description': user.short_description,
-               'long_description': user.long_description
+               'long_description': user.long_description,
+               "documents": documents_list,
+               "images": images_list,
            }, 200
 
 
