@@ -26,7 +26,8 @@ def create_app():
     from .routes import (
         get_projects, upload_project, approve_project,
         upload_checkpoint,
-        get_users, create_user, confirm_email, confirm_reset_password_token,
+        get_users, create_user, update_user, delete_user,
+        confirm_email, confirm_reset_password_token,
         reset_password, send_password_reset_email,
         add_comment, get_comments,
         get_dashboard_projects, select_project,
@@ -117,6 +118,14 @@ def create_app():
             response, code = create_user(request.get_json())
             return new_response(response, code)
 
+        def patch(self, identifier):
+            response, code = update_user(request.get_json(), identifier)
+            return new_response(response, code)
+
+        def delete(self, identifier):
+            response, code = delete_user(request.get_json(), identifier)
+            return new_response(response, code)
+
     class Checkpoints(Resource):
         def options(self):
             response = make_response()
@@ -174,7 +183,7 @@ def create_app():
     # Route classes to paths
     api.add_resource(Projects, '/projects/', '/projects/<int:identifier>/')
     api.add_resource(Comments, '/comments/', '/comments/<int:identifier>/')
-    api.add_resource(Users, '/users/')
+    api.add_resource(Users, '/users/', '/users/<int:identifier>/')
     api.add_resource(Tokens, '/users/tokens/')
     api.add_resource(Approvals, '/approve/')
     api.add_resource(JoiningApproval, '/joiningApprove/')

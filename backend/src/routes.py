@@ -293,6 +293,48 @@ def create_user(data):
         return abort(400, '{} not valid!'.format(e.__str__()))
 
 
+@token_auth.login_required
+@permission_required(USER_TYPE['STUDENT'])
+def update_user(data, user_id):
+    u = db.session.query(User).filter(User.id == user_id).first()
+    if u is None:
+        return {'message': 'User does not exist!'}, 404
+
+    if user_id == g.current_user.get_id():
+        if not data.items():
+            return {'message': 'No changes!'}, 204
+
+        for k, v in data.items():
+            if k == "userType":
+                return {"message": "Can't change the type of the user!"}, 204
+            if not v:
+                if k == "firstName":
+                    u.first_name = v
+                elif k == "lastName":
+                    u.last_name = v
+                elif k == "profilePic":
+                    u.profile_picture = v
+                elif k == "email":
+                    u.email = v
+                elif k == "location":
+                    u.location = v
+                elif k == "shortDescription":
+                    u.short_description = v
+                elif k == "longDescription":
+                    u.long_description = v
+
+        db.session.commit()
+        return {'message': 'Project updated!'}, 200
+    else:
+        return {'message': "User not allowed to change other user's profile"}, 403
+
+
+@token_auth.login_required
+@permission_required(USER_TYPE['ADMIN'])
+def delete_user(data, user_id):
+    pass
+
+
 def confirm_email(token):
     try:
         email = confirm_token(token)

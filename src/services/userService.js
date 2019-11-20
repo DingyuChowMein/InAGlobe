@@ -2,16 +2,16 @@ import config from '../config'
 import { authHeader } from '../helpers/auth-header'
 
 
-// const apiUrl = 'http://localhost:5000';
-// const apiUrl = 'https://inaglobe-api.herokuapp.com';
+// const apiUrl = 'http://localhost:5000'
+// const apiUrl = 'https://inaglobe-api.herokuapp.com'
 
 export const userService = {
-    login, signUp, logout, confirm, send_reset_email, reset_password
+    login, signUp, updateProfile, logout, confirm, send_reset_email, reset_password
 }
 
 function logout() {
     if (localStorage.getItem('user')) {
-        const bearer = 'Bearer ' + JSON.parse(localStorage.getItem('user')).token;
+        const bearer = 'Bearer ' + JSON.parse(localStorage.getItem('user')).token
         const requestOptions = {
             method: 'DELETE',
             headers: {
@@ -20,16 +20,16 @@ function logout() {
         }
         console.log(config.apiUrl + '/users/tokens/')
         fetch(config.apiUrl + '/users/tokens/', requestOptions)
-            .then(response => console.log(response));
+            .then(response => console.log(response))
 
-        localStorage.clear();
-        console.log("Logged out");
+        localStorage.clear()
+        console.log("Logged out")
     }
 }
 
 function signUp(firstName, lastName, email, password, userType) {
-    console.log(config.apiUrl + '/users/');
-    console.log(userType);
+    console.log(config.apiUrl + '/users/')
+    console.log(userType)
     const requestOptions = {
         method: 'POST',
         headers: {
@@ -48,8 +48,22 @@ function signUp(firstName, lastName, email, password, userType) {
         .then(response => response.statusText)
 }
 
+function updateProfile(userId, token, data) {
+    console.log(config.apiUrl + "/users/")
+    const requestOptions = {
+        method: "PATCH",
+        headers: {
+            "Content-type": "application/json"
+        },
+        body: JSON.stringify(data)
+    }
+
+    return fetch(config.apiUrl + `/users/${userId}/`, requestOptions)
+        .then(response => response.statusText)
+}
+
 function login(email, password) {
-    console.log(config.apiUrl + '/users/tokens/');
+    console.log(config.apiUrl + '/users/tokens/')
 
     const requestOptions = {
         method: 'GET',
@@ -62,17 +76,17 @@ function login(email, password) {
         .then(handleResponse)
         .then(user => {
             if (user) {
-                localStorage.setItem('user', JSON.stringify(user));
+                localStorage.setItem('user', JSON.stringify(user))
             }
 
-            return user;
-        });
+            return user
+        })
 }
 
 function confirm(token) {
     const requestOptions = {
         method: 'GET',
-    };
+    }
 
     return fetch(`${config.apiUrl}/confirm/${token}/`, requestOptions)
         .then(handleResponse)
@@ -85,7 +99,7 @@ function reset_password(token, password) {
             'Content-type': 'application/json'
         },
         body: JSON.stringify({"password": password})
-    };
+    }
 
     return fetch(`${config.apiUrl}/resetpassword/${token}/`, requestOptions)
         .then(handleResponse)
@@ -98,7 +112,7 @@ function send_reset_email(email) {
             'Content-type': 'application/json'
         },
         body: JSON.stringify({email: email})
-    };
+    }
 
     return fetch(`${config.apiUrl}/resetpassword/`, requestOptions)
         .then(handleResponse)
@@ -106,17 +120,17 @@ function send_reset_email(email) {
 
 function handleResponse(response) {
     return response.text().then(text => {
-        const data = text && JSON.parse(text);
+        const data = text && JSON.parse(text)
         if (!response.ok) {
             if (response.status === 401) {
-                logout();
-                // location.reload(true);
+                logout()
+                // location.reload(true)
             }
 
-            const error = (data && data.message) || response.statusText;
-            return Promise.reject(error);
+            const error = (data && data.message) || response.statusText
+            return Promise.reject(error)
         }
 
-        return data;
+        return data
     })
 }

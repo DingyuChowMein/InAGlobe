@@ -19,7 +19,7 @@ import {
 
 import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer'
 
-import styles from "../../assets/jss/views/profileStyle"
+import styles from "../../assets/jss/views/userProfileStyle"
 
 import exampleProfile from "../../assets/data/UserProfileData"
 
@@ -59,14 +59,18 @@ class Profile extends Component {
 
     render() {
         const { classes } = this.props
-        const { userid, firstname, lastname, permissions, profile_picture, email, location, short_description, long_description, album } = JSON.parse(localStorage.getItem("user"))
-
-        console.log(JSON.parse(localStorage.getItem("user")))
-
-        if (userid) {
-            console.log(userid)
-            console.log("It exists!")
-        }
+        const { 
+            userid, 
+            firstname, 
+            lastname, 
+            permissions, 
+            profile_picture, 
+            email, 
+            location, 
+            short_description, 
+            long_description, 
+            album 
+        } = JSON.parse(localStorage.getItem("user"))
 
         let userTypeText
         switch (permissions) {
@@ -126,7 +130,7 @@ class Profile extends Component {
         return (
             <ResponsiveDrawer name={"User Profile"}>
                 <Grid container>
-                    {userid
+                    {this.props.match.params.id
                         ? 
                         null
                         :
@@ -171,7 +175,7 @@ class Profile extends Component {
                             {location}
                         </Typography>
                         <Link 
-                            href={`https://www.google.com/maps/search/${exampleProfile.location.replace(" ", "+")}`}
+                            href={`https://www.google.com/maps/search/${location.replace(" ", "+")}`}
                             className={classes.mapsLinkIcon}
                         >
                             <LocationOn />
