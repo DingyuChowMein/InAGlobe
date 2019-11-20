@@ -1,37 +1,13 @@
-import os
-
-from flask import g, abort, render_template
-from . import db
+from flask import g, abort
+from . import db, red
 from .auth import token_auth, permission_required
-from .models import Project, File, User, Checkpoint, CheckpointFile, USER_TYPE, FILE_TYPE, PROJECT_STATUS, \
-    user_project_joining_table
-from .tokens import generate_confirmation_token, confirm_token
-from .emails import send_email
+from .models import (Project, File, User, Checkpoint, CheckpointFile, USER_TYPE, FILE_TYPE, PROJECT_STATUS,
+                     user_project_joining_table)
 from collections import defaultdict
 from sqlalchemy import or_, and_
-from datetime import datetime
 
+########################################################################################################################
 
-###############################################################################
-
-@token_auth.login_required
-def get_dashboard_projects():
-    if g.current_user.get_permissions() == USER_TYPE['HUMANITARIAN']:
-        return get_projects_helper(Project.query.filter(Project.project_owner == g.current_user.get_id()).all())
-    if g.current_user.get_permissions() == USER_TYPE['ADMIN']:
-        return get_projects_helper(Project.query.filter(Project.status == PROJECT_STATUS['NEEDS_APPROVAL']).all())
-    return get_projects_helper(g.current_user.projects)
-
-
-@token_auth.login_required
-def select_project(data):
-    project = Project.query.filter(Project.id == data['projectId']).first()
-    g.current_user.projects.append(project)
-    db.session.commit()
-    return {'message': 'Project selection requested!'}, 201
-
-
-###############################################################################
 
 @token_auth.login_required
 def get_projects():
@@ -121,20 +97,12 @@ def update_project(data, project_id):
     if p is None:
         return {'message': 'Project does not exist!'}, 404
     if p in g.current_user.projects or g.current_user.is_admin():
-        if data.items == {}:
+        if not data.items():
             return {'message': 'No changes!'}, 204
 
-        # project_fields = {
-        #     'title': p.title,
-        #     'shortDescription': p.short_description,
-        #     'detailedDescription': p.long_description,
-        #     'location': p.location,
-        #     'organisationName': p.organisation_name,
-        #     'organisationLogo': p.organisation_logo
-        # }
-
         for k, v in data.items():
-            if k not in ['title', 'shortDescription', 'detailedDescription', 'location', 'organisationName', 'organisationLogo']:
+            if k not in ['title', 'shortDescription', 'detailedDescription', 'location', 'organisationName',
+                         'organisationLogo']:
                 return {'message': 'Bad request!'}, 400
             if v is not '':
                 if k == 'title':
@@ -154,6 +122,31 @@ def update_project(data, project_id):
         return {'message': 'Project updated!'}, 200
     else:
         return {'message': 'Insufficient permissions!'}, 403
+
+
+########################################################################################################################
+# Project Dashboard
+
+
+@token_auth.login_required
+def get_dashboard_projects():
+    if g.current_user.get_permissions() == USER_TYPE['HUMANITARIAN']:
+        return get_projects_helper(Project.query.filter(Project.project_owner == g.current_user.get_id()).all())
+    if g.current_user.get_permissions() == USER_TYPE['ADMIN']:
+        return get_projects_helper(Project.query.filter(Project.status == PROJECT_STATUS['NEEDS_APPROVAL']).all())
+    return get_projects_helper(g.current_user.projects)
+
+
+@token_auth.login_required
+def select_project(data):
+    project = Project.query.filter(Project.id == data['projectId']).first()
+    g.current_user.projects.append(project)
+    db.session.commit()
+    return {'message': 'Project selection requested!'}, 201
+
+
+########################################################################################################################
+# Project Checkpoints
 
 
 @token_auth.login_required
@@ -191,6 +184,10 @@ def upload_checkpoint(data, project_id):
         checkpoint_file.save()
 
     return {'message': 'Checkpoint added!'}, 201
+
+
+########################################################################################################################
+# Project Approval
 
 
 @token_auth.login_required
@@ -245,102 +242,26 @@ def get_joining_requests():
     return {"requests": requests_json}, 200
 
 
+########################################################################################################################
+# Project Stream
+
 @token_auth.login_required
-@permission_required(USER_TYPE['ADMIN'])
-def get_users():
-    users = User.query.all()
-    users_json = [{'Id': user.id, 'Email': user.email, 'UserType': user.user_type} for user in users]
-    return {'users': users_json}, 200
+def project_stream(app, project_id, run_stream):
+    pub_sub = red.pubsub()
+    pub_sub.subscribe('project{}'.format(project_id))
+    app.logger.info('subscribed to project{}'.format(project_id))
+    while run_stream:
+        for message in pub_sub.listen():
+            byte_data = message.get('data')
+            try:
+                string_data = byte_data.decode('utf-8')
+                app.logger.info(string_data)
+                yield 'event: projectstream\ndata: {}\n\n'.format(string_data)
+            except (UnicodeDecodeError, AttributeError):
+                pass
 
 
-def create_user(data):
-    try:
-        if not data['email']:
-            raise ValueError('email')
-        if not data['firstName']:
-            raise ValueError('name')
-        if not data['lastName']:
-            raise ValueError('surname')
-        if not data['userType'] in USER_TYPE:
-            raise ValueError('user type')
-        if not data['password'] or len(data['password']) < 8:
-            raise ValueError('password')
-
-        if data['userType'] == 'ADMIN':
-            return {'message': 'Not allowed!'}, 403
-
-        new_user = User(
-            email=data['email'],
-            first_name=data['firstName'],
-            last_name=data['lastName'],
-            user_type=USER_TYPE[data['userType']]
-        )
-
-        new_user.hash_password(data['password'])
-        new_user.save()
-
-        token = generate_confirmation_token(new_user.email)
-        confirm_url = os.environ['SITE_URL'] + f"login/confirm/{token}"
-        html = render_template('confirm_email.html', confirm_url=confirm_url)
-        subject = "Please confirm your email for Inaglobe"
-        send_email(new_user.email, subject, html)
-
-        return {'message': 'User created!'}, 201
-
-    except ValueError as e:
-        return abort(400, 'Bad {} provided!'.format(e.__str__()))
-    except Exception as e:
-        return abort(400, '{} not valid!'.format(e.__str__()))
-
-
-def confirm_email(token):
-    try:
-        email = confirm_token(token)
-    except:
-        return {'message': 'The confirmation link is invalid or has expired'}, 404
-
-    user = User.query.filter_by(email=email).first_or_404()
-    if user.confirmed:
-        return {'message': 'The confirmation link is invalid or has expired'}, 200
-    else:
-        user.confirmed = True
-        user.confirmed_on = datetime.now()
-        user.save()
-    return {'message': 'You have confirmed your account!'}, 200
-
-
-def confirm_reset_password_token(token):
-    try:
-        email = confirm_token(token)
-        user = User.query.filter_by(email=email).first_or_404()
-    except:
-        return {'message': 'The reset password link is invalid or has expired'}, 404
-
-
-def send_password_reset_email(data):
-    email = data['email']
-    token = generate_confirmation_token(email)
-    confirm_url = os.environ['SITE_URL'] + f"login/resetpassword/{token}"
-    html = render_template('reset_password.html', confirm_url=confirm_url)
-    subject = "Please reset your password"
-    send_email(email, subject, html)
-    return {'message': 'Email sent!'}, 200
-
-
-def reset_password(token, data):
-    try:
-        email = confirm_token(token)
-    except:
-        return {'message': 'The confirmation link is invalid or has expired'}, 404
-
-    if not data['password'] or len(data['password']) < 8:
-        raise ValueError('password')
-
-    user = User.query.filter_by(email=email).first_or_404()
-    user.hash_password(data['password'])
-    user.save()
-
-    return {'message': 'Your password has been reset!'}, 200
+########################################################################################################################
 
 
 def get_projects_helper(projects):
