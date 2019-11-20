@@ -4,7 +4,7 @@ from flask import g, abort, render_template
 from . import db
 from .auth import token_auth, permission_required
 from .models import Project, File, User, Comment, Checkpoint, CheckpointFile, USER_TYPE, FILE_TYPE, PROJECT_STATUS, \
-    user_project_joining_table
+    user_project_joining_table, UserFile
 from .tokens import generate_confirmation_token, confirm_token
 from .emails import send_email
 from collections import defaultdict
@@ -134,7 +134,8 @@ def update_project(data, project_id):
         # }
 
         for k, v in data.items():
-            if k not in ['title', 'shortDescription', 'detailedDescription', 'location', 'organisationName', 'organisationLogo']:
+            if k not in ['title', 'shortDescription', 'detailedDescription', 'location', 'organisationName',
+                         'organisationLogo']:
                 return {'message': 'Bad request!'}, 400
             if v is not '':
                 if k == 'title':
@@ -253,6 +254,37 @@ def get_users():
     return {'users': users_json}, 200
 
 
+@token_auth.login_required
+def get_user(identifier):
+    user = User.query.filter_by(id=identifier).first()
+    if user is None:
+        return {'message': 'User does not exist!'}, 404
+
+    files = UserFile.query.filter_by(user_id=identifier).all()
+    documents_list = []
+    images_list = []
+
+    for f in files:
+        if f.type == FILE_TYPE['DOCUMENT']:
+            documents_list.append(f.link)
+        elif f.type == FILE_TYPE['IMAGE']:
+            images_list.append(f.link)
+
+    return {
+               'firstname': user.first_name,
+               'lastname': user.last_name,
+               'permissions': user.get_permissions(),
+               'userid': user.get_id(),
+               'profile_picture': user.profile_picture,
+               'location': user.location,
+               'email': user.email,
+               'short_description': user.short_description,
+               'long_description': user.long_description,
+               "documents": documents_list,
+               "images": images_list,
+           }, 200
+
+
 def create_user(data):
     try:
         if not data['email']:
@@ -322,6 +354,18 @@ def update_user(data, user_id):
                     u.short_description = v
                 elif k == "longDescription":
                     u.long_description = v
+                elif k == "images":
+                    UserFile.query.filter(
+                        and_(UserFile.user_id == user_id, UserFile.type == FILE_TYPE['IMAGE'])).delete()
+                    for link in v:
+                        file = UserFile(user_id=user_id, link=link, type=FILE_TYPE['IMAGE'])
+                        file.save()
+                elif k == "documents":
+                    UserFile.query.filter(
+                        and_(UserFile.user_id == user_id, UserFile.type == FILE_TYPE['DOCUMENT'])).delete()
+                    for link in v:
+                        file = UserFile(user_id=user_id, link=link, type=FILE_TYPE['DOCUMENT'])
+                        file.save()
 
         db.session.commit()
         return {'message': 'Project updated!'}, 200
