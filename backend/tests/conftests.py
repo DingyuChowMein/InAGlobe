@@ -28,7 +28,7 @@ def app():
     os.environ['FLASK_ENV'] = 'testing'
     os.environ['SECURITY_PASSWORD_SALT'] = 'salty'
     os.environ['SITE_URL'] = 'localhost:3000/'
-    os.environ['REDIS_URL'] = 'redis://'
+    os.environ['REDIS_URL'] = 'redis://localhost:6379/0'
 
     # Set up fake redis server
     redis_client.from_custom_provider(MockRedis)
