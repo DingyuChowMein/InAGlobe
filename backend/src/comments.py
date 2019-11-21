@@ -94,3 +94,4 @@ def comment_stream(project_id):
             # every 45 seconds a new event/stream is set up between client and user
             if datetime.utcnow() > now + timedelta(seconds=45):
                 break
+    pub_sub.close()
