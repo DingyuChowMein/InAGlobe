@@ -12,15 +12,23 @@ import ProjectCard from "./ProjectCard"
 import config from '../../config'
 import { projectService } from "../../services/projectsService"
 
+import { EventSourcePolyfill } from 'event-source-polyfill';
+
+
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/projectListStyle"
 
 class ProjectList extends Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             projects: []
-        }
+        };
+        this.eventSource = new EventSourcePolyfill(config.apiUrl + '/project-stream/', {
+            headers: {
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('user')).token
+            }
+        });
     }
 
     componentDidMount() {
@@ -32,7 +40,28 @@ class ProjectList extends Component {
                     projects: data.projects
                 })
             })
-            .catch(console.log)
+            .catch(console.log);
+        this.eventSource.addEventListener('project-stream', (json) => {
+            const v = JSON.parse(json.data);
+            if (v.message === 'Project added to db!'){
+                this.setState({
+                    projects: this.state.projects.concat(v.project)
+                })
+            }
+            else if (v.message === 'Project updated!'){
+
+            }
+            else if (v.message === 'Project approved!'){
+
+            }
+            else if (v.message === 'Project disapproved!'){
+
+            }
+            else if (v.message === 'Project deleted!'){
+
+            }
+        });
+        this.eventSource.addEventListener('error', (err) => {console.log(err)})
     }
 
     render() {
