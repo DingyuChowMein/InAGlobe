@@ -12,7 +12,7 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     BUNDLE_ERRORS = True
     CORS_HEADERS = 'Content-Type'
-    REDIS_URL = os.environ['REDIS_URL'] or 'redis://'
+    REDIS_URL = os.environ['REDIS_URL']
 
     # mail settings
     MAIL_SERVER = 'smtp.googlemail.com'
