@@ -9,6 +9,37 @@ from datetime import datetime
 
 
 @token_auth.login_required
+def get_user(identifier):
+    user = User.query.filter_by(id=identifier).first()
+    if user is None:
+        return {'message': 'User does not exist!'}, 404
+
+    files = UserFile.query.filter_by(user_id=identifier).all()
+    documents_list = []
+    images_list = []
+
+    for f in files:
+        if f.type == FILE_TYPE['DOCUMENT']:
+            documents_list.append(f.link)
+        elif f.type == FILE_TYPE['IMAGE']:
+            images_list.append(f.link)
+
+    return {
+               'firstName': user.first_name,
+               'lastName': user.last_name,
+               'permissions': user.get_permissions(),
+               'userId': user.get_id(),
+               'profilePicture': user.profile_picture,
+               'location': user.location,
+               'email': user.email,
+               'shortDescription': user.short_description,
+               'longDescription': user.long_description,
+               "documents": documents_list,
+               "images": images_list,
+           }, 200
+
+
+@token_auth.login_required
 @permission_required(USER_TYPE['ADMIN'])
 def get_users():
     users = User.query.all()
@@ -54,6 +85,60 @@ def create_user(data):
         return abort(400, 'Bad {} provided!'.format(e.__str__()))
     except Exception as e:
         return abort(400, '{} not valid!'.format(e.__str__()))
+
+
+@token_auth.login_required
+@permission_required(USER_TYPE['STUDENT'])
+def update_user(data, user_id):
+    u = db.session.query(User).filter(User.id == user_id).first()
+    if u is None:
+        return {'message': 'User does not exist!'}, 404
+
+    if user_id == g.current_user.get_id():
+        if not data.items():
+            return {'message': 'No changes!'}, 204
+
+        for k, v in data.items():
+            if k == "userType":
+                return {"message": "Can't change the type of the user!"}, 204
+            if not v:
+                if k == "firstName":
+                    u.first_name = v
+                elif k == "lastName":
+                    u.last_name = v
+                elif k == "profilePic":
+                    u.profile_picture = v
+                elif k == "email":
+                    u.email = v
+                elif k == "location":
+                    u.location = v
+                elif k == "shortDescription":
+                    u.short_description = v
+                elif k == "longDescription":
+                    u.long_description = v
+                elif k == "images":
+                    UserFile.query.filter(
+                        and_(UserFile.user_id == user_id, UserFile.type == FILE_TYPE['IMAGE'])).delete()
+                    for link in v:
+                        file = UserFile(user_id=user_id, link=link, type=FILE_TYPE['IMAGE'])
+                        file.save()
+                elif k == "documents":
+                    UserFile.query.filter(
+                        and_(UserFile.user_id == user_id, UserFile.type == FILE_TYPE['DOCUMENT'])).delete()
+                    for link in v:
+                        file = UserFile(user_id=user_id, link=link, type=FILE_TYPE['DOCUMENT'])
+                        file.save()
+
+        db.session.commit()
+        return {'message': 'Project updated!'}, 200
+    else:
+        return {'message': "User not allowed to change other user's profile"}, 403
+
+
+@token_auth.login_required
+@permission_required(USER_TYPE['ADMIN'])
+def delete_user(data, user_id):
+    pass
 
 
 def confirm_email(token):
