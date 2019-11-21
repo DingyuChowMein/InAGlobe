@@ -3,13 +3,13 @@ import os
 from flask import Flask
 from flask_cors import CORS
 from flask_mail import Mail
+from flask_redis import FlaskRedis
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
-from redis import Redis, StrictRedis
 
 # initialise sql-alchemy
 db = SQLAlchemy()
-redis_client = StrictRedis()
+redis_client = FlaskRedis()
 mail = Mail()
 
 
@@ -20,7 +20,7 @@ def create_app():
     mail.init_app(app)
     api = Api(app)
     CORS(app)
-    app.redis = Redis.from_url(app.config['REDIS_URL'])
+    redis_client.init_app(app)
 
     from .routes import (
         Projects, ProjectStream,  Approvals, JoiningApproval, Dashboard, Checkpoints,
