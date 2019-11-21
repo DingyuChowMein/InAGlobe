@@ -7,10 +7,12 @@ import json
 
 sys.path.append('.')
 from base64 import b64encode
-from backend.src import create_app, db
+from backend.src import create_app, db, redis_client
 from backend.src.models import User
 from backend.src.tokens import generate_confirmation_token
 
+from flask_redis import FlaskRedis
+from mockredis import MockRedis
 
 @pytest.fixture
 def app():
@@ -27,6 +29,9 @@ def app():
     os.environ['SECURITY_PASSWORD_SALT'] = 'salty'
     os.environ['SITE_URL'] = 'localhost:3000/'
     os.environ['REDIS_URL'] = 'redis://localhost:6379/0'
+
+    # Set up fake redis server
+    redis_client.from_custom_provider(MockRedis)
 
     #create app
     app = create_app()
