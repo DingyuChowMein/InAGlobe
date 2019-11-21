@@ -11,8 +11,7 @@ from backend.src import create_app, db, redis_client
 from backend.src.models import User
 from backend.src.tokens import generate_confirmation_token
 
-from flask_redis import FlaskRedis
-from mockredis import MockRedis
+from pytest_mockredis.server import Redis as MockRedis
 
 @pytest.fixture
 def app():
