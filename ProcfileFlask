@@ -1,1 +1,1 @@
-web: gunicorn backend.run -k gevent
+web: gunicorn backend.run:app -k gevent
