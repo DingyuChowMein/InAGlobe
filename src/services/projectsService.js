@@ -1,10 +1,11 @@
 import config from "../config"
 
 function getProjects() {
-    const token = JSON.parse(localStorage.getItem('user')).token
-    const bearer = 'Bearer ' + token
+    const token = JSON.parse(localStorage.getItem('user')).token;
+    const bearer = 'Bearer ' + token;
 
     return fetch(`${config.apiUrl}/projects/`, {
+        mode: 'cors',
         method: 'get',
         headers: {
             'Authorization': bearer
@@ -13,9 +14,10 @@ function getProjects() {
 }
 
 function postProject(data) {
-    const token = JSON.parse(localStorage.getItem('user')).token
-    const bearer = 'Bearer ' + token
+    const token = JSON.parse(localStorage.getItem('user')).token;
+    const bearer = 'Bearer ' + token;
     return fetch(`${config.apiUrl}/projects/`, {
+        mode: 'cors',
         method: 'post',
         headers: {
             'Authorization': bearer,
@@ -27,4 +29,4 @@ function postProject(data) {
 
 export const projectService = {
     getProjects, postProject
-}
+};

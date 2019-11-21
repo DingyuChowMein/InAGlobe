@@ -49,6 +49,7 @@ class Comments extends Component {
             userId: JSON.parse(localStorage.getItem('user')).userid
         };
         this.eventSource = new EventSourcePolyfill(config.apiUrl + '/comment-stream/' + this.props.projectId, {
+            mode: 'cors',
             headers: {
                 'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('user')).token
             }
