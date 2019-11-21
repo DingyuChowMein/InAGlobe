@@ -31,7 +31,6 @@ class JoiningApproval(Resource):
 
 
 class Dashboard(Resource):
-    @cross_origin()
     def get(self):
         response, code = get_dashboard_projects()
         return make_response(response, code)

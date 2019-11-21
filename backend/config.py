@@ -11,7 +11,7 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     BUNDLE_ERRORS = True
-    CORS_HEADERS = 'Content-Type'
+    CORS_HEADERS = ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin', 'Access-Control-Allow-Credentials']
     REDIS_URL = os.environ['REDIS_URL']
 
     # mail settings
