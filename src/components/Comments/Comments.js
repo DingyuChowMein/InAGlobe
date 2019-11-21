@@ -1,7 +1,6 @@
 import React, {Component} from "react"
 import {confirmAlert} from 'react-confirm-alert'
 import Spinner from 'react-spinner-material'
-import { NativeEventSource, EventSourcePolyfill } from 'event-source-polyfill';
 
 import {
     withStyles,
@@ -32,6 +31,9 @@ import {commentsService} from "../../services/commentsService"
 
 import styles from "../../assets/jss/components/commentsStyle"
 import 'react-confirm-alert/src/react-confirm-alert.css'
+
+import { EventSourcePolyfill } from 'event-source-polyfill';
+
 
 class Comments extends Component {
 
