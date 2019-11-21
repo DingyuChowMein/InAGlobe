@@ -32,10 +32,13 @@ import {commentsService} from "../../services/commentsService"
 import styles from "../../assets/jss/components/commentsStyle"
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
+import { EventSourcePolyfill } from 'event-source-polyfill';
+
+
 class Comments extends Component {
 
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             text: "",
             dialogBoxOpened: false,
@@ -44,22 +47,46 @@ class Comments extends Component {
             comments: [],
             userType: JSON.parse(localStorage.getItem('user')).permissions,
             userId: JSON.parse(localStorage.getItem('user')).userid
-        }
+        };
+        this.eventSource = new EventSourcePolyfill(config.apiUrl + '/comment-stream/' + this.props.projectId, {
+            headers: {
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('user')).token
+            }
+        });
     }
 
     componentDidMount() {
-        setInterval(() => {
-            commentsService.getComments(this.props.projectId)
-                .then(c => c.json())
-                .then(json => {
-                        console.log(json)
-                        this.setState({
-                            comments: json.comments
-                        })
-                    }
-                )
-                .catch(err => console.log(err))
-        }, 3000)
+        commentsService.getComments(this.props.projectId)
+            .then(c => c.json())
+            .then(json => {
+                    console.log(json);
+                    this.setState({
+                        comments: json.comments
+                    })
+                })
+            .catch(err => console.log(err));
+        this.eventSource.addEventListener('commentstream', (json) => {
+            const v = JSON.parse(json.data);
+            console.log(v);
+            if (v.message === 'Comment deleted!') {
+                const array = [...this.state.comments];
+                const index = array.findIndex(function(item){
+                    return item.commentId === v.comment.commentId
+                });
+                if (index !== -1) {
+                    array.splice(index, 1);
+                    console.log(array);
+                    this.setState({
+                        comments: array
+                    });
+                }
+            } else if (v.message === 'Comment added!') {
+                this.setState({
+                    comments: this.state.comments.concat(v.comment)
+                })
+            }
+        });
+        this.eventSource.addEventListener('error', (err) => {console.log(err)})
     }
 
 
@@ -67,14 +94,14 @@ class Comments extends Component {
         this.setState({
             [e.target.id]: e.target.value
         })
-    }
+    };
 
     post = () => {
         const today = new Date()
         this.setState({
             postLoading: true,
             date: `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()}`
-        })
+        });
 
         commentsService.postComment(this.props.projectId, this.state.text)
             .then(response => response.json())
@@ -86,22 +113,22 @@ class Comments extends Component {
                 })
             })
             .catch(err => console.log(err))
-    }
+    };
 
     deleteComment = (commentId) => {
         commentsService.deleteComment(commentId)
             .then(response => {
-                console.log(response)
+                console.log(response);
             })
             .catch(err => {
                 console.log(err)
             })
 
-    }
+    };
 
     hasPermissions = (ownerId) => {
         return (this.state.userType === 0 || this.state.userId === ownerId)
-    }
+    };
 
     renderConfirmDialog = () => {
         return (
