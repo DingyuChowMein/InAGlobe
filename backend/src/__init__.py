@@ -19,7 +19,7 @@ def create_app():
     db.init_app(app)
     mail.init_app(app)
     api = Api(app)
-    CORS(app, origins=os.environ['SITE_URL'] + '*', supports_credentials=True)
+    CORS(app, origins=app.config['CORS_ORIGINS'], allow_headers=app.config['CORS_HEADERS'], supports_credentials=True)
     redis_client.init_app(app)
 
     from .routes import (
