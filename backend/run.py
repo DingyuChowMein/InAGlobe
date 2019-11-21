@@ -1,15 +1,22 @@
 import logging
-from src import create_app, db, red
+from .src import create_app, db, redis_client
 
 app = create_app()
 
-from src.models import Project, File, User, Comment
+from .src.models import Project, File, User, Comment
 
 
 # run flask shell
 @app.shell_context_processor
 def make_shell_context():
-    return {'db': db, 'red': red, 'Project': Project, 'File': File, 'User': User, 'Comment': Comment}
+    return {
+        'db': db,
+        'redis_client': redis_client,
+        'Project': Project,
+        'File': File,
+        'User': User,
+        'Comment': Comment
+    }
 
 
 if __name__ == "__main__":
