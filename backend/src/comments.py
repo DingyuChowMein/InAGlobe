@@ -1,5 +1,5 @@
-from flask import g
-from . import db, red
+from flask import g, stream_with_context, current_app as app
+from . import db, redis_client
 from .auth import token_auth
 from .models import Comment
 from json import dumps
@@ -15,6 +15,7 @@ def add_comment(data, project_id):
         owner_last_name=g.current_user.last_name
     )
     comment.save()
+    app.logger.info('comment posted')
     comment_json = {
         "commentId": comment.id,
         "text": comment.text,
@@ -24,7 +25,8 @@ def add_comment(data, project_id):
         "date": comment.date_time.strftime("%Y-%m-%d %H:%M:%S")
     }
     response = {'message': 'Comment added!', 'comment': comment_json}
-    red.publish('comment{}'.format(project_id), dumps(response))
+    app.logger.info('add comment published to channel comment{}'.format(project_id))
+    redis_client.publish('comment{}'.format(project_id), dumps(response))
     g.current_user.comments.append(comment)
     db.session.commit()
     return response, 201
@@ -43,6 +45,7 @@ def get_comments(project_id):
         "ownerLastName": comment.owner_last_name,
         "date": comment.date_time.strftime("%Y-%m-%d %H:%M:%S")
     } for comment in project_comments]
+    app.logger.info('getting comments')
     return {"comments": comments_json}, 200
 
 
@@ -61,24 +64,33 @@ def delete_comment(comment_id):
             "date": comment.date_time.strftime("%Y-%m-%d %H:%M:%S")
         }
         response = {'message': 'Comment deleted!', 'comment': comment_json}
-        red.publish('comment{}'.format(comment.project_id), dumps(response))
+        app.logger.info('delete comment published to channel comment{}'.format(comment.project_id))
+        redis_client.publish('comment{}'.format(comment.project_id), dumps(response))
         comment.delete()
+        app.logger.info('comment deleted')
         return response, 200
     else:
         return {'message': 'Insufficient permissions!'}, 403
 
 
+@stream_with_context
 @token_auth.login_required
-def comment_stream(app, project_id, run_stream):
-    pub_sub = red.pubsub()
+def comment_stream(project_id):
+    from datetime import datetime, timedelta
+    now = datetime.utcnow()
+    user = g.current_user
+    pub_sub = redis_client.pubsub()
+    app.logger.info('{0} subscribed to comment{1}'.format(user.email, project_id))
     pub_sub.subscribe('comment{}'.format(project_id))
-    app.logger.info('subscribed to comment{}'.format(project_id))
-    while run_stream:
-        for message in pub_sub.listen():
-            byte_data = message.get('data')
-            try:
-                string_data = byte_data.decode('utf-8')
-                app.logger.info(string_data)
-                yield 'event: commentstream\ndata: {}\n\n'.format(string_data)
-            except (UnicodeDecodeError, AttributeError):
-                pass
+    for message in pub_sub.listen():
+        byte_data = message.get('data')
+        try:
+            string_data = byte_data.decode('utf-8')
+            app.logger.info('streaming comment data to {}'.format(user.email))
+            yield 'event: commentstream\ndata: {}\n\n'.format(string_data)
+        except (UnicodeDecodeError, AttributeError):
+            pass
+        finally:
+            # every 45 seconds a new event/stream is set up between client and user
+            if datetime.utcnow() > now + timedelta(seconds=45):
+                break
