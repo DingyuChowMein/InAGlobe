@@ -62,17 +62,9 @@ class Projects(Resource):
 
 
 class ProjectStream(Resource):
-    def __init__(self):
-        # This works if a different projecttream instance is generated for each unique identifier
-        self.run_stream = True
-
     @cross_origin()
     def get(self):
         return Response(project_stream(app, self.run_stream), mimetype='text/event-stream')
-
-    def delete(self):
-        # TODO handle closing the event stream
-        self.run_stream = False
 
 
 class Comments(Resource):
@@ -94,18 +86,10 @@ class Comments(Resource):
 
 
 class CommentStream(Resource):
-    def __init__(self):
-        # This works if a different commentStream instance is generated for each unique identifier
-        self.run_stream = True
-
     @cross_origin()
     def get(self, identifier):
         app.logger.info('calling get comment-stream')
         return Response(comment_stream(identifier), mimetype='text/event-stream')
-
-    def delete(self):
-        # TODO handle closing the event stream
-        self.run_stream = False
 
 
 class Users(Resource):
