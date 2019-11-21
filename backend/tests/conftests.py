@@ -26,6 +26,7 @@ def app():
     os.environ['FLASK_ENV'] = 'testing'
     os.environ['SECURITY_PASSWORD_SALT'] = 'salty'
     os.environ['SITE_URL'] = 'localhost:3000/'
+    os.environ['REDIS_URL'] = 'redis://localhost:6379/0'
 
     #create app
     app = create_app()
@@ -109,4 +110,3 @@ class AuthActions(object):
 @pytest.fixture
 def auth(client):
     return AuthActions(client)
-
