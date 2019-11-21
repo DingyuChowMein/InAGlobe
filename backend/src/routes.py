@@ -45,18 +45,22 @@ class Dashboard(Resource):
 class Projects(Resource):
     @cross_origin()
     def get(self):
+        app.logger.info('calling get projects')
         response, code = get_projects()
         return make_response(response, code)
 
     def post(self):
+        app.logger.info('calling post comment')
         response, code = upload_project(request.get_json())
         return make_response(response, code)
 
     def delete(self, identifier):
+        app.logger.info('calling delete comment')
         response, code = delete_project(identifier)
         return make_response(response, code)
 
     def patch(self, identifier):
+        app.logger.info('calling patch comment')
         response, code = update_project(request.get_json(), identifier)
         return make_response(response, code)
 
@@ -64,7 +68,7 @@ class Projects(Resource):
 class ProjectStream(Resource):
     @cross_origin()
     def get(self):
-        return Response(project_stream(app, self.run_stream), mimetype='text/event-stream')
+        return Response(project_stream(), mimetype='text/event-stream')
 
 
 class Comments(Resource):

@@ -3,7 +3,7 @@ from .auth import token_auth, permission_required
 from .models import (
     Project, File, User, Checkpoint, CheckpointFile, USER_TYPE, FILE_TYPE, PROJECT_STATUS, user_project_joining_table
 )
-from flask import g, abort
+from flask import g, abort, stream_with_context, current_app as app
 from collections import defaultdict
 from json import dumps, loads
 from sqlalchemy import or_, and_
@@ -58,7 +58,7 @@ def upload_project(data):
             organisation_logo=data['organisationLogo']
         )
         project.save()
-
+        app.logger.info('project uploaded')
 
         # TODO exceptions for bad links
         if data.get("documents") is not None:
@@ -76,6 +76,7 @@ def upload_project(data):
         project_json = get_projects_helper([project])[0]
         response = {'message': 'Project added to db!', 'project': project_json}
 
+        app.logger.info('upload project published to channel projects')
         redis_client.publish('projects', dumps(response))
         return response, 201
     except ValueError as e:
@@ -93,6 +94,8 @@ def delete_project(project_id):
     if project in g.current_user.projects or g.current_user.is_admin():
         project_json = get_projects_helper([project])[0]
         response = {'message': 'Project deleted!', 'project': project_json}
+        app.logger.info('project deleted')
+        app.logger.info('delete project published to channel projects')
         redis_client.publish('projects', dumps(response))
         project.delete()
         return response, 200
@@ -128,9 +131,11 @@ def update_project(data, project_id):
                 if k == 'organisationLogo':
                     p.organisation_logo = v
 
+        app.logger.info('project updated')
         db.session.commit()
         project_json = get_projects_helper([p])[0]
         response = {'message': 'Project updated!', 'project': project_json}
+        app.logger.info('update project published to channel projects')
         redis_client.publish('projects', dumps(response))
         return response, 200
     else:
@@ -214,10 +219,12 @@ def approve_project(data):
         project.status = PROJECT_STATUS['APPROVED']
         message = "Project approved!"
     project.save()
+    app.logger.info('project approval')
 
     project_json = get_projects_helper([project])[0]
     response = {'message': message, 'project': project_json}
 
+    app.logger.info('project approval published to channel projects')
     redis_client.publish('projects', dumps(response))
 
     return response, 200
@@ -263,29 +270,34 @@ def get_joining_requests():
 ########################################################################################################################
 # Project Stream
 
+@stream_with_context
 @token_auth.login_required
-def project_stream(app, run_stream):
+def project_stream():
+    from datetime import datetime, timedelta
+    now = datetime.utcnow()
     pub_sub = redis_client.pubsub()
     pub_sub.subscribe('projects')
     app.logger.info('subscribed to projects')
-    while run_stream:
-        for message in pub_sub.listen():
-            byte_data = message.get('data')
-            try:
-                string_data = byte_data.decode('utf-8')
-                app.logger.info(string_data)
-                data = loads(string_data)
-                # We cant use g
-                user = g.current_user
-                # switch on approval status and user permission
-                if (
-                        data.get('project').get('status') == PROJECT_STATUS['APPROVED'] or
-                        user.is_admin() or
-                        data.get('project').get('id') in user.projects
-                ):
-                    yield 'event: project-stream\ndata: {}\n\n'.format(string_data)
-            except (UnicodeDecodeError, AttributeError):
-                pass
+    for message in pub_sub.listen():
+        byte_data = message.get('data')
+        try:
+            string_data = byte_data.decode('utf-8')
+            app.logger.info(string_data)
+            data = loads(string_data)
+            user = g.current_user
+            # switch on approval status and user permission
+            if (
+                    data.get('project').get('status') == PROJECT_STATUS['APPROVED'] or
+                    user.is_admin() or
+                    data.get('project').get('id') in user.projects or
+                    data.get('message') == 'Project disapproved!'
+            ):
+                yield 'event: project-stream\ndata: {}\n\n'.format(string_data)
+        except (UnicodeDecodeError, AttributeError):
+            pass
+        finally:
+            if datetime.utcnow() > now + timedelta(seconds=45):
+                break
 
 
 ########################################################################################################################
