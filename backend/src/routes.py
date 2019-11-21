@@ -1,4 +1,3 @@
-from flask_cors import cross_origin
 from flask import current_app as app, make_response, request, Response
 from flask_restful import Resource
 from .projects import (
@@ -43,7 +42,6 @@ class Dashboard(Resource):
 
 
 class Projects(Resource):
-    @cross_origin()
     def get(self):
         app.logger.info('calling get projects')
         response, code = get_projects()
@@ -66,13 +64,11 @@ class Projects(Resource):
 
 
 class ProjectStream(Resource):
-    @cross_origin()
     def get(self):
         return Response(project_stream(), mimetype='text/event-stream')
 
 
 class Comments(Resource):
-    @cross_origin()
     def get(self, identifier):
         app.logger.info('calling get comment')
         response, code = get_comments(identifier)
@@ -90,7 +86,6 @@ class Comments(Resource):
 
 
 class CommentStream(Resource):
-    @cross_origin()
     def get(self, identifier):
         app.logger.info('calling get comment-stream')
         return Response(comment_stream(identifier), mimetype='text/event-stream')
