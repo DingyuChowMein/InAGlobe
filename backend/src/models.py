@@ -32,6 +32,7 @@ USER_TYPE = {
     'STUDENT': 3
 }
 
+
 class Model:
     __table_args__ = {'extend_existing': True}
 
@@ -65,6 +66,7 @@ user_comment_joining_table = db.Table('UserComments', db.Model.metadata,
 #     db.Column('project_id', db.Integer, ForeignKey('Projects.id')),
 #     db.Column('checkpoint_id', db.Integer, ForeignKey('Checkpoints.id'))
 # )
+
 
 class Project(Model, db.Model):
     __tablename__ = 'Projects'
@@ -163,6 +165,7 @@ class Comment(Model, db.Model):
     @staticmethod
     def get_all_comments_for_project_id(proj_id):
         return File.query.filter_by(project_id=proj_id).all()
+
 
 class Checkpoint(Model, db.Model):
     __tablename__ = 'Checkpoints'
