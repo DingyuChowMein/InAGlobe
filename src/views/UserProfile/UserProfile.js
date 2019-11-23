@@ -57,7 +57,6 @@ class Profile extends Component {
         return userService.getProfile(id)
             .then(data => {
                 console.log(data)
-                console.log("It comes here!")
                 return data
             })
             .catch(console.log)
@@ -68,8 +67,9 @@ class Profile extends Component {
         if (this.pictureList) this.pcitureList.scrollTo(0)
         const currentUser = JSON.parse(localStorage.getItem("user"))
         delete currentUser.token
+        const otherUser = this.get(this.props.match.params.id)
         this.setState({
-            data: this.props.match.params.id ? this.get(this.props.match.params.id) : currentUser
+            data: this.props.match.params.id ? otherUser : currentUser
         })
     }
     componentWillUnmount() {
