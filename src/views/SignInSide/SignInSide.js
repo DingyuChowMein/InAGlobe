@@ -3,18 +3,18 @@ import React, { Component } from 'react'
 import { withRouter } from "react-router-dom"
 
 // Material UI libraries
-import { 
+import {
     withStyles,
     Avatar,
     Box,
     Checkbox,
     CircularProgress,
-    CssBaseline, 
-    FormControlLabel, 
+    CssBaseline,
+    FormControlLabel,
     Grid,
-    Link, 
-    Paper, 
-    TextField, 
+    Link,
+    Paper,
+    TextField,
     Typography,
 } from '@material-ui/core'
 
@@ -68,7 +68,7 @@ class SignInSide extends Component {
                     this.props.history.push("/main")
                     this.setState({
                         loginFailed: false
-                    })
+                    });
                 }
             })
             .catch(err => {

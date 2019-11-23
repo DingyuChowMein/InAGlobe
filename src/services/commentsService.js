@@ -13,6 +13,7 @@ function getComments(projectId) {
     var token = JSON.parse(localStorage.getItem('user')).token;
     var bearer = 'Bearer ' + token;
     const requestOptions = {
+        mode: 'cors',
         method: 'GET',
         headers: {
             'Authorization': bearer,
@@ -26,6 +27,7 @@ function postComment(projectId, commentText) {
     var token = JSON.parse(localStorage.getItem('user')).token;
     var bearer = 'Bearer ' + token;
     return fetch(config.apiUrl + `/comments/${projectId}/`, {
+        mode: 'cors',
         method: 'post',
         headers: {
             'Authorization': bearer,
@@ -40,6 +42,7 @@ function deleteComment(commentId) {
     const token = JSON.parse(localStorage.getItem('user')).token;
     const bearer = 'Bearer ' + token;
     return fetch(config.apiUrl + `/comments/${commentId}/`, {
+        mode: 'cors',
         method: 'delete',
         headers: {
             'Authorization': bearer,

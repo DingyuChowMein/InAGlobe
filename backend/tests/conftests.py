@@ -7,27 +7,29 @@ import json
 
 sys.path.append('.')
 from base64 import b64encode
-from backend.src import create_app, db
+from backend.src import create_app, db, redis_client
 from backend.src.models import User
 from backend.src.tokens import generate_confirmation_token
+from fakeredis import FakeRedis
 
 
 @pytest.fixture
 def app():
-    #create temporary testing database using sqlite
+    # Create temporary testing database using sqlite
     db_fd, db_path = tempfile.mkstemp()
     sqlite3.connect(db_path)
     os.environ['DATABASE_URL'] = 'sqlite:///' + db_path
 
-    #configure testing environment
+    # Configure testing environment
     os.environ['APP_SETTINGS'] = 'backend.config.TestingConfig'
     os.environ['APP_MAIL_USERNAME'] = 'fake_username@fake.email.com'
     os.environ['APP_MAIL_PASSWORD'] = '..'
     os.environ['FLASK_ENV'] = 'testing'
     os.environ['SECURITY_PASSWORD_SALT'] = 'salty'
     os.environ['SITE_URL'] = 'localhost:3000/'
+    os.environ['REDIS_URL'] = 'redis://localhost:6379/0'
 
-    #create app
+    # Create app
     app = create_app()
 
     # Yield the client after setup.
@@ -54,10 +56,13 @@ def app():
         academic.save()
         student.save()
 
+        # Set up fake redis server
+        redis_client.provider_class = FakeRedis()
+
     yield app
 
 
-    # teardown db
+    # Teardown db
     os.close(db_fd)
     os.unlink(db_path)
 
@@ -109,4 +114,3 @@ class AuthActions(object):
 @pytest.fixture
 def auth(client):
     return AuthActions(client)
-
