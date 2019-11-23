@@ -8,7 +8,7 @@ class Config(object):
     TESTING = False
     CSRF_ENABLED = True
     SECRET_KEY = os.environ['SECRET_KEY']
-    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+    SQLALCHEMY_DATABASE_URI = os.environ['NEW_DATABASE_URL']
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     BUNDLE_ERRORS = True
     CORS_ORIGINS = [os.environ['SITE_URL'], os.environ['SITE_URL'] + '*']
