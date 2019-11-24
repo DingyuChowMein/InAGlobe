@@ -98,6 +98,7 @@ def delete_project(project_id):
         app.logger.info('project deleted')
         app.logger.info('delete project published to channel projects')
         redis_client.publish('projects', dumps(response))
+        # TODO delete project comments.
         project.delete()
         return response, 200
     else:
