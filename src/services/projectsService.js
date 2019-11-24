@@ -27,6 +27,20 @@ function postProject(data) {
     })
 }
 
+function deleteProject(projectId) {
+    const token = JSON.parse(localStorage.getItem('user')).token;
+    const bearer = 'Bearer ' + token;
+    return fetch(config.apiUrl + `/projects/${projectId}/`, {
+        mode: 'cors',
+        method: 'delete',
+        headers: {
+            'Authorization': bearer,
+            'Content-type': 'application/json'
+        }
+    })
+
+}
+
 export const projectService = {
-    getProjects, postProject
+    getProjects, postProject, deleteProject
 };
