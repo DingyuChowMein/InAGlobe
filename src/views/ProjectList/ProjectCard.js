@@ -26,7 +26,7 @@ class ProjectCard extends Component {
         super(props);
         this.state = {
             userType: JSON.parse(localStorage.getItem('user')).permissions,
-            userId: JSON.parse(localStorage.getItem('user')).userid,
+            userId: JSON.parse(localStorage.getItem('user')).userId,
             projectId: this.props.data.id,
             dialogBoxOpened: false
         };
@@ -40,7 +40,6 @@ class ProjectCard extends Component {
     }
 
     deleteProject = (projectId) => {
-        console.log(projectId);
         projectService.deleteProject(projectId)
             .then(response => {
                 console.log(response);
