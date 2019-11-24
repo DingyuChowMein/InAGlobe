@@ -2,7 +2,15 @@
 import React, { Component } from 'react'
 
 // Material UI libraries
-import { withStyles } from '@material-ui/core'
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle, IconButton,
+    withStyles
+} from '@material-ui/core'
 
 // Imports of different components in project
 import AddCheckpointModal from "../AddCheckpoint/AddCheckpoint"
@@ -16,24 +24,28 @@ import { commentsService } from "../../services/commentsService"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/proposalMainPageStyle"
+import {projectService} from "../../services/projectsService";
+import {Close} from "@material-ui/icons";
 
 class ProposalMainPage extends Component {
 
     constructor(props) {
-        super(props)
-        const userType = JSON.parse(localStorage.getItem('user')).permissions
-        const projectData = JSON.parse(localStorage.getItem(`proposalPage/${this.props.match.params.id}`))
-        console.log(projectData)
+        super(props);
+        const userType = JSON.parse(localStorage.getItem('user')).permissions;
+        const projectData = JSON.parse(localStorage.getItem(`proposalPage/${this.props.match.params.id}`));
+        console.log(projectData);
         this.state = {
+            userId: JSON.parse(localStorage.getItem('user')).userId,
             userType: userType,
+            dialogBoxOpened: false,
             projectData: projectData,
             buttonDisabled: !(userType === 0 || (userType !== 1 && projectData.status === "Approved" && projectData.joined === 0)),
             buttonMessage: this.getButtonMessage(userType, projectData.status, projectData.joined),
             comments: [],
             showModal: false,
-        }
+        };
 
-        console.log("UserType:" + this.state.userType)
+        console.log("UserType:" + this.state.userType);
         console.log(this.state.buttonDisabled)
     }
 
@@ -104,10 +116,65 @@ class ProposalMainPage extends Component {
         }
     }
 
+    deleteProject = (projectId) => {
+        projectService.deleteProject(projectId)
+            .then(response => {
+                console.log(response);
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
+    };
+
+    hasPermissions = (ownerId) => {
+        return (this.state.userType === 0 || this.state.userId === ownerId)
+    };
+
+    renderConfirmDialog = () => {
+        return (
+            <Dialog
+                open={this.state.dialogBoxOpened}
+                onClose={() => {
+                    this.setState({dialogBoxOpened: false})
+                }}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">Delete comment?</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Are you sure you want to delete this project?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        onClick={() => {
+                            this.setState({dialogBoxOpened: false})
+                        }}
+                        color="primary"
+                    >
+                        No
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            this.deleteProject(this.state.projectData.id);
+                            this.setState({dialogBoxOpened: false})
+                            // TODO add redirect to projectlist
+                        }}
+                        color="primary"
+                        autoFocus
+                    >
+                        Yes
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        )
+    };
 
     render() {
-        const {classes, match} = this.props
-        const proposalData = JSON.parse(localStorage.getItem(`proposalPage/${match.params.id}`))
+        const {classes, match} = this.props;
+        const proposalData = JSON.parse(localStorage.getItem(`proposalPage/${match.params.id}`));
         return (
             <ResponsiveDrawer name={"Project Page"}>
                 <ProposalPage {...this.props} data={proposalData} isPreview={false}>
@@ -130,10 +197,24 @@ class ProposalMainPage extends Component {
                             :
                             null
                         }
+                        {this.hasPermissions(this.state.userId) ?
+                        <IconButton
+                                onClick={() => {
+                                    this.setState({
+                                        dialogBoxOpened: true
+                                    })
+                                }}
+                            >
+                                <Close fontSize="medium"/>
+                            </IconButton>
+                            :
+                            <></>
+                        }
                     </div>
                     <div className={classes.commentsDiv}>
                         <Comments projectId={this.state.projectData.id}/>
                     </div>
+                    {this.renderConfirmDialog()}
                 </ProposalPage>
             </ResponsiveDrawer>
         )
