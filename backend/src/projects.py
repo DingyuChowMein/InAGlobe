@@ -98,7 +98,13 @@ def delete_project(project_id):
         app.logger.info('project deleted')
         app.logger.info('delete project published to channel projects')
         redis_client.publish('projects', dumps(response))
-        # TODO delete project comments.
+
+        # TODO create tests
+        from .models import Comment
+        from .comments import delete_comment
+        for comment in Comment.query.filter(Comment.project_id == project_id).all():
+            delete_comment(comment.id)
+
         project.delete()
         return response, 200
     else:
