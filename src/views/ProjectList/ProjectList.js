@@ -9,7 +9,6 @@ import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer
 import ProjectCard from "./ProjectCard"
 
 // Importing helper or service functions
-import config from '../../config'
 import { projectService } from "../../services/projectsService"
 
 // import { EventSourcePolyfill } from 'event-source-polyfill';
