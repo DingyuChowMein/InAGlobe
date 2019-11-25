@@ -33,7 +33,7 @@ import styles from "../../assets/jss/views/homePageStyle"
 // import data from "../../assets/data/ProjectData"
 // import notifications from "../../assets/data/NotificationData"
 // import deadlines from "../../assets/data/DeadlinesData"
-// import approvals from "../../assets/data/ProjectApprovalData"
+import approvals from "../../assets/data/ProjectApprovalData"
 
 
 class Dashboard extends Component {

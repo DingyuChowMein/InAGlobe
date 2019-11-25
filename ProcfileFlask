@@ -1,1 +1,1 @@
-web: gunicorn --chdir backend run:app
+web: gunicorn backend.run:app -k gevent

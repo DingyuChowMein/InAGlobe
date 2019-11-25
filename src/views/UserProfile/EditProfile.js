@@ -27,37 +27,22 @@ import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer
 // Importing the helper functions from other files
 import upload from "../../s3"
 import { generateId } from "../../helpers/utils"
-import { projectService } from "../../services/projectsService"
+import { userService } from "../../services/userService"
 import cloneDeep from "lodash.clonedeep"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/addProposalStyle"
 import "filepond/dist/filepond.min.css"
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css'
+import UserProfile from './UserProfile'
 
 
-class AddProposal extends Component {
+class EditProfile extends Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            data: {
-                // No point in id
-                // id: "",
-                title: "",
-                shortDescription: "",
-                detailedDescription: "",
-                location: "",
-                // don't need this either, its assigned on the backend
-                // projectOwner: "",
-                documents: [],
-                // Fill these in properly later
-                organisationName: "dummy",
-                organisationLogo: "dummy",
-                // status is not approved by default so we don't need it
-                // status: "",
-                images: []
-            },
+            data: JSON.parse(localStorage.getItem("user")),
             previewOpen: false,
             submissionOpen: false,
             submissionResult: "",
@@ -67,7 +52,7 @@ class AddProposal extends Component {
         registerPlugin(FilePondPluginFileValidateType)
     }
 
-    checkIfNotEmpty = () => Object.values(this.state.data).every(e => e.length !== 0);
+    checkIfNotEmpty = () => Object.values(this.state.data).every(e => e.length !== 0)
 
     handleFormChange = (event) => {
         console.log(event.target.id)
@@ -87,7 +72,7 @@ class AddProposal extends Component {
             modifiedData.documents = upload(modifiedData.documents, id + '/Documents')
             modifiedData.images = upload(modifiedData.images, id + '/Images')
             console.log(modifiedData)
-            projectService.postProject(modifiedData)
+            userService.updateProfile(modifiedData)
                 .then(response => {
                     console.log(response)
                     this.setState({
@@ -105,147 +90,33 @@ class AddProposal extends Component {
         }
     }
 
+    resetData = () => {
+        this.setState({
+            data: JSON.parse(localStorage.getItem("user"))
+        })
+    }
+
     render() {
         const { classes } = this.props
+
         return (
             <div>
                 <ResponsiveDrawer name={"Add Proposal"}>
                     <Grid container>
-                        <Grid item xs={12}>
-                            <CustomInput
-                                id="title"
-                                labelText="Project Title"
-                                inputProps={{
-                                    onChange: this.handleFormChange,
-                                    required: "true"
-                                }}
-                                formControlProps={{
-                                    fullWidth: true
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <CustomInput
-                                id="organisation"
-                                labelText="Name of Organisation"
-                                inputProps={{
-                                    onChange: this.handleFormChange,
-                                    required: "true"
-                                }}
-                                formControlProps={{
-                                    fullWidth: true
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <CustomInput
-                                id="location"
-                                labelText="Location"
-                                inputProps={{
-                                    onChange: this.handleFormChange,
-                                    required: "true"
-                                }}
-                                formControlProps={{
-                                    fullWidth: true
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <CustomInput
-                                id="shortDescription"
-                                labelText="Short Description"
-                                formControlProps={{
-                                    fullWidth: true
-                                }}
-                                inputProps={{
-                                    rows: 4,
-                                    rowsMax: 6,
-                                    onChange: this.handleFormChange,
-                                    required: "true"
-                                }}
-                                extraLines={true}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <CustomInput
-                                id="detailedDescription"
-                                labelText="Detailed Description"
-                                formControlProps={{
-                                    fullWidth: true
-                                }}
-                                inputProps={{
-                                    rows: 6,
-                                    rowsMax: 12,
-                                    onChange: this.handleFormChange,
-                                    required: "true"
-                                }}
-                                placeholder="Detailed Description"
-                                extraLines={true}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <FilePond
-                                allowMultiple={true}
-                                files={this.state.data.images}
-                                labelIdle='Drag & Drop your images (.jpg, .png. or .bmp) or <span class="filepond--label-action">Browse</span>'
-                                acceptedFileTypes={["image/*"]}
-                                onupdatefiles={pictureItems => {
-                                    this.setState({
-                                        data: {
-                                            ...this.state.data,
-                                            images: pictureItems.map(pictureItem => pictureItem.file)
-                                        }
-                                    })
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <FilePond
-                                allowMultiple={true}
-                                files={this.state.data.documents}
-                                labelIdle='Drag & Drop your documents (.pdf, .docx, .doc, .txt and .odt) or <span class="filepond--label-action">Browse</span>'
-                                acceptedFileTypes={[
-                                    "application/msword",
-                                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                                    "application/pdf",
-                                    "text/plain",
-                                    "application/vnd.oasis.opendocument.text"
-                                ]}
-                                onupdatefiles={fileItems => {
-                                    this.setState({
-                                        data: {
-                                            ...this.state.data,
-                                            documents: fileItems.map(fileItem => fileItem.file)
-                                        }
-                                    })
-                                    console.log(this.state.data.documents)
-                                }}
-                            />
-                        </Grid>
-                        <div className={classes.cardButtonDiv}>
+                        <Grid item xs={12} className={classes.rightAlign}>
                             <RegularButton
                                 color="primary"
-                                onClick={() => this.setState({
-                                    previewOpen: true
-                                })}
-                                className={classes.previewButton}
+                                onClick={this.resetData}
                             >
-                                Preview
+                                Reset Changes
                             </RegularButton>
                             <RegularButton
                                 color="primary"
-                                onClick={() => {
-                                    this.setState({
-                                        submitting: true,
-                                        submissionOpen: true
-                                    })
-                                    this.post()
-                                }}
-                                className={classes.submitButton}
+                                onClick={() => null}
                             >
-                                Submit
+                                Submit Changes
                             </RegularButton>
-                        </div>
+                        </Grid>
                     </Grid>
                 </ResponsiveDrawer>
 
@@ -281,7 +152,7 @@ class AddProposal extends Component {
                                 <DialogContent>
                                     {this.checkIfNotEmpty() 
                                         ? 
-                                        <ProposalPreviewPage data={this.state.data} /> 
+                                        <UserProfile />
                                         : 
                                         <DialogContentText 
                                             id="previewDialogDes" 
@@ -342,4 +213,4 @@ class AddProposal extends Component {
     }
 }
 
-export default withStyles(styles)(AddProposal)
+export default withStyles(styles)(EditProfile)

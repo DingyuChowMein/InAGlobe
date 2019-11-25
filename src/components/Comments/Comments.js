@@ -1,5 +1,4 @@
 import React, {Component} from "react"
-import {confirmAlert} from 'react-confirm-alert'
 import Spinner from 'react-spinner-material'
 
 import {
@@ -32,10 +31,13 @@ import {commentsService} from "../../services/commentsService"
 import styles from "../../assets/jss/components/commentsStyle"
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
+import { EventSourcePolyfill } from 'event-source-polyfill';
+
+
 class Comments extends Component {
 
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             text: "",
             dialogBoxOpened: false,
@@ -43,65 +45,106 @@ class Comments extends Component {
             postLoading: false,
             comments: [],
             userType: JSON.parse(localStorage.getItem('user')).permissions,
-            userId: JSON.parse(localStorage.getItem('user')).userid
-        }
+            userId: JSON.parse(localStorage.getItem('user')).userId,
+        };
+        this.eventSource = new EventSourcePolyfill(config.apiUrl + '/comment-stream/' + this.props.projectId, {
+            mode: 'cors',
+            headers: {
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('user')).token
+            }
+        });
+
+        this.handleCommentUpdates = this.handleCommentUpdates.bind(this);
+        this.handleFormChange = this.handleFormChange.bind(this);
+        this.post = this.post.bind(this);
+        this.deleteComment = this.deleteComment.bind(this);
+        this.hasPermissions = this.hasPermissions.bind(this);
+        this.renderConfirmDialog = this.renderConfirmDialog.bind(this);
+
     }
 
     componentDidMount() {
-        setInterval(() => {
-            commentsService.getComments(this.props.projectId)
-                .then(c => c.json())
-                .then(json => {
-                        console.log(json)
-                        this.setState({
-                            comments: json.comments
-                        })
-                    }
-                )
-                .catch(err => console.log(err))
-        }, 3000)
+        commentsService.getComments(this.props.projectId)
+            .then(c => c.json())
+            .then(json => {
+                    console.log(json);
+                    this.setState({
+                        comments: json.comments
+                    })
+                })
+            .catch(err => console.log(err));
+        this.eventSource.addEventListener('commentstream', (json) => this.handleCommentUpdates(json));
+        this.eventSource.addEventListener('error', (err) => {console.log(err)});
     }
+
+    componentWillUnmount() {
+        this.eventSource.removeEventListener('commentstream', (json) => this.handleCommentUpdates(json));
+        this.eventSource.removeEventListener('error', (err) => {console.log(err)});
+        this.eventSource.close();
+    }
+
+    handleCommentUpdates(json) {
+        const v = JSON.parse(json.data);
+        console.log(v);
+        if (v.message === 'Comment deleted!') {
+            const array = [...this.state.comments];
+            const index = array.findIndex(function(item){
+                return item.commentId === v.comment.commentId
+            });
+            if (index !== -1) {
+                array.splice(index, 1);
+                console.log(array);
+                this.setState({
+                    comments: array
+                });
+            }
+        } else if (v.message === 'Comment added!') {
+            this.setState({
+                comments: this.state.comments.concat(v.comment)
+            })
+        }
+    };
 
 
     handleFormChange = (e) => {
         this.setState({
             [e.target.id]: e.target.value
         })
-    }
+    };
 
     post = () => {
-        const today = new Date()
+        const today = new Date();
         this.setState({
             postLoading: true,
             date: `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()}`
-        })
+        });
 
         commentsService.postComment(this.props.projectId, this.state.text)
             .then(response => response.json())
             .then(response => {
-                console.log(response)
+                console.log(response);
                 this.setState({
                     postLoading: false,
                     text: ""
                 })
             })
             .catch(err => console.log(err))
-    }
+    };
 
     deleteComment = (commentId) => {
         commentsService.deleteComment(commentId)
             .then(response => {
-                console.log(response)
+                console.log(response);
             })
             .catch(err => {
                 console.log(err)
             })
 
-    }
+    };
 
     hasPermissions = (ownerId) => {
         return (this.state.userType === 0 || this.state.userId === ownerId)
-    }
+    };
 
     renderConfirmDialog = () => {
         return (
@@ -122,7 +165,7 @@ class Comments extends Component {
                 <DialogActions>
                     <Button
                         onClick={() => {
-                            this.setState({dialogBoxOpened: false})
+                            this.setState({dialogBoxOpened: false});
                         }}
                         color="primary"
                     >
@@ -130,8 +173,8 @@ class Comments extends Component {
                     </Button>
                     <Button
                         onClick={() => {
-                            this.deleteComment(this.state.selectedCommentId)
-                            this.setState({dialogBoxOpened: false})
+                            this.deleteComment(this.state.selectedCommentId);
+                            this.setState({dialogBoxOpened: false});
                         }}
                         color="primary"
                         autoFocus
@@ -141,7 +184,7 @@ class Comments extends Component {
                 </DialogActions>
             </Dialog>
         )
-    }
+    };
 
     render() {
         const {classes} = this.props
@@ -167,7 +210,7 @@ class Comments extends Component {
                                                 })
                                             }}
                                         >
-                                            <Close fontSize="medium"/>
+                                            <Close />
                                         </IconButton>
                                     </ListItemSecondaryAction>
                                     :

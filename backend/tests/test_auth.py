@@ -104,7 +104,7 @@ def test_login_multiple_users(auth):
 # TODO: error handling for incorrect passwords
 @pytest.mark.parametrize(('email', 'password', 'message', 'code'), (
         ('email@ic.ac.uk', 'wrongpassword', b'Incorrect password!', 401),
-        ('wrong_email@ic.ac.uk', 'password', b'User does not exist!', 404),
+        ('wrong_email@ic.ac.uk', 'password', b'Incorrect email!', 404),
 ))
 def test_bad_login(auth, email, password, message, code):
     auth.create_user()
@@ -154,3 +154,38 @@ def test_logout(app, auth):
         assert student_user.token is not None
 
 # TODO: add more 'bad' logout tests
+
+
+########################################################################################################################
+# Token tests
+
+def test_token_auth(auth, client):
+    auth.login()
+    token = auth.get_token()
+    rv = client.get('/projects/', headers={
+        'Authorization': 'Bearer ' + token
+    })
+    assert 200 == rv.status_code
+    auth.logout(token)
+    rv = client.get('/projects/', headers={
+        'Authorization': 'Bearer ' + token
+    })
+    assert rv.status_code == 401
+    assert b'Invalid token!' in rv.data
+
+
+def test_bad_token_auth(app, auth, client):
+    with app.app_context():
+        auth.login()
+        token = auth.get_token()
+        client.get('/projects/', headers={
+            'Authorization': 'Bearer ' + token
+        })
+        user = db.session.query(User).filter(User.email == 'student@ic.ac.uk').first()
+        from datetime import datetime, timedelta
+        user.token_expiration = datetime.utcnow() - timedelta(seconds=1)
+        rv = client.get('/projects/', headers={
+            'Authorization': 'Bearer ' + token
+        })
+        assert rv.status_code == 401
+        assert b'Invalid token!' in rv.data

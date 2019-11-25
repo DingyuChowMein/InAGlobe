@@ -8,7 +8,8 @@ function getDashboard() {
     const token = JSON.parse(localStorage.getItem('user')).token;
     const bearer = 'Bearer ' + token;
     return fetch(config.apiUrl + '/dashboard/', {
-        method: 'get',
+        mode: 'cors',
+        method: 'GET',
         headers: {
             'Authorization': bearer
         },

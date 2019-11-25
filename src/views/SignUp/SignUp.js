@@ -1,5 +1,5 @@
 // Main ReactJS libraries
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 
 // Material UI libraries
 import {
@@ -25,32 +25,27 @@ import {
 import Copyright from "../../components/Copyright/Copyright"
 
 // Importing helper or service functions
-import {userService} from "../../services/userService"
+import { userService } from "../../services/userService"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/signUpStyle"
-import Dialog from "@material-ui/core/Dialog";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from '@material-ui/icons/Close';
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import makeStyles from "@material-ui/core/styles/makeStyles";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogContent from "@material-ui/core/DialogContent";
-import Slide from "@material-ui/core/Slide";
-import termsOfService from '../../assets/data/terms-and-conditions-template.pdf';
+import termsOfService from '../../assets/data/terms-and-conditions-template.pdf'
 
 class SignUp extends Component {
 
     constructor(props) {
-        super(props);
-        userService.logout();
+        super(props)
+        userService.logout()
         this.state = {
             email: {
                 error: "",
                 value: ""
             },
             password: {
+                error: "",
+                value: ""
+            },
+            confirmPassword: {
                 error: "",
                 value: ""
             },
@@ -65,44 +60,53 @@ class SignUp extends Component {
             userType: "STUDENT",
             labelWidth: 0,
             signingUp: false
-        };
+        }
         this.inputLabel = null
-        this.handleFormChange = this.handleFormChange.bind(this)
-        this.signUpPressed = this.signUpPressed.bind(this)
     }
 
     handleValidation = () => {
-        let success = true;
+        let success = true
         let emailError = ""
         let firstNameError = ""
         let lastNameError = ""
         let passwordError = ""
+        let confirmPasswordError = ""
 
         if (!this.state.email.value.match(/^[\w\d]+@[\w\d]+\.(ac|org)\..*$/)) {
-            emailError = "Must have .ac or .org email!";
-            success = false;
+            emailError = "Must have .ac or .org email!"
+            success = false
         }
 
         if (this.state.firstName.value === "") {
-            firstNameError = "First name cannot be empty!";
-            success = false;
+            firstNameError = "First name cannot be empty!"
+            success = false
         }
 
         if (this.state.lastName.value === "") {
-            lastNameError = "Last name cannot be empty!";
-            success = false;
+            lastNameError = "Last name cannot be empty!"
+            success = false
         }
 
         if (this.state.password.value === "") {
-            passwordError = "Password cannot be empty!";
-            success = false;
+            passwordError = "Password cannot be empty!"
+            success = false
         }
 
-        var passw = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+        if (this.state.confirmPassword.value === "") {
+            confirmPasswordError = "Confirm Password cannot be empty!"
+            success = false
+        }
+
+        var passw = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/
         if (!this.state.password.value.match(passw)) {
             passwordError = "Password must be between 6-20 characters," +
-                " contain one uppercase and one lowecase character as well as a number!";
-            success = false;
+                " contain one uppercase and one lowecase character as well as a number!"
+            success = false
+        }
+
+        if (this.state.confirmPassword.value !== this.state.password.value) {
+            confirmPasswordError = "Must match the password provided above!"
+            success = false
         }
 
 
@@ -122,30 +126,34 @@ class SignUp extends Component {
             password: {
                 ...prevState.password,
                 error: passwordError
+            },
+            confirmPassword: {
+                ...prevState.confirmPassword,
+                error: confirmPasswordError
             }
-        }));
-        return success;
-    };
+        }))
+        return success
+    }
 
-    handleFormChange(e) {
-        const {name, value} = e.target;
+    handleFormChange = (e) => {
+        const {name, value} = e.target
         this.setState({
             [name]: {
                 error: "",
                 value: value
             }
-        });
+        })
     }
 
-    signUpPressed() {
+    signUpPressed = () => {
         // You can authenticate here
         this.setState({
             signingUp: true
-        });
+        })
 
 
         if (this.handleValidation()) {
-            console.log(this.state.signingUp);
+            console.log(this.state.signingUp)
             userService.signUp(
                 this.state.firstName.value,
                 this.state.lastName.value,
@@ -153,22 +161,23 @@ class SignUp extends Component {
                 this.state.password.value,
                 this.state.userType)
                 .then(response => {
+                    console.log(response)
                     this.props.history.push("/login")
                 })
                 .catch(err => {
-                    console.log(err);
+                    console.log(err)
                     this.setState(prevState => ({
                         signingUp: false,
                         email: {
                             ...prevState.email,
                             error: "Email already exists!"
                         }
-                    }));
-                });
+                    }))
+                })
         } else {
             this.setState({
                 signingUp: false
-            });
+            })
         }
 
     }
@@ -180,7 +189,7 @@ class SignUp extends Component {
     }
 
     render() {
-        const {classes} = this.props;
+        const {classes} = this.props
 
         return (
             <Container component="main" maxWidth="xs">
@@ -253,6 +262,21 @@ class SignUp extends Component {
                                 />
                             </Grid>
                             <Grid item xs={12}>
+                                <TextField
+                                    error={!(this.state.password.error === "")}
+                                    variant="outlined"
+                                    required
+                                    fullWidth
+                                    helperText={this.state.confirmPassword.error}
+                                    name="confirmPassword"
+                                    onChange={this.handleFormChange}
+                                    label="Confirm Password"
+                                    type="password"
+                                    id="confirmPassword"
+                                    autoComplete="current-password"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
                                 <FormControl
                                     variant="outlined"
                                     required
@@ -283,8 +307,8 @@ class SignUp extends Component {
                             fullWidth
                             variant="contained"
                             color="primary"
-                            onClick={this.signUpPressed}
                             className={classes.submit}
+                            onClick={this.signUpPressed}
                         >
                             {this.state.signingUp ? <CircularProgress className={classes.loading}/> : "Sign Up"}
                         </Button>

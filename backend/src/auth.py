@@ -8,12 +8,13 @@ basic_auth = HTTPBasicAuth()
 # token_auth uses bearer tokens
 token_auth = HTTPTokenAuth()
 
+
 @basic_auth.verify_password
 def verify_password(email, password):
     # email unique so there can only be one
     user = User.query.filter_by(email=email).first()
     if user is None:
-        return abort(404, 'User does not exist!')
+        return abort(404, 'Incorrect email!')
     if not user.confirmed:
         return abort(500, 'User is not verified!')
     g.current_user = user
@@ -33,7 +34,7 @@ def verify_token(token):
 
 @token_auth.error_handler
 def token_error_handler():
-    return abort(401, 'User does not exist!')
+    return abort(401, 'Invalid token!')
 
 
 def permission_required(permission):

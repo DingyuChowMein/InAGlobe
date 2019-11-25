@@ -2,16 +2,19 @@
 import React, { Component } from "react"
 import { withRouter } from "react-router-dom"
 
+
 // Material UI libraries
-import { 
-    withStyles, 
-    Card, 
-    CardContent, 
-    CardActions,
+import {
+    withStyles,
+    Card,
+    CardContent,
+    CardActions
 } from "@material-ui/core"
 
 // Imports of different components in project
 import RegularButton from "../../components/CustomButtons/RegularButton"
+
+import ProjectDialogue from "../../components/Projects/EditProjectModal"
 
 import config from "../../config"
 
@@ -20,24 +23,35 @@ import styles from "../../assets/jss/views/projectCardStyle"
 
 class ProjectCard extends Component {
     constructor(props) {
-        super(props)
-        this.openProposalPage = this.openProposalPage.bind(this)
+        super(props);
+        this.state = {
+            userType: JSON.parse(localStorage.getItem('user')).permissions,
+            userId: JSON.parse(localStorage.getItem('user')).userId,
+            projectId: this.props.data.id,
+            deleteBox: false
+        };
+        this.openProposalPage = this.openProposalPage.bind(this);
+        this.hasPermission = this.hasPermission.bind(this);
     }
 
     openProposalPage() {
-        const dataValue = JSON.stringify(this.props.data)
-        localStorage.setItem(`proposalPage/${this.props.data.id}`, dataValue)
+        const dataValue = JSON.stringify(this.props.data);
+        localStorage.setItem(`proposalPage/${this.props.data.id}`, dataValue);
         this.props.history.push(`/main/projectlist/proposalpage/${this.props.data.id}`)
     }
 
+    hasPermission = (ownerId) => {
+        return (this.state.userType === 0 || this.state.userId === ownerId)
+    };
+
     render() {
-        const { classes } = this.props
+        const { classes } = this.props;
         const {
             title,
             organisation,
             status,
             shortDescription,
-            images } = this.props.data
+            images } = this.props.data;
 
         return (
             <Card className={classes.cardDiv}>
@@ -60,9 +74,14 @@ class ProjectCard extends Component {
                     >
                         Learn More
                     </RegularButton>
+                    {this.hasPermission(this.state.userId) ?
+                        <ProjectDialogue ProjectData={this.props.data} /> :
+                        <></>
+                    }
                 </CardActions>
             </Card>
-        )
+
+    )
     }
 }
 

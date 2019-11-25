@@ -2,10 +2,10 @@ import React, {Component, Fragment} from "react"
 
 import {
     withStyles,
+    Avatar,
     ListItem,
     ListItemAvatar,
     ListItemText,
-    Avatar,
     Typography
 } from "@material-ui/core"
 import NotificationsIcon from '@material-ui/icons/Notifications'

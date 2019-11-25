@@ -51,16 +51,17 @@ class Model:
 
 
 user_project_joining_table = db.Table('UserProjects', db.Model.metadata,
-    db.Column('user_id', db.Integer, ForeignKey('Users.id')),
-    db.Column('project_id', db.Integer, ForeignKey('Projects.id')),
-    db.Column('approved', db.Integer, default=0),
-    db.Column('date_time', db.DateTime, default=datetime.now())
-)
+                                      db.Column('user_id', db.Integer, ForeignKey('Users.id')),
+                                      db.Column('project_id', db.Integer, ForeignKey('Projects.id')),
+                                      db.Column('approved', db.Integer, default=0),
+                                      db.Column('date_time', db.DateTime, default=datetime.now())
+                                      )
 
 user_comment_joining_table = db.Table('UserComments', db.Model.metadata,
-    db.Column('user_id', db.Integer, ForeignKey('Users.id')),
-    db.Column('comment_id', db.Integer, ForeignKey('Comments.id'))
-)
+                                      db.Column('user_id', db.Integer, ForeignKey('Users.id')),
+                                      db.Column('comment_id', db.Integer, ForeignKey('Comments.id'))
+                                      )
+
 
 user_profile_joining_table = db.Table('UserProfiles', db.Model.metadata,
     db.Column('user_id', db.Integer, ForeignKey('Users.id')),
@@ -112,6 +113,14 @@ class ProfileFile(Model, db.Model):
     link = db.Column(db.String(LINK_FIELD_LENGTH), nullable=False)
 
 
+class UserFile(Model, db.Model):
+    __tablename__ = 'UserFiles'
+
+    user_id = db.Column(db.Integer, ForeignKey('Users.id'))
+    link = db.Column(db.String(LINK_FIELD_LENGTH), nullable=False)
+    type = db.Column(db.Integer, default=FILE_TYPE['DOCUMENT'])
+
+
 class User(Model, db.Model):
     __tablename__ = 'Users'
 
@@ -119,32 +128,36 @@ class User(Model, db.Model):
     first_name = db.Column(db.String(OWNER_FIELD_LENGTH), nullable=False)
     last_name = db.Column(db.String(OWNER_FIELD_LENGTH), nullable=False)
     password_hash = db.Column(db.String(SHORT_FIELD_LENGTH), nullable=False)
+    profile_picture = db.Column(db.String(LINK_FIELD_LENGTH))
+    location = db.Column(db.String(LOCATION_FIELD_LENGTH))
+    short_description = db.Column(db.String(SHORT_FIELD_LENGTH))
+    long_description = db.Column(db.String(LOCATION_FIELD_LENGTH))
     token = db.Column(db.String(SHORT_FIELD_LENGTH), index=True, unique=True)
     token_expiration = db.Column(db.DateTime)
     user_type = db.Column(db.Integer, default=USER_TYPE['STUDENT'])
     projects = db.relationship('Project', secondary=user_project_joining_table,
-                               backref=db.backref('users', lazy='dynamic'),  uselist=True)
+                               backref=db.backref('users', lazy='dynamic'), uselist=True)
 
     comments = db.relationship('Comment', secondary=user_comment_joining_table,
                                backref=db.backref('users', lazy='dynamic'), uselist=True)
 
     confirmed = db.Column(db.Boolean, nullable=False, default=False)
     confirmed_on = db.Column(db.DateTime, nullable=True)
-    
+
     def hash_password(self, password):
         self.password_hash = generate_password_hash(password, method='sha256')
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-    def get_token(self, expires_in=3600):
+    def get_token(self, expires_in=1):
         now = datetime.utcnow()
 
         if self.token and self.token_expiration > now + timedelta(seconds=60):
             return self.token
 
         self.token = base64.b64encode(os.urandom(24)).decode('utf-8')
-        self.token_expiration = now + timedelta(seconds=expires_in)
+        self.token_expiration = now + timedelta(days=expires_in)
         db.session.add(self)
         return self.token
 

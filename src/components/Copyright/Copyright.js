@@ -2,7 +2,10 @@
 import React, { Component } from "react"
 
 // Material UI libraries
-import { Typography, Link } from '@material-ui/core'
+import {  
+    Link,
+    Typography,
+} from '@material-ui/core'
 
 class Copyright extends Component {
 

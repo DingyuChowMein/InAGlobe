@@ -1,20 +1,20 @@
 // Main ReactJS libraries
-import React, {Component} from 'react'
-import {withRouter} from "react-router-dom"
+import React, { Component } from 'react'
+import { withRouter } from "react-router-dom"
 
 // Material UI libraries
-import { 
+import {
     withStyles,
     Avatar,
     Box,
     Checkbox,
     CircularProgress,
-    CssBaseline, 
-    FormControlLabel, 
+    CssBaseline,
+    FormControlLabel,
     Grid,
-    Link, 
-    Paper, 
-    TextField, 
+    Link,
+    Paper,
+    TextField,
     Typography,
 } from '@material-ui/core'
 
@@ -25,7 +25,7 @@ import RegularButton from "../../components/CustomButtons/RegularButton"
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/signInSideStyle"
 
-import {userService} from "../../services/userService"
+import { userService } from "../../services/userService"
 
 class SignInSide extends Component {
 
@@ -66,7 +66,9 @@ class SignInSide extends Component {
                     })
                 } else {
                     this.props.history.push("/main")
-                    this.state.loginFailed = false
+                    this.setState({
+                        loginFailed: false
+                    });
                 }
             })
             .catch(err => {
@@ -106,6 +108,7 @@ class SignInSide extends Component {
                                     autoComplete="email"
                                     onChange={this.handleFormChange}
                                     autoFocus
+                                    onKeyPress={event => event.key === "Enter" ? this.loginPressed() : null}
                                 />
                                 <TextField
                                     variant="outlined"
@@ -118,6 +121,7 @@ class SignInSide extends Component {
                                     id="password"
                                     autoComplete="current-password"
                                     onChange={this.handleFormChange}
+                                    onKeyPress={event => event.key === "Enter" ? this.loginPressed() : null}
                                 />
                                 <FormControlLabel
                                     control={<Checkbox value="remember" color="primary"/>}
