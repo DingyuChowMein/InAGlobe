@@ -9,7 +9,7 @@ function getProjects() {
         method: 'get',
         headers: {
             'Authorization': bearer
-        },
+        }
     }).then(res => res.json())
 }
 
@@ -23,7 +23,7 @@ function postProject(data) {
             'Authorization': bearer,
             'Content-type': 'application/json'
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(data)
     })
 }
 
@@ -41,6 +41,21 @@ function deleteProject(projectId) {
 
 }
 
+function updateProject(projectId, data) {
+    console.log(data);
+    const token = JSON.parse(localStorage.getItem('user')).token;
+    const bearer = 'Bearer ' + token;
+    return fetch(config.apiUrl + `/projects/${projectId}/`, {
+        mode: 'cors',
+        method: 'patch',
+        headers: {
+            'Authorization': bearer,
+            'Content-type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+}
+
 export const projectService = {
-    getProjects, postProject, deleteProject
+    getProjects, postProject, deleteProject, updateProject
 };
