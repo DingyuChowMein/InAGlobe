@@ -48,13 +48,13 @@ class AddProposal extends Component {
                 shortDescription: "",
                 detailedDescription: "",
                 location: "",
-                // dont need this either, its assigned on the backend
+                // don't need this either, its assigned on the backend
                 // projectOwner: "",
                 documents: [],
                 // Fill these in properly later
                 organisationName: "dummy",
                 organisationLogo: "dummy",
-                // status is not approved by default so we dont need it
+                // status is not approved by default so we don't need it
                 // status: "",
                 images: []
             },

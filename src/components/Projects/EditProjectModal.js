@@ -41,7 +41,7 @@ export default function ProjectDialogue({ProjectData}) {
 }
 
 function EditModal({classes, ProjectData}) {
-    console.log(ProjectData);
+    //console.log(ProjectData);
     const [openEdit, setOpenEdit] = React.useState(false);
 
     const handleClickOpenEdit = () => {

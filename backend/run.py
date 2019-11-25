@@ -1,5 +1,6 @@
 import logging
 from .src import create_app, db, redis_client
+import os
 
 app = create_app()
 

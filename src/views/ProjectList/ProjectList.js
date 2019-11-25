@@ -1,8 +1,8 @@
 // Main ReactJS libraries
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 
 // Material UI libraries
-import { withStyles, Grid } from '@material-ui/core'
+import {withStyles, Grid} from '@material-ui/core'
 
 // Imports of different components in project
 import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer'
@@ -21,36 +21,37 @@ class ProjectList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            projects: []
+            projects: this.props.data
         };
-        this.eventSource = new EventSourcePolyfill(config.apiUrl + '/project-stream/', {
-            headers: {
-                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('user')).token
-            }
-        });
+        // this.eventSource = new EventSourcePolyfill(config.apiUrl + '/project-stream/', {
+        //     headers: {
+        //         'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('user')).token
+        //     }
+        // });
         this.handleProjectUpdates = this.handleProjectUpdates.bind(this);
     }
 
     componentDidMount() {
-        projectService.getProjects()
-            .then(data => {
-                console.log(data);
-                data.projects.forEach(project =>
-                    project.status = (project.status === 0 ? "Needs Approval" : "Approved"));
-                this.setState({
-                    projects: data.projects
-                });
-            })
-            .catch(console.log);
-        console.log(this.state.projects);
-        this.eventSource.addEventListener('project-stream', json => this.handleProjectUpdates(json));
-        this.eventSource.addEventListener('error', (err) => {console.log(err)});
+        // projectService.getProjects()
+        //     .then(data => {
+        //         console.log(data);
+        //         data.projects.forEach(project =>
+        //             project.status = (project.status === 0 ? "Needs Approval" : "Approved"));
+        //         this.setState({
+        //             projects: data.projects
+        //         });
+        //     })
+        //     .catch(console.log);
+        // console.log(this.state.projects);
+        this.props.refresh();
+        // this.eventSource.addEventListener('project-stream', json => this.handleProjectUpdates(json));
+        // this.eventSource.addEventListener('error', (err) => {console.log(err)});
     }
 
     componentWillUnmount() {
-        this.eventSource.removeEventListener('project-stream', json => this.handleProjectUpdates(json));
-        this.eventSource.removeEventListener('error', (err) => {console.log(err)});
-        this.eventSource.close();
+        // this.eventSource.removeEventListener('project-stream', json => this.handleProjectUpdates(json));
+        // this.eventSource.removeEventListener('error', (err) => {console.log(err)});
+        // this.eventSource.close();
     }
 
     handleProjectUpdates(json) {
@@ -102,7 +103,7 @@ class ProjectList extends Component {
             <ResponsiveDrawer name={"Project List"}>
                 <div className={classes.root}>
                     <Grid container spacing={2}>
-                        {this.state.projects.map(card => (
+                        {this.props.data.map(card => (
                             <Grid item xs={12} sm={12} md={6} key={card.id}>
                                 <ProjectCard data={card}/>
                             </Grid>
