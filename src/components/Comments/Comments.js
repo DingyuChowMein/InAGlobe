@@ -1,5 +1,4 @@
 import React, {Component} from "react"
-import {confirmAlert} from 'react-confirm-alert'
 import Spinner from 'react-spinner-material'
 
 import {
@@ -86,24 +85,24 @@ class Comments extends Component {
 
     handleCommentUpdates(json) {
         const v = JSON.parse(json.data);
-            console.log(v);
-            if (v.message === 'Comment deleted!') {
-                const array = [...this.state.comments];
-                const index = array.findIndex(function(item){
-                    return item.commentId === v.comment.commentId
-                });
-                if (index !== -1) {
-                    array.splice(index, 1);
-                    console.log(array);
-                    this.setState({
-                        comments: array
-                    });
-                }
-            } else if (v.message === 'Comment added!') {
+        console.log(v);
+        if (v.message === 'Comment deleted!') {
+            const array = [...this.state.comments];
+            const index = array.findIndex(function(item){
+                return item.commentId === v.comment.commentId
+            });
+            if (index !== -1) {
+                array.splice(index, 1);
+                console.log(array);
                 this.setState({
-                    comments: this.state.comments.concat(v.comment)
-                })
+                    comments: array
+                });
             }
+        } else if (v.message === 'Comment added!') {
+            this.setState({
+                comments: this.state.comments.concat(v.comment)
+            })
+        }
     };
 
 
@@ -114,7 +113,7 @@ class Comments extends Component {
     };
 
     post = () => {
-        const today = new Date()
+        const today = new Date();
         this.setState({
             postLoading: true,
             date: `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()}`
@@ -123,7 +122,7 @@ class Comments extends Component {
         commentsService.postComment(this.props.projectId, this.state.text)
             .then(response => response.json())
             .then(response => {
-                console.log(response)
+                console.log(response);
                 this.setState({
                     postLoading: false,
                     text: ""
@@ -166,7 +165,7 @@ class Comments extends Component {
                 <DialogActions>
                     <Button
                         onClick={() => {
-                            this.setState({dialogBoxOpened: false})
+                            this.setState({dialogBoxOpened: false});
                         }}
                         color="primary"
                     >
@@ -174,8 +173,8 @@ class Comments extends Component {
                     </Button>
                     <Button
                         onClick={() => {
-                            this.deleteComment(this.state.selectedCommentId)
-                            this.setState({dialogBoxOpened: false})
+                            this.deleteComment(this.state.selectedCommentId);
+                            this.setState({dialogBoxOpened: false});
                         }}
                         color="primary"
                         autoFocus
