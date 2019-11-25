@@ -166,7 +166,7 @@ class Dashboard extends Component {
                                 cardData={[]}
                                 title="Projects Updates"
                                 EmptyIcon={UpdateOutlined}
-                                emptyText="No Updates for any Ongoing Projects"
+                                emptyText="No updates for any ongoing projects"
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -176,7 +176,7 @@ class Dashboard extends Component {
                                 cardData={this.state.projects}
                                 title="Projects to Approve"
                                 EmptyIcon={UpdateOutlined}
-                                emptyText="No Approvals Needed for New Projects"
+                                emptyText="No requests need to be approved!"
                             />
                         </Grid>
                     </Grid>
@@ -210,7 +210,7 @@ class Dashboard extends Component {
                                 cardData={this.state.projects.filter(project => project.status === "Approved")}
                                 title="Your Approved Projects"
                                 EmptyIcon={SentimentDissatisfiedOutlined}
-                                emptyText="No Ongoing Projects. Try joining some!"
+                                emptyText="No ongoing projects. Try joining some!"
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -220,7 +220,7 @@ class Dashboard extends Component {
                                 cardData={this.state.projects.filter(project => project.status === "Needs Approval")}
                                 title="Your Project Proposals Waiting for Admin Approval"
                                 EmptyIcon={SentimentSatisfiedOutlined}
-                                emptyText="All Projects Approved!"
+                                emptyText="All projects approved!"
                             />
                         </Grid>
                     </Grid>
@@ -248,7 +248,7 @@ class Dashboard extends Component {
                                 cardData={this.state.projects.filter(project => project.joined === 2)}
                                 title="Ongoing Projects Joined"
                                 EmptyIcon={SentimentDissatisfiedOutlined}
-                                emptyText="No Ongoing Projects. Try joining some!"
+                                emptyText="No ongoing projects. Try joining some!"
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -256,9 +256,9 @@ class Dashboard extends Component {
                                 {...this.props}
                                 className={classes.root}
                                 cardData={this.state.projects.filter(project => project.joined === 1)}
-                                title="Waiting for Approval to Join Project"
+                                title="Pending Project Approvals"
                                 EmptyIcon={SentimentSatisfiedOutlined}
-                                emptyText="All Projects Approved!"
+                                emptyText="All projects approved!"
                             />
                         </Grid>
                     </Grid>
@@ -286,7 +286,7 @@ class Dashboard extends Component {
                                 cardData={this.state.projects.filter(project => project.joined === 2)}
                                 title="Ongoing Projects Joined"
                                 EmptyIcon={SentimentDissatisfiedOutlined}
-                                emptyText="No Ongoing Projects. Try joining some!"
+                                emptyText="No ongoing projects. Try joining some!"
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -296,7 +296,7 @@ class Dashboard extends Component {
                                 cardData={this.state.projects.filter(project => project.joined === 1)}
                                 title="Waiting for Approval to Join Project"
                                 EmptyIcon={SentimentSatisfiedOutlined}
-                                emptyText="All Projects Joins Approved!"
+                                emptyText="All join requests approved!"
                             />
                         </Grid>
                     </Grid>

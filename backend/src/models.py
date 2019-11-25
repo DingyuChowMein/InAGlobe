@@ -62,10 +62,27 @@ user_comment_joining_table = db.Table('UserComments', db.Model.metadata,
     db.Column('comment_id', db.Integer, ForeignKey('Comments.id'))
 )
 
+user_profile_joining_table = db.Table('UserProfiles', db.Model.metadata,
+    db.Column('user_id', db.Integer, ForeignKey('Users.id')),
+    db.Column('profile_id', db.Integer, ForeignKey('Projects.id')))
+
 # checkpoint_project_joining_table = db.Table('CheckpointProjects', db.Model.metadata,
 #     db.Column('project_id', db.Integer, ForeignKey('Projects.id')),
 #     db.Column('checkpoint_id', db.Integer, ForeignKey('Checkpoints.id'))
 # )
+
+
+class Profile(Model, db.Model):
+    __tablename__ = 'Profiles'
+
+    # email = db.Column(db.String(OWNER_FIELD_LENGTH), unique=True)
+    # first_name = db.Column(db.String(OWNER_FIELD_LENGTH), nullable=False)
+    # last_name = db.Column(db.String(OWNER_FIELD_LENGTH), nullable=False)
+    # user_type = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, nullable=False)
+    short_description = db.Column(db.String(SHORT_FIELD_LENGTH), nullable=False)
+    long_description = db.Column(db.String(LONG_FIELD_LENGTH), nullable=False)
+    location = db.Column(db.String(LOCATION_FIELD_LENGTH), nullable=False)
 
 
 class Project(Model, db.Model):
@@ -87,6 +104,12 @@ class File(Model, db.Model):
     project_id = db.Column(db.Integer, ForeignKey('Projects.id'))
     link = db.Column(db.String(LINK_FIELD_LENGTH), nullable=False)
     type = db.Column(db.Integer, default=FILE_TYPE['DOCUMENT'])
+
+
+class ProfileFile(Model, db.Model):
+    __tablename__ = 'Profile_Files'
+    profile_id = db.Column(db.Integer, ForeignKey('Profiles.id'))
+    link = db.Column(db.String(LINK_FIELD_LENGTH), nullable=False)
 
 
 class User(Model, db.Model):

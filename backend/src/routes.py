@@ -55,6 +55,19 @@ def get_projects():
 
 
 @token_auth.login_required
+def update_profile(data):
+    try:
+        if not data['shortDescription']:
+            raise ValueError('short description')
+        if not data['detailedDescription']:
+            raise ValueError('detailed description')
+
+        profile = Profile(
+            first_name=data['']
+        )
+
+
+@token_auth.login_required
 @permission_required(USER_TYPE['HUMANITARIAN'])
 def upload_project(data):
     # TODO remove the code duplication for the try blocks

@@ -13,6 +13,7 @@ function logout() {
     if (localStorage.getItem('user')) {
         const bearer = 'Bearer ' + JSON.parse(localStorage.getItem('user')).token;
         const requestOptions = {
+            mode: 'cors',
             method: 'DELETE',
             headers: {
                 'Authorization': bearer

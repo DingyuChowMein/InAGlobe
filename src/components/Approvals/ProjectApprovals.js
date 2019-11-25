@@ -10,6 +10,7 @@ import {
     IconButton, 
     Typography, 
     Avatar,
+    Link,
 } from "@material-ui/core"
 import { 
     Done, 
@@ -33,8 +34,11 @@ class ProjectApprovals extends Component {
                     </Grid>
                     <Grid item xs={7}>
                         <CardContent component="div">
+                            {/*TODO: TURN THIS INTO A HYPERLINK*/}
                             <Typography component="h3" variant="body1" className={classes.userApproval}>
-                                {card.userName}
+                                <Link onClick={() => this.props.history.push(`/main/userprofile/${card.userId}`)}>
+                                    {card.userName}
+                                </Link>
                             </Typography>
                             <Typography component="h3" variant="body2" className={classes.userRegisterDate}>
                                 <b>
