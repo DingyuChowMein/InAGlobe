@@ -2,6 +2,7 @@
 import React, { Component } from "react"
 import { withRouter } from "react-router-dom"
 
+
 // Material UI libraries
 import {
     withStyles,
@@ -13,12 +14,13 @@ import {
 // Imports of different components in project
 import RegularButton from "../../components/CustomButtons/RegularButton"
 
+import EditProject from "../../components/Projects/EditProjectModal"
+
 import config from "../../config"
 
 // Import class's stylesheet
 import styles from "../../assets/jss/views/projectCardStyle"
 import {Close} from "@material-ui/icons";
-import {commentsService} from "../../services/commentsService";
 import {projectService} from "../../services/projectsService";
 
 class ProjectCard extends Component {
@@ -28,9 +30,12 @@ class ProjectCard extends Component {
             userType: JSON.parse(localStorage.getItem('user')).permissions,
             userId: JSON.parse(localStorage.getItem('user')).userId,
             projectId: this.props.data.id,
-            dialogBoxOpened: false
+            deleteBox: false
         };
-        this.openProposalPage = this.openProposalPage.bind(this)
+        this.openProposalPage = this.openProposalPage.bind(this);
+        this.deleteProject = this.deleteProject.bind(this);
+        this.renderWithPermissions = this.renderWithPermissions.bind(this);
+        this.renderConfirmDialog = this.renderConfirmDialog.bind(this);
     }
 
     openProposalPage() {
@@ -50,16 +55,29 @@ class ProjectCard extends Component {
 
     };
 
-    hasPermissions = (ownerId) => {
-        return (this.state.userType === 0 || this.state.userId === ownerId)
+    renderWithPermissions = (ownerId) => {
+        if (this.state.userType === 0 || this.state.userId === ownerId) {
+              return (
+                  <>
+                      <EditProject ProjectData={this.props.data} />
+                      <IconButton onClick={() => {
+                                this.setState({
+                                    deleteBox: true
+                                })
+                            }}>
+                          <Close fontSize="medium"/>
+                      </IconButton>
+                  </>
+              )
+        }
     };
 
     renderConfirmDialog = () => {
         return (
             <Dialog
-                open={this.state.dialogBoxOpened}
+                open={this.state.deleteBox}
                 onClose={() => {
-                    this.setState({dialogBoxOpened: false})
+                    this.setState({deleteBox: false})
                 }}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
@@ -73,7 +91,7 @@ class ProjectCard extends Component {
                 <DialogActions>
                     <Button
                         onClick={() => {
-                            this.setState({dialogBoxOpened: false})
+                            this.setState({deleteBox: false})
                         }}
                         color="primary"
                     >
@@ -82,7 +100,7 @@ class ProjectCard extends Component {
                     <Button
                         onClick={() => {
                             this.deleteProject(this.state.projectId);
-                            this.setState({dialogBoxOpened: false})
+                            this.setState({deleteBox: false})
                         }}
                         color="primary"
                         autoFocus
@@ -124,19 +142,7 @@ class ProjectCard extends Component {
                     >
                         Learn More
                     </RegularButton>
-                    {this.hasPermissions(this.state.userId) ?
-                        <IconButton
-                            onClick={() => {
-                                this.setState({
-                                    dialogBoxOpened: true
-                                })
-                            }}
-                        >
-                            <Close fontSize="medium"/>
-                        </IconButton>
-                        :
-                        <></>
-                    }
+                    {this.renderWithPermissions(this.state.userId)}
                 </CardActions>
                 {this.renderConfirmDialog()}
             </Card>
