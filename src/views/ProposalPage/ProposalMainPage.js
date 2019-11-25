@@ -13,14 +13,14 @@ import {
 } from '@material-ui/core'
 
 // Imports of different components in project
-import AddCheckpointModal from "../AddCheckpoint/AddCheckpoint"
 import Comments from '../../components/Comments/Comments'
 import ProposalPage from "./ProposalPage"
 import RegularButton from '../../components/CustomButtons/RegularButton'
 import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer'
+import ProjectDialogue from "../../components/Projects/EditProjectModal"
+
 
 import config from "../../config"
-import { commentsService } from "../../services/commentsService"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/proposalMainPageStyle"
@@ -37,7 +37,6 @@ class ProposalMainPage extends Component {
         this.state = {
             userId: JSON.parse(localStorage.getItem('user')).userId,
             userType: userType,
-            dialogBoxOpened: false,
             projectData: projectData,
             buttonDisabled: !(userType === 0 || (userType !== 1 && projectData.status === "Approved" && projectData.joined === 0)),
             buttonMessage: this.getButtonMessage(userType, projectData.status, projectData.joined),
@@ -47,9 +46,7 @@ class ProposalMainPage extends Component {
 
         this.actionButtonClicked = this.actionButtonClicked.bind(this);
         this.getButtonMessage = this.getButtonMessage.bind(this);
-        this.deleteProject = this.deleteProject.bind(this);
         this.hasPermissions = this.hasPermissions.bind(this);
-        this.renderConfirmDialog = this.renderConfirmDialog.bind(this);
 
         console.log("UserType:" + this.state.userType);
         console.log(this.state.buttonDisabled)
@@ -122,60 +119,8 @@ class ProposalMainPage extends Component {
         }
     };
 
-    deleteProject = (projectId) => {
-        projectService.deleteProject(projectId)
-            .then(response => {
-                console.log(response);
-            })
-            .catch(err => {
-                console.log(err)
-            })
-
-    };
-
     hasPermissions = (ownerId) => {
         return (this.state.userType === 0 || this.state.userId === ownerId)
-    };
-
-    renderConfirmDialog = () => {
-        return (
-            <Dialog
-                open={this.state.dialogBoxOpened}
-                onClose={() => {
-                    this.setState({dialogBoxOpened: false})
-                }}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title">Delete comment?</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        Are you sure you want to delete this project?
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button
-                        onClick={() => {
-                            this.setState({dialogBoxOpened: false})
-                        }}
-                        color="primary"
-                    >
-                        No
-                    </Button>
-                    <Button
-                        onClick={() => {
-                            this.deleteProject(this.state.projectData.id);
-                            this.setState({dialogBoxOpened: false})
-                            // TODO add redirect to projectlist
-                        }}
-                        color="primary"
-                        autoFocus
-                    >
-                        Yes
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        )
     };
 
     render() {
@@ -204,23 +149,13 @@ class ProposalMainPage extends Component {
                             null
                         }
                         {this.hasPermissions(this.state.userId) ?
-                        <IconButton
-                                onClick={() => {
-                                    this.setState({
-                                        dialogBoxOpened: true
-                                    })
-                                }}
-                            >
-                                <Close fontSize="medium"/>
-                            </IconButton>
-                            :
+                            <ProjectDialogue ProjectData={this.state.projectData} /> :
                             <></>
                         }
                     </div>
                     <div className={classes.commentsDiv}>
                         <Comments projectId={this.state.projectData.id}/>
                     </div>
-                    {this.renderConfirmDialog()}
                 </ProposalPage>
             </ResponsiveDrawer>
         )
