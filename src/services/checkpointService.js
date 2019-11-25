@@ -9,7 +9,7 @@ function postCheckpoint(projectId, data) {
     var bearer = 'Bearer ' + token;
     return fetch(config.apiUrl + `/checkpoint/${projectId}/`, {
         mode: 'cors',
-        method: 'post',
+        method: 'POST',
         headers: {
             'Authorization': bearer,
             'Content-type': 'application/json'

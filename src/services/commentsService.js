@@ -28,7 +28,7 @@ function postComment(projectId, commentText) {
     var bearer = 'Bearer ' + token;
     return fetch(config.apiUrl + `/comments/${projectId}/`, {
         mode: 'cors',
-        method: 'post',
+        method: 'POST',
         headers: {
             'Authorization': bearer,
             'Content-type': 'application/json'
@@ -43,7 +43,7 @@ function deleteComment(commentId) {
     const bearer = 'Bearer ' + token;
     return fetch(config.apiUrl + `/comments/${commentId}/`, {
         mode: 'cors',
-        method: 'delete',
+        method: 'DELETE',
         headers: {
             'Authorization': bearer,
             'Content-type': 'application/json'

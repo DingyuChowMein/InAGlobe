@@ -6,7 +6,7 @@ function getProjects() {
 
     return fetch(`${config.apiUrl}/projects/`, {
         mode: 'cors',
-        method: 'get',
+        method: 'GET',
         headers: {
             'Authorization': bearer
         }
@@ -18,7 +18,7 @@ function postProject(data) {
     const bearer = 'Bearer ' + token;
     return fetch(`${config.apiUrl}/projects/`, {
         mode: 'cors',
-        method: 'post',
+        method: 'POST',
         headers: {
             'Authorization': bearer,
             'Content-type': 'application/json'
@@ -32,7 +32,7 @@ function deleteProject(projectId) {
     const bearer = 'Bearer ' + token;
     return fetch(config.apiUrl + `/projects/${projectId}/`, {
         mode: 'cors',
-        method: 'delete',
+        method: 'DELETE',
         headers: {
             'Authorization': bearer,
             'Content-type': 'application/json'
@@ -47,7 +47,7 @@ function updateProject(projectId, data) {
     const bearer = 'Bearer ' + token;
     return fetch(config.apiUrl + `/projects/${projectId}/`, {
         mode: 'cors',
-        method: 'patch',
+        method: 'PATCH',
         headers: {
             'Authorization': bearer,
             'Content-type': 'application/json'
