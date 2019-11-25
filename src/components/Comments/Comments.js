@@ -211,7 +211,7 @@ class Comments extends Component {
                                                 })
                                             }}
                                         >
-                                            <Close fontSize="medium"/>
+                                            <Close />
                                         </IconButton>
                                     </ListItemSecondaryAction>
                                     :
