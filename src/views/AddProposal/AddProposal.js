@@ -42,16 +42,20 @@ class AddProposal extends Component {
         super(props)
         this.state = {
             data: {
-                id: "",
+                // No point in id
+                // id: "",
                 title: "",
                 shortDescription: "",
                 detailedDescription: "",
                 location: "",
-                projectOwner: "",
+                // dont need this either, its assigned on the backend
+                // projectOwner: "",
                 documents: [],
-                organisationName: "",
-                organisationLogo: "",
-                status: "",
+                // Fill these in properly later
+                organisationName: "dummy",
+                organisationLogo: "dummy",
+                // status is not approved by default so we dont need it
+                // status: "",
                 images: []
             },
             previewOpen: false,
@@ -63,7 +67,7 @@ class AddProposal extends Component {
         registerPlugin(FilePondPluginFileValidateType)
     }
 
-    checkIfNotEmpty = () => Object.values(this.state.data).every(e => e.length !== 0)
+    checkIfNotEmpty = () => Object.values(this.state.data).every(e => e.length !== 0);
 
     handleFormChange = (event) => {
         console.log(event.target.id)
