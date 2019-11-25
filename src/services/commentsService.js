@@ -1,6 +1,4 @@
 import config from '../config'
-import {authHeader} from '../helpers/auth-header'
-
 
 // const apiUrl = 'http://localhost:5000';
 // const apiUrl = 'https://inaglobe-api.herokuapp.com';
