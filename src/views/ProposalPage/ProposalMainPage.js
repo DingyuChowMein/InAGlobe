@@ -2,15 +2,7 @@
 import React, { Component } from 'react'
 
 // Material UI libraries
-import {
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle, IconButton,
-    withStyles
-} from '@material-ui/core'
+import { withStyles } from '@material-ui/core'
 
 // Imports of different components in project
 import Comments from '../../components/Comments/Comments'
@@ -18,14 +10,10 @@ import ProposalPage from "./ProposalPage"
 import RegularButton from '../../components/CustomButtons/RegularButton'
 import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer'
 import ProjectDialogue from "../../components/Projects/EditProjectModal"
-
-
 import config from "../../config"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/proposalMainPageStyle"
-import {projectService} from "../../services/projectsService";
-import {Close} from "@material-ui/icons";
 
 class ProposalMainPage extends Component {
 
@@ -53,16 +41,16 @@ class ProposalMainPage extends Component {
     }
 
     actionButtonClicked = () => {
-        const token = JSON.parse(localStorage.getItem('user')).token
-        const bearer = 'Bearer ' + token
-        let new_project_data
+        const token = JSON.parse(localStorage.getItem('user')).token;
+        const bearer = 'Bearer ' + token;
+        let new_project_data;
         if (this.state.userType === 0) {
-            new_project_data = this.state.projectData
-            new_project_data.status = new_project_data.status === "Approved" ? "Needs Approval" : "Approved"
+            new_project_data = this.state.projectData;
+            new_project_data.status = new_project_data.status === "Approved" ? "Needs Approval" : "Approved";
             this.setState({
                 projectData: new_project_data,
                 buttonMessage: this.getButtonMessage(this.state.userType, new_project_data.status, new_project_data.joined)
-            })
+            });
             fetch(config.apiUrl + '/approve/', {
                 method: 'post',
                 headers: {
@@ -77,13 +65,13 @@ class ProposalMainPage extends Component {
                 console.log(err)
             })
         } else if ((this.state.userType === 2 || this.state.userType === 3) && (this.state.projectData.joined === 0)) {
-            new_project_data = this.state.projectData
-            new_project_data.joined = 1
+            new_project_data = this.state.projectData;
+            new_project_data.joined = 1;
             this.setState({
                 projectData: new_project_data,
                 buttonDisabled: true,
                 buttonMessage: this.getButtonMessage(this.state.userType, new_project_data.status, new_project_data.joined)
-            })
+            });
 
             fetch(config.apiUrl + '/dashboard/', {
                 method: 'post',
