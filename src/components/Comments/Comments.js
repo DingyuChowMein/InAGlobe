@@ -46,7 +46,7 @@ class Comments extends Component {
             postLoading: false,
             comments: [],
             userType: JSON.parse(localStorage.getItem('user')).permissions,
-            userId: JSON.parse(localStorage.getItem('user')).userid
+            userId: JSON.parse(localStorage.getItem('user')).userId,
         };
         this.eventSource = new EventSourcePolyfill(config.apiUrl + '/comment-stream/' + this.props.projectId, {
             mode: 'cors',
@@ -54,6 +54,14 @@ class Comments extends Component {
                 'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('user')).token
             }
         });
+
+        this.handleCommentUpdates = this.handleCommentUpdates.bind(this);
+        this.handleFormChange = this.handleFormChange.bind(this);
+        this.post = this.post.bind(this);
+        this.deleteComment = this.deleteComment.bind(this);
+        this.hasPermissions = this.hasPermissions.bind(this);
+        this.renderConfirmDialog = this.renderConfirmDialog.bind(this);
+
     }
 
     componentDidMount() {
@@ -66,8 +74,18 @@ class Comments extends Component {
                     })
                 })
             .catch(err => console.log(err));
-        this.eventSource.addEventListener('commentstream', (json) => {
-            const v = JSON.parse(json.data);
+        this.eventSource.addEventListener('commentstream', (json) => this.handleCommentUpdates(json));
+        this.eventSource.addEventListener('error', (err) => {console.log(err)});
+    }
+
+    componentWillUnmount() {
+        this.eventSource.removeEventListener('commentstream', (json) => this.handleCommentUpdates(json));
+        this.eventSource.removeEventListener('error', (err) => {console.log(err)});
+        this.eventSource.close();
+    }
+
+    handleCommentUpdates(json) {
+        const v = JSON.parse(json.data);
             console.log(v);
             if (v.message === 'Comment deleted!') {
                 const array = [...this.state.comments];
@@ -86,9 +104,7 @@ class Comments extends Component {
                     comments: this.state.comments.concat(v.comment)
                 })
             }
-        });
-        this.eventSource.addEventListener('error', (err) => {console.log(err)})
-    }
+    };
 
 
     handleFormChange = (e) => {
@@ -169,7 +185,7 @@ class Comments extends Component {
                 </DialogActions>
             </Dialog>
         )
-    }
+    };
 
     render() {
         const {classes} = this.props
