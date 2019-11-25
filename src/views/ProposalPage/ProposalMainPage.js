@@ -45,6 +45,12 @@ class ProposalMainPage extends Component {
             showModal: false,
         };
 
+        this.actionButtonClicked = this.actionButtonClicked.bind(this);
+        this.getButtonMessage = this.getButtonMessage.bind(this);
+        this.deleteProject = this.deleteProject.bind(this);
+        this.hasPermissions = this.hasPermissions.bind(this);
+        this.renderConfirmDialog = this.renderConfirmDialog.bind(this);
+
         console.log("UserType:" + this.state.userType);
         console.log(this.state.buttonDisabled)
     }
@@ -97,7 +103,7 @@ class ProposalMainPage extends Component {
                     console.log(err)
                 })
         }
-    }
+    };
 
     getButtonMessage = (userType, status, joined) => {
         if (userType === 0) {
@@ -114,7 +120,7 @@ class ProposalMainPage extends Component {
         } else {
             return "Joined"
         }
-    }
+    };
 
     deleteProject = (projectId) => {
         projectService.deleteProject(projectId)
