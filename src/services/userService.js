@@ -70,7 +70,7 @@ function updateProfile(userId, data) {
     const bearer = 'Bearer ' + JSON.parse(localStorage.getItem('user')).token;
     const requestOptions = {
         mode: 'cors',
-        method: "PATCH",
+        method: "POST",
         headers: {
             "Authorization": bearer,
             "Content-type": "application/json"
