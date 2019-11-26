@@ -296,9 +296,9 @@ class EditProfile extends Component {
                             <FilePond
                                 ref={ref => this.images = ref}
                                 allowMultiple={true}
+                                files={this.state.data.images}
                                 labelIdle='Drag & Drop your images (.jpg, .png. or .bmp) or <span class="filepond--label-action">Browse</span>'
                                 acceptedFileTypes={["image/*"]}
-                                oninit={() => { this.images.addFiles(this.state.data.images) }}
                                 onupdatefiles={pictureItems => {
                                     this.setState({
                                         data: {
