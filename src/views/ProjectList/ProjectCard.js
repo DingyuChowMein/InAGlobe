@@ -15,7 +15,7 @@ import {
 // Imports of different components in project
 import RegularButton from "../../components/CustomButtons/RegularButton"
 
-import ProjectDialogue from "../../components/Projects/EditProjectModal"
+import ProjectDialogue from "../../components/Projects/ProjectModals"
 
 import config from "../../config"
 
