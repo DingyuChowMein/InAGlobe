@@ -142,7 +142,7 @@ class ProposalMainPage extends Component {
                         }
                     </div>
                     <div className={classes.commentsDiv}>
-                        <Comments projectId={this.state.projectData.id}/>
+                        <Comments {...this.props} projectId={this.state.projectData.id}/>
                     </div>
                 </ProposalPage>
             </ResponsiveDrawer>
