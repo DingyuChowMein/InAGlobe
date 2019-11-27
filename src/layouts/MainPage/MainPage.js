@@ -14,22 +14,91 @@ import styles from "../../assets/jss/layouts/mainPageStyle"
 import {PrivateRoute} from "../../helpers/PrivateRoute";
 import {projectService} from "../../services/projectsService";
 
+// Importing helper or service functions
+import {EventSourcePolyfill} from "event-source-polyfill";
+import config from "../../config";
+
 
 class MainPage extends Component {
 
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
+            projects: [],
             '/projectlist': {
                 data: [],
                 refresh: this.getProjectList
+            }data: this.state.projects
             }
-        }
+        };
+        this.getProjectList = this.getProjectList.bind(this);
+        this.handleProjectUpdates = this.handleProjectUpdates.bind(this);
+        this.eventSource = new EventSourcePolyfill(config.apiUrl + '/project-stream/', {
+            headers: {
+                'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('user')).token
+            }
+        });
     }
 
     componentDidMount() {
-        this.getProjectList()
-    }
+        this.getProjectList();
+        this.eventSource.addEventListener('project-stream', json => this.handleProjectUpdates(json));
+        this.eventSource.addEventListener('error', (err) => {console.log(err.target)});
+    };
+
+    componentWillUnmount() {
+        this.eventSource.removeEventListener('project-stream', json => this.handleProjectUpdates(json));
+        this.eventSource.removeEventListener('error', (err) => {console.log(err.target)});
+        this.eventSource.close();
+    };
+
+    handleProjectUpdates(json) {
+        const v = JSON.parse(json.data);
+        console.log(v.project);
+        if (v.message === 'Project added to db!'){
+            console.log(v.project.projects[0]);
+            this.setState({
+                projects: this.state.projects.concat(v.project.projects[0])
+            })
+        }
+        else if (v.message === 'Project updated!'){
+            const array = [...this.state.projects];
+            const index = array.findIndex(function(item){
+                return item.id === v.project.id;
+            });
+            if (index !== -1) {
+                Object.keys(v.project).forEach((key) => {
+                    array[index][key] = v.project[key];
+                });
+                this.setState({
+                    projects: array
+                });
+            }
+        }
+        else if (v.message === 'Project approved!'){
+
+        }
+        else if (v.message === 'Project disapproved!'){
+
+        }
+        else if (v.message === 'Project deleted!'){
+            const array = [...this.state.projects];
+            const index = array.findIndex(function(item){
+                return item.id === v.project.id;
+            });
+            if (index !== -1) {
+                array.splice(index, 1);
+                this.setState({
+                    projects: array
+                });
+            }
+        }
+        this.setState({
+            ['/projectlist']: {
+                data: this.state.projects
+            }
+        });
+    };
 
     getProjectList = () => {
         projectService.getProjects()
@@ -37,6 +106,7 @@ class MainPage extends Component {
                 console.log(data);
                 data.projects.forEach(project => project.status = (project.status === 0 ? "Needs Approval" : "Approved"))
                 this.setState({
+                    projects: data.projects,
                     ['/projectlist']: {
                         data: data.projects,
                         refresh: this.getProjectList
@@ -47,9 +117,6 @@ class MainPage extends Component {
     };
 
     render() {
-        const {path} = this.props.match;
-
-        // mainRoutes.map((prop, key) => console.log(prop.path + this.state[prop.path]));
         return (
             <Switch>
                 {mainRoutes.map((prop, key) => {
