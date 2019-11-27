@@ -41,7 +41,7 @@ class ProjectCard extends Component {
     }
 
     hasPermission = (ownerId) => {
-        return (this.state.userType === 0 || this.state.userId === ownerId)
+        return (this.state.userType === 0 || this.state.userId === parseInt(ownerId))
     };
 
     render() {
@@ -74,7 +74,7 @@ class ProjectCard extends Component {
                     >
                         Learn More
                     </RegularButton>
-                    {this.hasPermission(this.state.userId) ?
+                    {this.hasPermission(this.props.data.projectOwner) ?
                         <ProjectDialogue ProjectData={this.props.data} /> :
                         <></>
                     }
