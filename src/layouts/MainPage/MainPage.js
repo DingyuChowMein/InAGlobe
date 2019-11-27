@@ -25,10 +25,14 @@ class MainPage extends Component {
         super(props);
         this.state = {
             projects: [],
+            '/home': {
+                data: {
+                    needApproval: []
+                }
+            },
             '/projectlist': {
                 data: [],
                 refresh: this.getProjectList
-            }data: this.state.projects
             }
         };
         this.getProjectList = this.getProjectList.bind(this);
@@ -76,10 +80,32 @@ class MainPage extends Component {
             }
         }
         else if (v.message === 'Project approved!'){
-
+            const array = [...this.state.projects];
+            const index = array.findIndex(function(item){
+                return item.id === v.project.id;
+            });
+            if (index !== -1) {
+                Object.keys(v.project).forEach((key) => {
+                    array[index][key] = v.project[key];
+                });
+                this.setState({
+                    projects: array
+                });
+            }
         }
         else if (v.message === 'Project disapproved!'){
-
+            const array = [...this.state.projects];
+            const index = array.findIndex(function(item){
+                return item.id === v.project.id;
+            });
+            if (index !== -1) {
+                Object.keys(v.project).forEach((key) => {
+                    array[index][key] = v.project[key];
+                });
+                this.setState({
+                    projects: array
+                });
+            }
         }
         else if (v.message === 'Project deleted!'){
             const array = [...this.state.projects];
@@ -94,6 +120,11 @@ class MainPage extends Component {
             }
         }
         this.setState({
+            ['/home']: {
+                data: {
+                    needApproval: this.state.projects.filter(project => project.status === "Needs Approval")
+                }
+            },
             ['/projectlist']: {
                 data: this.state.projects
             }
@@ -107,6 +138,11 @@ class MainPage extends Component {
                 data.projects.forEach(project => project.status = (project.status === 0 ? "Needs Approval" : "Approved"))
                 this.setState({
                     projects: data.projects,
+                    ['/home']: {
+                        data: {
+                            needApproval: data.projects.filter(project => project.status === "Needs Approval")
+                        }
+                    },
                     ['/projectlist']: {
                         data: data.projects,
                         refresh: this.getProjectList

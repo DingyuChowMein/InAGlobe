@@ -163,7 +163,7 @@ class Dashboard extends Component {
                             <CardScrollView
                                 {...this.props}
                                 className={classes.root}
-                                cardData={this.state.projects}
+                                cardData={this.props.data.needApproval}
                                 title="Projects to Approve"
                                 EmptyIcon={UpdateOutlined}
                                 emptyText="No Approvals Needed for New Projects"
