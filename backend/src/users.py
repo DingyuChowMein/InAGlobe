@@ -2,7 +2,7 @@ import os
 
 from flask import abort, render_template
 from .auth import token_auth, permission_required
-from .models import User, USER_TYPE
+from .models import User, UserFile, USER_TYPE
 from .tokens import generate_confirmation_token, confirm_token
 from .emails import send_email
 from datetime import datetime

@@ -32,7 +32,7 @@ class ProjectApprovals extends Component {
                         />
                     </Grid>
                     <Grid item xs={7}>
-                        <CardContent component="div">
+                        <CardContent component="div" onClick={() => this.props.history.push("/main/userprofile/" + card.userId)}>
                             <Typography component="h3" variant="body1" className={classes.userApproval}>
                                 {card.userName}
                             </Typography>
