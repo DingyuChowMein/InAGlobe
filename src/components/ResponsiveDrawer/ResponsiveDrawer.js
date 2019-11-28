@@ -33,6 +33,7 @@ import logo from '../../assets/img/logo.png'
 // Importing class's stylesheet
 import styles from "../../assets/jss/components/responsiveDrawerStyle"
 import 'react-perfect-scrollbar/dist/css/styles.css'
+import Tooltip from "@material-ui/core/Tooltip";
 
 class ResponsiveDrawer extends Component {
 
@@ -65,7 +66,9 @@ class ResponsiveDrawer extends Component {
         console.log(user)
         if (!user.location || !user.shortDescription || !user.longDescription) {
             alert = (
-                <Warning color="red" />
+                <Tooltip title="Incomplete user profile!">
+                    <Warning/>
+                </Tooltip>
             )
         }
 
