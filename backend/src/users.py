@@ -1,6 +1,6 @@
 import os
 
-from . import db, redis_client
+from . import db
 from flask import g, abort, render_template, current_app as app
 from .auth import token_auth, permission_required
 from .models import User, UserFile, USER_TYPE, FILE_TYPE
@@ -93,6 +93,8 @@ def create_user(data):
 @token_auth.login_required
 @permission_required(USER_TYPE['STUDENT'])
 def update_user(data, user_id):
+    app.logger.info("the type of user_id is {} and User.id is {}".format(type(user_id), type(User.id)))
+    app.logger.info("user_id: {}  and   User.id: {}".format(user_id, User.id))
     u = db.session.query(User).filter(User.id == user_id).first()
     if u is None:
         return {'message': 'User does not exist!'}, 404
@@ -102,7 +104,7 @@ def update_user(data, user_id):
             return {'message': 'No changes!'}, 204
 
         for k, v in data.items():
-            if k in ["permissions", "token"]:
+            if k in ["permissions", "token", "userId"]:
                 continue
 
             if not v:
@@ -134,17 +136,15 @@ def update_user(data, user_id):
                         file.save()
 
         db.session.commit()
-        response = {'message': 'Project updated!'}
         app.logger.info("update user published to channel user")
-        redis_client.publish('user', dumps(response))
-        return response, 200
+        return {'message': 'Project updated!'}, 200
     else:
         return {'message': "User not allowed to change other user's profile"}, 403
 
 
 @token_auth.login_required
 @permission_required(USER_TYPE['ADMIN'])
-def delete_user(data, user_id):
+def delete_user(user_id):
     pass
 
 

@@ -101,7 +101,7 @@ class User(Resource):
         return make_response(response, code)
 
     def delete(self, identifier):
-        response, code = delete_user(request.get_json(), identifier)
+        response, code = delete_user(identifier)
         return make_response(response, code)
 
 
