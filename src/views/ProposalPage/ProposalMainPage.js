@@ -108,7 +108,7 @@ class ProposalMainPage extends Component {
     };
 
     hasPermissions = (ownerId) => {
-        return (this.state.userType === 0 || this.state.userId === ownerId)
+        return (this.state.userType === 0 || this.state.userId === parseInt(ownerId))
     };
 
     render() {
@@ -136,7 +136,7 @@ class ProposalMainPage extends Component {
                             :
                             null
                         }
-                        {this.hasPermissions(this.state.userId) ?
+                        {this.hasPermissions(this.state.projectData.projectOwner) ?
                             <ProjectDialogue ProjectData={this.state.projectData} /> :
                             <></>
                         }
