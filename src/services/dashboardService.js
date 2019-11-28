@@ -9,7 +9,7 @@ function getDashboard() {
     const bearer = 'Bearer ' + token;
     return fetch(config.apiUrl + '/dashboard/', {
         mode: 'cors',
-        method: 'get',
+        method: 'GET',
         headers: {
             'Authorization': bearer
         },

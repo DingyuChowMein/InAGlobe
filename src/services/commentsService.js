@@ -1,6 +1,4 @@
 import config from '../config'
-import {authHeader} from '../helpers/auth-header'
-
 
 // const apiUrl = 'http://localhost:5000';
 // const apiUrl = 'https://inaglobe-api.herokuapp.com';
@@ -28,7 +26,7 @@ function postComment(projectId, commentText) {
     var bearer = 'Bearer ' + token;
     return fetch(config.apiUrl + `/comments/${projectId}/`, {
         mode: 'cors',
-        method: 'post',
+        method: 'POST',
         headers: {
             'Authorization': bearer,
             'Content-type': 'application/json'
@@ -43,7 +41,7 @@ function deleteComment(commentId) {
     const bearer = 'Bearer ' + token;
     return fetch(config.apiUrl + `/comments/${commentId}/`, {
         mode: 'cors',
-        method: 'delete',
+        method: 'DELETE',
         headers: {
             'Authorization': bearer,
             'Content-type': 'application/json'

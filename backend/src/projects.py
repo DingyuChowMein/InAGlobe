@@ -74,7 +74,7 @@ def upload_project(data):
         g.current_user.projects.append(project)
         db.session.commit()
 
-        project_json = get_projects_helper([project])[0]
+        project_json = get_projects_helper([project])
         response = {'message': 'Project added to db!', 'project': project_json}
 
         app.logger.info('upload project published to channel projects')
@@ -93,11 +93,21 @@ def delete_project(project_id):
     if project is None:
         return {'message': 'Project does not exist!'}, 404
     if project in g.current_user.projects or g.current_user.is_admin():
-        project_json = get_projects_helper([project])[0]
-        response = {'message': 'Project deleted!', 'project': project_json}
+        response = {'message': 'Project deleted!', 'project': {'id': project_id}}
         app.logger.info('project deleted')
         app.logger.info('delete project published to channel projects')
         redis_client.publish('projects', dumps(response))
+
+        # TODO create tests
+        from .models import Comment
+        from .comments import delete_comment
+        for comment in Comment.query.filter(Comment.project_id == project_id).all():
+            delete_comment(comment.id)
+
+        # TODO delete files in s3 & test
+        for file in File.query.filter(File.project_id == project_id).all():
+            file.delete()
+
         project.delete()
         return response, 200
     else:
@@ -111,6 +121,8 @@ def update_project(data, project_id):
     if p is None:
         return {'message': 'Project does not exist!'}, 404
     if p in g.current_user.projects or g.current_user.is_admin():
+        project_json = {'id': p.id}
+
         if not data.items():
             return {'message': 'No changes!'}, 204
 
@@ -120,21 +132,26 @@ def update_project(data, project_id):
                 return {'message': 'Bad request!'}, 400
             if v is not '':
                 if k == 'title':
+                    project_json['title'] = v
                     p.title = v
                 if k == 'shortDescription':
+                    project_json['shortDescription'] = v
                     p.short_description = v
                 if k == 'detailedDescription':
+                    project_json['detailedDescription'] = v
                     p.long_description = v
                 if k == 'location':
+                    project_json['location'] = v
                     p.location = v
                 if k == 'organisationName':
+                    project_json['organisationName'] = v
                     p.organisation_name = v
                 if k == 'organisationLogo':
+                    project_json['organisationLogo'] = v
                     p.organisation_logo = v
 
         app.logger.info('project updated')
         db.session.commit()
-        project_json = get_projects_helper([p])[0]
         response = {'message': 'Project updated!', 'project': project_json}
         app.logger.info('update project published to channel projects')
         redis_client.publish('projects', dumps(response))
@@ -216,14 +233,15 @@ def approve_project(data):
     if project.status == PROJECT_STATUS['APPROVED']:
         project.status = PROJECT_STATUS['NEEDS_APPROVAL']
         message = "Project disapproved!"
+        status = "Needs Approval"
     else:
         project.status = PROJECT_STATUS['APPROVED']
         message = "Project approved!"
+        status = "Approved"
     project.save()
     app.logger.info('project approval')
 
-    project_json = get_projects_helper([project])[0]
-    response = {'message': message, 'project': project_json}
+    response = {'message': message, 'project': {'id': project.id, 'status': status}}
 
     app.logger.info('project approval published to channel projects')
     redis_client.publish('projects', dumps(response))

@@ -1,5 +1,4 @@
 import React, {Component} from "react"
-import {confirmAlert} from 'react-confirm-alert'
 import Spinner from 'react-spinner-material'
 
 import {
@@ -46,7 +45,7 @@ class Comments extends Component {
             postLoading: false,
             comments: [],
             userType: JSON.parse(localStorage.getItem('user')).permissions,
-            userId: JSON.parse(localStorage.getItem('user')).userid
+            userId: JSON.parse(localStorage.getItem('user')).userId,
         };
         this.eventSource = new EventSourcePolyfill(config.apiUrl + '/comment-stream/' + this.props.projectId, {
             mode: 'cors',
@@ -54,6 +53,14 @@ class Comments extends Component {
                 'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('user')).token
             }
         });
+
+        this.handleCommentUpdates = this.handleCommentUpdates.bind(this);
+        this.handleFormChange = this.handleFormChange.bind(this);
+        this.post = this.post.bind(this);
+        this.deleteComment = this.deleteComment.bind(this);
+        this.hasPermissions = this.hasPermissions.bind(this);
+        this.renderConfirmDialog = this.renderConfirmDialog.bind(this);
+
     }
 
     componentDidMount() {
@@ -66,29 +73,37 @@ class Comments extends Component {
                     })
                 })
             .catch(err => console.log(err));
-        this.eventSource.addEventListener('commentstream', (json) => {
-            const v = JSON.parse(json.data);
-            console.log(v);
-            if (v.message === 'Comment deleted!') {
-                const array = [...this.state.comments];
-                const index = array.findIndex(function(item){
-                    return item.commentId === v.comment.commentId
-                });
-                if (index !== -1) {
-                    array.splice(index, 1);
-                    console.log(array);
-                    this.setState({
-                        comments: array
-                    });
-                }
-            } else if (v.message === 'Comment added!') {
-                this.setState({
-                    comments: this.state.comments.concat(v.comment)
-                })
-            }
-        });
-        this.eventSource.addEventListener('error', (err) => {console.log(err)})
+        this.eventSource.addEventListener('commentstream', (json) => this.handleCommentUpdates(json));
+        this.eventSource.addEventListener('error', (err) => {console.log(err)});
     }
+
+    componentWillUnmount() {
+        this.eventSource.removeEventListener('commentstream', (json) => this.handleCommentUpdates(json));
+        this.eventSource.removeEventListener('error', (err) => {console.log(err)});
+        this.eventSource.close();
+    }
+
+    handleCommentUpdates(json) {
+        const v = JSON.parse(json.data);
+        console.log(v);
+        if (v.message === 'Comment deleted!') {
+            const array = [...this.state.comments];
+            const index = array.findIndex(function(item){
+                return item.commentId === v.comment.commentId
+            });
+            if (index !== -1) {
+                array.splice(index, 1);
+                console.log(array);
+                this.setState({
+                    comments: array
+                });
+            }
+        } else if (v.message === 'Comment added!') {
+            this.setState({
+                comments: this.state.comments.concat(v.comment)
+            })
+        }
+    };
 
 
     handleFormChange = (e) => {
@@ -98,7 +113,7 @@ class Comments extends Component {
     };
 
     post = () => {
-        const today = new Date()
+        const today = new Date();
         this.setState({
             postLoading: true,
             date: `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()}`
@@ -107,7 +122,7 @@ class Comments extends Component {
         commentsService.postComment(this.props.projectId, this.state.text)
             .then(response => response.json())
             .then(response => {
-                console.log(response)
+                console.log(response);
                 this.setState({
                     postLoading: false,
                     text: ""
@@ -150,7 +165,7 @@ class Comments extends Component {
                 <DialogActions>
                     <Button
                         onClick={() => {
-                            this.setState({dialogBoxOpened: false})
+                            this.setState({dialogBoxOpened: false});
                         }}
                         color="primary"
                     >
@@ -158,8 +173,8 @@ class Comments extends Component {
                     </Button>
                     <Button
                         onClick={() => {
-                            this.deleteComment(this.state.selectedCommentId)
-                            this.setState({dialogBoxOpened: false})
+                            this.deleteComment(this.state.selectedCommentId);
+                            this.setState({dialogBoxOpened: false});
                         }}
                         color="primary"
                         autoFocus
@@ -169,7 +184,7 @@ class Comments extends Component {
                 </DialogActions>
             </Dialog>
         )
-    }
+    };
 
     render() {
         const {classes} = this.props
@@ -183,6 +198,7 @@ class Comments extends Component {
                                     <Avatar
                                         alt="Profile Picture"
                                         src="https://picsum.photos/128"
+                                        onClick={() => this.props.history.push("/main/userprofile/" + comment.ownerId)}
                                     />
                                 </ListItemAvatar>
                                 {this.hasPermissions(comment.ownerId) ?
@@ -195,7 +211,7 @@ class Comments extends Component {
                                                 })
                                             }}
                                         >
-                                            <Close fontSize="medium"/>
+                                            <Close />
                                         </IconButton>
                                     </ListItemSecondaryAction>
                                     :
@@ -216,6 +232,7 @@ class Comments extends Component {
                                             {` — ${comment.text}`}
                                         </React.Fragment>
                                     }
+                                    onClick={() => this.props.history.push("/main/userprofile/" + comment.ownerId)}
                                 />
                             </ListItem>
                             <Divider variant="inset" component="li"/>
