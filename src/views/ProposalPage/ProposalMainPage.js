@@ -20,8 +20,6 @@ class ProposalMainPage extends Component {
     constructor(props) {
         super(props);
         const userType = JSON.parse(localStorage.getItem('user')).permissions;
-        const projectData = JSON.parse(localStorage.getItem(`proposalPage/${this.props.match.params.id}`));
-        console.log(projectData);
         this.state = {
             userId: JSON.parse(localStorage.getItem('user')).userId,
             userType: userType,

@@ -68,8 +68,7 @@ class AddProposal extends Component {
     }
 
     checkIfNotEmpty = () => {
-        // Object.values(this.state.data).every(e => e.length !== 0);
-        return true;
+        Object.values(this.state.data).every(e => e.length !== 0);
     };
 
     handleFormChange = (event) => {

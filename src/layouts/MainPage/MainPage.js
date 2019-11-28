@@ -23,17 +23,15 @@ class MainPage extends Component {
 
     constructor(props) {
         super(props);
+        this.getProjectList();
         this.state = {
             projects: [],
             '/home': {
-                data: {
-                    needApproval: []
-                }
+                needApproval: []
             },
-            '/projectlist': {
-                data: [],
-                refresh: this.getProjectList
-            }
+
+            '/projectlist': [],
+            '/proposalpage/:id': []
         };
         this.getProjectList = this.getProjectList.bind(this);
         this.handleProjectUpdates = this.handleProjectUpdates.bind(this);
@@ -45,7 +43,6 @@ class MainPage extends Component {
     }
 
     componentDidMount() {
-        this.getProjectList();
         this.eventSource.addEventListener('project-stream', json => this.handleProjectUpdates(json));
         this.eventSource.addEventListener('error', (err) => {console.log(err)});
     };
@@ -62,72 +59,27 @@ class MainPage extends Component {
         if (v.message === 'Project added to db!'){
             console.log(v.project);
             this.setState({
-                projects: this.state.projects.concat(v.project)
+                ['/projectlist']: this.state['/projectlist'].concat(v.project)
             })
         }
-        else if (v.message === 'Project updated!'){
-            const array = [...this.state.projects];
-            const index = array.findIndex(function(item){
-                return item.id === v.project.id;
-            });
-            if (index !== -1) {
-                Object.keys(v.project).forEach((key) => {
-                    array[index][key] = v.project[key];
-                });
-                this.setState({
-                    projects: array
-                });
-            }
-        }
-        else if (v.message === 'Project approved!'){
-            const array = [...this.state.projects];
-            const index = array.findIndex(function(item){
-                return item.id === v.project.id;
-            });
-            if (index !== -1) {
-                Object.keys(v.project).forEach((key) => {
-                    array[index][key] = v.project[key];
-                });
-                this.setState({
-                    projects: array
-                });
-            }
-        }
-        else if (v.message === 'Project disapproved!'){
-            const array = [...this.state.projects];
-            const index = array.findIndex(function(item){
-                return item.id === v.project.id;
-            });
-            if (index !== -1) {
-                Object.keys(v.project).forEach((key) => {
-                    array[index][key] = v.project[key];
-                });
-                this.setState({
-                    projects: array
-                });
-            }
-        }
-        else if (v.message === 'Project deleted!'){
-            const array = [...this.state.projects];
+        else if (v.message === 'Project updated!'
+            || v.message === 'Project approved!'
+            || v.message === 'Project disapproved') {
+            const array = [...this.state['/projectlist']];
             const index = array.findIndex(function(item){
                 return item.id === v.project.id;
             });
             if (index !== -1) {
                 array.splice(index, 1);
                 this.setState({
-                    projects: array
+                    ['/projectlist']: array,
+                    ['/proposalpage/:id']: array
                 });
             }
         }
+
         this.setState({
-            ['/home']: {
-                data: {
-                    needApproval: this.state.projects.filter(project => project.status === "Needs Approval")
-                }
-            },
-            ['/projectlist']: {
-                data: this.state.projects
-            }
+            ['/home']: { needApproval: this.state.projects.filter(project => project.status === "Needs Approval") }
         });
     };
 
@@ -139,14 +91,10 @@ class MainPage extends Component {
                 this.setState({
                     projects: data.projects,
                     ['/home']: {
-                        data: {
-                            needApproval: data.projects.filter(project => project.status === "Needs Approval")
-                        }
+                        needApproval: data.projects.filter(project => project.status === "Needs Approval")
                     },
-                    ['/projectlist']: {
-                        data: data.projects,
-                        refresh: this.getProjectList
-                    }
+                    ['/projectlist']:  data.projects,
+                    ['/proposalpage/:id']:  data.projects
                 })
             })
             .catch(console.log);
