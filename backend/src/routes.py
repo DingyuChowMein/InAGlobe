@@ -47,17 +47,17 @@ class Projects(Resource):
         return make_response(response, code)
 
     def post(self):
-        app.logger.info('calling post comment')
+        app.logger.info('calling post project')
         response, code = upload_project(request.get_json())
         return make_response(response, code)
 
     def delete(self, identifier):
-        app.logger.info('calling delete comment')
+        app.logger.info('calling delete project')
         response, code = delete_project(identifier)
         return make_response(response, code)
 
     def patch(self, identifier):
-        app.logger.info('calling patch comment')
+        app.logger.info('calling patch project')
         response, code = update_project(request.get_json(), identifier)
         return make_response(response, code)
 
@@ -65,7 +65,6 @@ class Projects(Resource):
 class ProjectStream(Resource):
     def get(self):
         return Response(project_stream(), mimetype='text/event-stream')
-
 
 class Comments(Resource):
     def get(self, identifier):
