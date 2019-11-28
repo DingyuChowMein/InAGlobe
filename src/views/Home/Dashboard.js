@@ -313,9 +313,10 @@ class Dashboard extends Component {
             //             <GridItem xs={12} sm={12} md={6} key={card.id}>
             //                 <ProjectCard data={card}/>
             //             </GridItem>
-            //         ))} 
+            //         ))}
             //     </GridContainer>
             // </div>
+
             <ResponsiveDrawer name={"Dashboard"}>
                 {dashboardComponents}
             </ResponsiveDrawer>

@@ -3,11 +3,14 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { withRouter } from 'react-router-dom'
+import {Button} from '@material-ui/core/';
+// import { positions } from '@material-ui/system';
+
 
 // Material UI libraries
-import { 
-    withStyles, 
-    AppBar, 
+import {
+    withStyles,
+    AppBar,
     CssBaseline,
     Drawer,
     Hidden,
@@ -56,7 +59,7 @@ class ResponsiveDrawer extends Component {
         const history = this.props.history
         history.push(link)
     }
-    
+
     render() {
         const { classes, container, name } = this.props
 
@@ -74,24 +77,24 @@ class ResponsiveDrawer extends Component {
                     {drawerRoutes.map(route => (
                         route.icon !== null && route.userLevel >= this.state.userPermissions
                         ?
-                        <ListItem 
-                            button 
+                        <ListItem
+                            button
                             onClick={() => this.redirectTo(route.layout + route.path)}
                             key={route.name}
                             className={classes.centering}
                         >
-                            {this.state.mobileOpen ? 
-                            <ListItemIcon><route.icon fontSize="large" /></ListItemIcon> : 
+                            {this.state.mobileOpen ?
+                            <ListItemIcon><route.icon fontSize="large" /></ListItemIcon> :
                             <ListItemIcon className={classes.iconColor}><route.icon fontSize="large" /></ListItemIcon>}
 
-                            <ListItemText 
+                            <ListItemText
                                 primary={route.name}
-                                classes={{ 
-                                    primary: classes.listItemText, 
-                                    root: classes.drawerSectionSize 
+                                classes={{
+                                    primary: classes.listItemText,
+                                    root: classes.drawerSectionSize
                                 }} />
                         </ListItem>
-                        : 
+                        :
                         null
                     ))}
                 </List>
@@ -118,11 +121,15 @@ class ResponsiveDrawer extends Component {
                         <Typography variant="h6" noWrap>
                             {name}
                         </Typography>
-
+                        <div className={classes.Feedback}>
+                          <Button variant="contained" color="primary" href="https://docs.google.com/forms/d/1zlTYv3DcmLTRvSb2B0Wg08tdk7LDtpfKpYcoQSpZzk0">
+                            Give Feedback
+                          </Button>
+                        </div>
                     </Toolbar>
                 </AppBar>
-                <nav 
-                    className={classes.drawer} 
+                <nav
+                    className={classes.drawer}
                     aria-label="mailbox folders">
                     {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
                     <Hidden smUp implementation="css">
@@ -156,7 +163,7 @@ class ResponsiveDrawer extends Component {
                     </Hidden>
                 </nav>
 
-            
+
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
                     {this.props.children}

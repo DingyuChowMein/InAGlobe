@@ -75,9 +75,12 @@ const styles = theme => ({
 		height: "50px"
 	},
 	centering: {
-        display: "flex", 
-        alignItems: "center", 
-        justifyContent: "left", 
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "left",
+	},
+	Feedback: {
+		paddingLeft: "10px",
 	}
 });
 
