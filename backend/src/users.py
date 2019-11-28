@@ -91,7 +91,7 @@ def create_user(data):
 
 
 @token_auth.login_required
-@permission_required(USER_TYPE['STUDENT'])
+# @permission_required(USER_TYPE['STUDENT'])
 def update_user(data, user_id):
     app.logger.info("the type of user_id is {} and User.id is {}".format(type(user_id), type(User.id)))
     app.logger.info("user_id: {}  and   User.id: {}".format(user_id, User.id))
@@ -107,7 +107,7 @@ def update_user(data, user_id):
             if k in ["permissions", "token", "userId"]:
                 continue
 
-            if not v:
+            if v is not '':
                 if k == "firstName":
                     u.first_name = v
                 elif k == "lastName":
