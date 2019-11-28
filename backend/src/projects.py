@@ -313,10 +313,16 @@ def project_stream():
             # print("project: ", project)
             # print("message: ", message)
             # switch on approval status and user permission
+            # print("USERPROJECTS: ", [p.id for p in user.projects])
+            # print("PROJECT ID: ", project.get('id'))
+            print("ownerId: ", project.get('projectOwner'))
+            print("USER ID:", user.get_id())
+
+            # print("PROJECT ID IN USER PROJECTS: ", project.get('id') in [p.id for p in user.projects])
             if (
                     project.get('status') == PROJECT_STATUS['APPROVED'] or
                     user.is_admin() or
-                    project.get('id') in user.projects or
+                    int(project.get('projectOwner')) == user.get_id() or 
                     message == 'Project disapproved!'
             ):
                 yield 'event: project-stream\ndata: {}\n\n'.format(dumps(dict(project=project, message=message)))

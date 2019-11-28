@@ -67,7 +67,10 @@ class AddProposal extends Component {
         registerPlugin(FilePondPluginFileValidateType)
     }
 
-    checkIfNotEmpty = () => Object.values(this.state.data).every(e => e.length !== 0);
+    checkIfNotEmpty = () => {
+        // Object.values(this.state.data).every(e => e.length !== 0);
+        return true;
+    };
 
     handleFormChange = (event) => {
         console.log(event.target.id)
