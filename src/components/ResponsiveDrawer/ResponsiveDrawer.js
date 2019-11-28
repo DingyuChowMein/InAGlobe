@@ -19,7 +19,7 @@ import {
     Toolbar,
     Typography
 } from '@material-ui/core'
-import { Menu } from '@material-ui/icons'
+import { Menu, Warning } from '@material-ui/icons'
 
 // Importing webpath data for drawer links
 import { drawerRoutes } from '../../routes'
@@ -60,6 +60,15 @@ class ResponsiveDrawer extends Component {
     render() {
         const { classes, container, name } = this.props
 
+        var alert = null
+        const user = JSON.parse(localStorage.getItem("user"))
+        console.log(user)
+        if (!user.location || !user.shortDescription || !user.longDescription) {
+            alert = (
+                <Warning color="red" />
+            )
+        }
+
         const drawer = (
             <div>
                 <div className={classes.toolbar} style={{ textAlign: "left" }}>
@@ -89,7 +98,10 @@ class ResponsiveDrawer extends Component {
                                 classes={{ 
                                     primary: classes.listItemText, 
                                     root: classes.drawerSectionSize 
-                                }} />
+                                }}
+                            />
+
+                            {route.name === "User Profile" ? alert : null}
                         </ListItem>
                         : 
                         null

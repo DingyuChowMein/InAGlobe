@@ -14,7 +14,7 @@ import {
     ArrowBackIos, 
     ArrowForwardIos, 
     Create, 
-    LocationOn 
+    LocationOn,
 } from "@material-ui/icons"
 
 import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer'
