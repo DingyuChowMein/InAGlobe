@@ -91,7 +91,7 @@ def create_user(data):
 
 
 @token_auth.login_required
-@permission_required(USER_TYPE['STUDENT'])
+# @permission_required(USER_TYPE['STUDENT'])
 def update_user(data, user_id):
     u = db.session.query(User).filter(User.id == user_id).first()
     if u is None:
@@ -105,7 +105,7 @@ def update_user(data, user_id):
             if k in ["permissions", "token"]:
                 continue
 
-            if not v:
+            if v is not '':
                 if k == "firstName":
                     u.first_name = v
                 elif k == "lastName":
