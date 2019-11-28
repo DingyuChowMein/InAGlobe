@@ -1,8 +1,8 @@
 // Main ReactJS libraries
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 
 // Material UI libraries
-import { withStyles } from '@material-ui/core'
+import {withStyles} from '@material-ui/core'
 
 // Imports of different components in project
 import Comments from '../../components/Comments/Comments'
@@ -20,13 +20,14 @@ class ProposalMainPage extends Component {
     constructor(props) {
         super(props);
         const userType = JSON.parse(localStorage.getItem('user')).permissions;
-        const projectData = JSON.parse(localStorage.getItem(`proposalPage/${this.props.match.params.id}`));
+        const projectData = JSON.parse(localStorage.getItem('projects')).projects.filter(project => project.id == this.props.match.params.id)[0]
+
         console.log(projectData);
         this.state = {
             userId: JSON.parse(localStorage.getItem('user')).userId,
             userType: userType,
             projectData: projectData,
-            buttonDisabled: !(userType === 0 || (userType !== 1 && projectData.status === "Approved" && projectData.joined === 0)),
+            buttonDisabled: !(userType === 0 || (userType !== 1 && projectData.status === "Approved")),
             buttonMessage: this.getButtonMessage(userType, projectData.status, projectData.joined),
             comments: [],
             showModal: false,
@@ -37,6 +38,8 @@ class ProposalMainPage extends Component {
         this.hasPermissions = this.hasPermissions.bind(this);
 
         console.log("UserType:" + this.state.userType);
+        console.log(userType)
+        console.log(projectData.status)
         console.log(this.state.buttonDisabled)
     }
 
@@ -64,29 +67,54 @@ class ProposalMainPage extends Component {
             }).catch((err) => {
                 console.log(err)
             })
-        } else if ((this.state.userType === 2 || this.state.userType === 3) && (this.state.projectData.joined === 0)) {
-            new_project_data = this.state.projectData;
-            new_project_data.joined = 1;
-            this.setState({
-                projectData: new_project_data,
-                buttonDisabled: true,
-                buttonMessage: this.getButtonMessage(this.state.userType, new_project_data.status, new_project_data.joined)
-            });
+        } else if ((this.state.userType === 2 || this.state.userType === 3)) {
+            if (this.state.projectData.joined == 0) {
+                new_project_data = this.state.projectData;
+                new_project_data.joined = 1;
+                this.setState({
+                    projectData: new_project_data,
+                    buttonMessage: this.getButtonMessage(this.state.userType, new_project_data.status, new_project_data.joined)
+                });
 
-            fetch(config.apiUrl + '/dashboard/', {
-                method: 'post',
-                headers: {
-                    'Authorization': bearer,
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify({"projectId": this.state.projectData.id}),
-            }).then((response) => {
-                // Redirect here based on response
-                console.log(response)
-            })
-                .catch((err) => {
-                    console.log(err)
+                fetch(config.apiUrl + '/dashboard/', {
+                    method: 'post',
+                    headers: {
+                        'Authorization': bearer,
+                        'Content-type': 'application/json'
+                    },
+                    body: JSON.stringify({"projectId": this.state.projectData.id}),
+                }).then((response) => {
+                    // Redirect here based on response
+                    console.log(response)
                 })
+                    .catch((err) => {
+                        console.log(err)
+                    })
+            } else {
+                new_project_data = this.state.projectData;
+                new_project_data.joined = 0;
+                this.setState({
+                    projectData: new_project_data,
+                    buttonMessage: this.getButtonMessage(this.state.userType, new_project_data.status, new_project_data.joined)
+                });
+
+                fetch(config.apiUrl + '/dashboard/', {
+                    method: 'delete',
+                    headers: {
+                        'Authorization': bearer,
+                        'Content-type': 'application/json'
+                    },
+                    body: JSON.stringify({"projectId": this.state.projectData.id}),
+                }).then((response) => {
+                    // Redirect here based on response
+                    console.log(response)
+                })
+                    .catch((err) => {
+                        console.log(err)
+                    })
+
+            }
+
         }
     };
 
@@ -101,9 +129,9 @@ class ProposalMainPage extends Component {
         } else if (joined === 0) {
             return "Request joining"
         } else if (joined === 1) {
-            return "Awaiting approval"
+            return "Cancel request"
         } else {
-            return "Joined"
+            return "Leave project"
         }
     };
 
@@ -125,19 +153,19 @@ class ProposalMainPage extends Component {
                         >
                             {this.state.buttonMessage}
                         </RegularButton>
-                        {this.state.projectData.joined === 2 
+                        {this.state.projectData.joined === 2
                             ?
                             <RegularButton
                                 color="primary"
                                 onClick={() => this.props.history.push(`/main/projectlist/checkpoint/${match.params.id}`)}
                             >
                                 Add Checkpoint Progress
-                            </RegularButton> 
+                            </RegularButton>
                             :
                             null
                         }
                         {this.hasPermissions(this.state.projectData.projectOwner) ?
-                            <ProjectDialogue ProjectData={this.state.projectData} /> :
+                            <ProjectDialogue ProjectData={this.state.projectData}/> :
                             <></>
                         }
                     </div>

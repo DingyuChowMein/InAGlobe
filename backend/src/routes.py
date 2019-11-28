@@ -2,7 +2,7 @@ from flask import current_app as app, make_response, request, Response
 from flask_restful import Resource
 from .projects import (
     get_projects, upload_project, approve_project, upload_checkpoint, get_dashboard_projects,
-    select_project, get_joining_requests, approve_project_join, delete_project, update_project, project_stream
+    select_project, get_joining_requests, approve_project_join, delete_project, update_project, project_stream, deselect_project
 )
 from .users import (
     get_users, create_user, confirm_email, confirm_reset_password_token, reset_password,
@@ -37,6 +37,11 @@ class Dashboard(Resource):
 
     def post(self):
         response, code = select_project(request.get_json())
+        return make_response(response, code)
+
+    def delete(self):
+        app.logger.info('calling delete request')
+        response, code = deselect_project(request.get_json())
         return make_response(response, code)
 
 

@@ -88,6 +88,7 @@ class MainPage extends Component {
             .then(data => {
                 console.log(data);
                 data.projects.forEach(project => project.status = (project.status === 0 ? "Needs Approval" : "Approved"))
+                localStorage.setItem("projects", JSON.stringify(data));
                 this.setState({
                     projects: data.projects,
                     ['/home']: {

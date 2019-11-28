@@ -180,6 +180,15 @@ def select_project(data):
     db.session.commit()
     return {'message': 'Project selection requested!'}, 201
 
+@token_auth.login_required
+def deselect_project(data):
+    project = Project.query.filter(Project.id == data['projectId']).first()
+    db.session.query(user_project_joining_table).filter(and_(user_project_joining_table.columns.project_id == data['projectId'], user_project_joining_table.columns.user_id == g.current_user.get_id())).delete(synchronize_session=False)
+
+    #g.current_user.projects.remove(project)
+    db.session.commit()
+    return {'message': 'Project deselected!'}, 201
+
 
 ########################################################################################################################
 # Project Checkpoints
