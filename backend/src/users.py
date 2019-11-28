@@ -8,6 +8,7 @@ from .tokens import generate_confirmation_token, confirm_token
 from .emails import send_email
 from datetime import datetime
 from json import dumps
+from sqlalchemy import and_
 
 
 @token_auth.login_required
