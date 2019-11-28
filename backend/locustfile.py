@@ -23,12 +23,14 @@ class UserBehavior(TaskSet):
 
     def logout(self):
         self.client.delete('/users/tokens/', headers={
-            'Authorization': 'Bearer ' + self.token
+            'Authorization': 'Bearer {}'.format(self.token)
         })
 
     @task(1)
     def get_projects(self):
-        self.client.get("/projects/", headers={'Authorization': 'Bearer ' + self.token})
+        self.client.get("/projects/", headers={
+            'Authorization': 'Bearer {}'.format(self.token)
+        })
 
 
 class WebsiteUser(HttpLocust):
