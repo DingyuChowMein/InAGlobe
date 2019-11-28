@@ -24,6 +24,7 @@ import styles from "../../assets/jss/views/userProfileStyle"
 import exampleProfile from "../../assets/data/UserProfileData"
 import { userService } from "../../services/userService"
 import pick from "lodash.pick"
+import config from "../../config";
 
 class Profile extends Component {
     constructor(props) {
@@ -57,9 +58,15 @@ class Profile extends Component {
         return userService.getProfile(id)
             .then(data => {
                 console.log(data);
+                const currentUser = JSON.parse(localStorage.getItem("user"));
                 this.setState({
                     data: data
                 });
+                if (id === currentUser.userId){
+                    let thing = data;
+                    thing.token = currentUser.token
+                    localStorage.setItem("user", JSON.stringify(thing))
+                }
             })
             .catch(console.log)
     };
@@ -67,14 +74,11 @@ class Profile extends Component {
     componentDidMount() {
         window.addEventListener('resize', this.updateDimensions)
         if (this.pictureList) this.pictureList.scrollTo(0)
-        if (this.props.match.params.id){
+        if (typeof this.props.match.params.id !== "undefined"){
             this.get(this.props.match.params.id)
         } else {
-            const currentUser = JSON.parse(localStorage.getItem("user"))
-            delete currentUser.token;
-            this.setState({
-                data: currentUser
-            })
+            const currentUser = JSON.parse(localStorage.getItem("user"));
+            this.get(currentUser.userId)
         }
     }
     componentWillUnmount() {
@@ -173,7 +177,7 @@ class Profile extends Component {
                     <Grid item xs={12} className={classes.centering}>
                         <Avatar 
                             alt="Profile Picture"
-                            src={profilePicture}
+                            src={config.s3Bucket + profilePicture}
                             className={classes.avatar}
                         />
                     </Grid>

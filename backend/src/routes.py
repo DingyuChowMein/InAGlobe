@@ -91,24 +91,29 @@ class CommentStream(Resource):
 
 class User(Resource):
     def get(self, identifier):
+        app.logger.info('calling get user')
         response, code = get_user(identifier)
         return make_response(response, code)
 
     def post(self, identifier):
+        app.logger.info('calling post user')
         response, code = update_user(request.get_json(), identifier)
         return make_response(response, code)
 
     def delete(self, identifier):
+        app.logger.info('calling delete user')
         response, code = delete_user(request.get_json(), identifier)
         return make_response(response, code)
 
 
 class Users(Resource):
     def get(self):
+        app.logger.info('calling get users')
         response, code = get_users()
         return make_response(response, code)
 
     def post(self):
+        app.logger.info('calling post users')
         response, code = create_user(request.get_json())
         return make_response(response, code)
 

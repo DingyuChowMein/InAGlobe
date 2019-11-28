@@ -38,21 +38,26 @@ import styles from "../../assets/jss/views/editProfileStyle"
 import "filepond/dist/filepond.min.css"
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css'
 import UserProfile from './UserProfile'
+import config from "../../config";
 
 
 class EditProfile extends Component {
 
     constructor(props) {
         super(props)
+        console.log(JSON.parse(localStorage.getItem("user")))
         this.state = {
             data: JSON.parse(localStorage.getItem("user")),
             previewOpen: false,
             submissionOpen: false,
             profilePicEdit: false,
+            profilePicChanged: false,
             submissionResult: "",
             submitting: false,
         }
         this.images = null
+        this.state.data.documents = []
+        this.state.data.images = []
         registerPlugin(FilePondPluginImagePreview)
         registerPlugin(FilePondPluginFileValidateType)
     }
@@ -77,7 +82,10 @@ class EditProfile extends Component {
             const modifiedData = cloneDeep(this.state.data)
             delete modifiedData.token
 
-            modifiedData.profilePicture = upload([modifiedData.profilePicture], id + '/Images')[0]
+            if (this.state.profilePicChanged) {
+                modifiedData.profilePicture = upload([modifiedData.profilePicture], id + '/Images')[0]
+            }
+
             modifiedData.documents = upload(modifiedData.documents, id + '/Documents')
             modifiedData.images = upload(modifiedData.images, id + '/Images')
 
@@ -141,12 +149,14 @@ class EditProfile extends Component {
         }
 
         const { profilePicture } = this.state.data
+        console.log(profilePicture)
         let pic
         if (profilePicture) {
             if (typeof profilePicture === "string") {
-                pic = profilePicture
+                pic = config.s3Bucket + profilePicture
             } else {
                 pic = URL.createObjectURL(profilePicture)
+                console.log(pic)
             }
         } else {
             pic = imageNull
@@ -358,7 +368,7 @@ class EditProfile extends Component {
                                 <Grid item xs={2} className={classes.rightAlign}>
                                     <IconButton 
                                         onClick={() => this.setState({
-                                            profilePicEdit: false
+                                            profilePicEdit: false,
                                         })}
                                     >
                                         <Close fontSize="medium" />
@@ -379,7 +389,8 @@ class EditProfile extends Component {
                                             data: {
                                                 ...this.state.data,
                                                 profilePicture: pictureFiles[pictureFiles.length - 1]
-                                            }
+                                            },
+                                            profilePicChanged: true
                                         })
                                     }
                                 }}
@@ -477,21 +488,15 @@ class EditProfile extends Component {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <RegularButton 
-                            color="primary" 
-                            onClick={() => this.setState({
-                                submissionOpen: false
-                            })}
-                            className={classes.closeButton}>
-                            Close
-                        </RegularButton>
-                        <RegularButton 
+                        <RegularButton
                             color="primary" 
                             onClick={() => {
                                 this.setState({
                                     submissionOpen: false
-                                })
-                                window.location.reload()
+                                });
+                                if (this.state.submissionResult !== "" && this.state.submissionResult !== "Please fill in all the entries provided.") {
+                                    this.props.history.goBack()
+                                }
                             }}
                             className={classes.okButton}
                         >

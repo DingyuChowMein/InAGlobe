@@ -1,8 +1,11 @@
 import os
+from . import db
 
-from flask import abort, render_template
+from sqlalchemy import and_
+
+from flask import abort, render_template, g
 from .auth import token_auth, permission_required
-from .models import User, UserFile, USER_TYPE
+from .models import User, UserFile, USER_TYPE, FILE_TYPE
 from .tokens import generate_confirmation_token, confirm_token
 from .emails import send_email
 from datetime import datetime
@@ -88,7 +91,6 @@ def create_user(data):
 
 
 @token_auth.login_required
-@permission_required(USER_TYPE['STUDENT'])
 def update_user(data, user_id):
     u = db.session.query(User).filter(User.id == user_id).first()
     if u is None:
@@ -101,12 +103,12 @@ def update_user(data, user_id):
         for k, v in data.items():
             if k == "userType":
                 return {"message": "Can't change the type of the user!"}, 204
-            if not v:
+            if v is not '':
                 if k == "firstName":
                     u.first_name = v
                 elif k == "lastName":
                     u.last_name = v
-                elif k == "profilePic":
+                elif k == "profilePicture":
                     u.profile_picture = v
                 elif k == "email":
                     u.email = v
@@ -130,7 +132,7 @@ def update_user(data, user_id):
                         file.save()
 
         db.session.commit()
-        return {'message': 'Project updated!'}, 200
+        return {'message': 'User updated!'}, 200
     else:
         return {'message': "User not allowed to change other user's profile"}, 403
 
