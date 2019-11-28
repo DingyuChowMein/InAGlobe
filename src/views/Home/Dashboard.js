@@ -51,28 +51,48 @@ class Dashboard extends Component {
 
     }
 
-    joinRequestClicked = (project_id, user_id, index) => {
+    joinRequestClicked = (project_id, user_id, index, isApproved) => {
         var token = JSON.parse(localStorage.getItem('user')).token;
         var bearer = 'Bearer ' + token
-
-        fetch(config.apiUrl + `/joiningApprove/`, {
-            method: 'post',
-            headers: {
-                'Authorization': bearer,
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify({
-                userId: user_id,
-                projectId: project_id
+        if (!isApproved) {
+            fetch(config.apiUrl + '/dashboard/', {
+                method: 'delete',
+                headers: {
+                    'Authorization': bearer,
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({"projectId": project_id, "userId": user_id}),
+            }).then((response) => {
+                // Redirect here based on response
+                console.log(response)
+                alert("Request disapproved.");
+                this.setState({
+                    requests: this.state.requests.filter((_, i) => i !== index)
+                });
             })
-        }).then(response => {
-            // Redirect here based on response
-            console.log(response)
-            alert("Request approved.")
-            this.setState({
-                requests: this.state.requests.filter((_, i) => i !== index)
-            });
-        }).catch(err => console.log(err))
+                .catch((err) => {
+                    console.log(err)
+                })
+        } else {
+            fetch(config.apiUrl + `/joiningApprove/`, {
+                method: 'post',
+                headers: {
+                    'Authorization': bearer,
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userId: user_id,
+                    projectId: project_id
+                })
+            }).then(response => {
+                // Redirect here based on response
+                console.log(response)
+                alert("Request approved.")
+                this.setState({
+                    requests: this.state.requests.filter((_, i) => i !== index)
+                });
+            }).catch(err => console.log(err))
+        }
     }
 
     componentDidMount() {
