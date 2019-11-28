@@ -89,7 +89,8 @@ class ResponsiveDrawer extends Component {
                                 classes={{ 
                                     primary: classes.listItemText, 
                                     root: classes.drawerSectionSize 
-                                }} />
+                                }} 
+                            />
                         </ListItem>
                         : 
                         null
