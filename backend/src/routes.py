@@ -96,6 +96,7 @@ class User(Resource):
         return make_response(response, code)
 
     def post(self, identifier):
+        app.logger.info('calling post user')
         response, code = update_user(request.get_json(), identifier)
         return make_response(response, code)
 

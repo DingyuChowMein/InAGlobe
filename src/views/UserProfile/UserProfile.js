@@ -23,26 +23,22 @@ import styles from "../../assets/jss/views/userProfileStyle"
 
 import exampleProfile from "../../assets/data/UserProfileData"
 import { userService } from "../../services/userService"
-import pick from "lodash.pick"
 
 class Profile extends Component {
     constructor(props) {
         super(props)
+
+        let currentUser
+        if (this.props.match.params.id) {
+            currentUser = this.get(this.props.match.params.id)
+        } else {
+            currentUser = JSON.parse(localStorage.getItem("user"))
+            delete currentUser.token
+        }
+
         this.state = {
             width: window.innerWidth,
-            data: {
-                userId: "",
-                firstName: "",
-                lastName: "",
-                permissions: null, 
-                profilePicture: "", 
-                email: "", 
-                location: "", 
-                shortDescription: "", 
-                longDescription: "", 
-                images: null,
-                documents: null
-            }
+            data: currentUser
         }
         this.pictureList = null
     }
@@ -56,26 +52,16 @@ class Profile extends Component {
     get = (id) => {
         return userService.getProfile(id)
             .then(data => {
-                console.log(data);
-                this.setState({
-                    data: data
-                });
+                console.log(data)
+                return data
             })
             .catch(console.log)
-    };
+    }
 
     componentDidMount() {
         window.addEventListener('resize', this.updateDimensions)
         if (this.pictureList) this.pictureList.scrollTo(0)
-        if (this.props.match.params.id){
-            this.get(this.props.match.params.id)
-        } else {
-            const currentUser = JSON.parse(localStorage.getItem("user"))
-            delete currentUser.token;
-            this.setState({
-                data: currentUser
-            })
-        }
+        
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateDimensions)
