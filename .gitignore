@@ -35,6 +35,7 @@ migrations/
 .pytest_cache/
 test.json
 .coverage
+db_backup.sql
 
 npm-debug.log*
 yarn-debug.log*

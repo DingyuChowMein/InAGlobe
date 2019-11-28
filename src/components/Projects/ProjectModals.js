@@ -15,7 +15,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import {projectService} from '../../services/projectsService'
 
-var data = {}
+var data = {};
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -29,19 +29,18 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-export default function ProjectDialogue({ProjectData}) {
+export default function ProjectDialogue(props) {
     const classes = useStyles();
 
     return (
         <>
-            <EditModal classes={classes} ProjectData={ProjectData} />
-            <DeleteModal classes={classes} ProjectData={ProjectData} />
+            <EditModal classes={classes} ProjectData={props.ProjectData} />
+            <DeleteModal classes={classes} ProjectData={props.ProjectData} />
         </>
     );
 }
 
-function EditModal({classes, ProjectData}) {
-    console.log(ProjectData);
+function EditModal(props) {
     const [openEdit, setOpenEdit] = React.useState(false);
 
     const handleClickOpenEdit = () => {
@@ -54,17 +53,17 @@ function EditModal({classes, ProjectData}) {
 
     const handleSave = () => {
         setOpenEdit(false);
-        projectService.updateProject(ProjectData.id, data)
+        projectService.updateProject(props.ProjectData.id, data)
         .then(response => {
             console.log(response);
         })
         .catch(err => {
             console.log(err)
         })
-    }
+    };
 
     return (
-        <div className={classes.root}>
+        <div className={props.classes.root}>
             <Fab color="secondary" aria_label="edit">
                 <EditIcon onClick={handleClickOpenEdit} />
             </Fab>
@@ -76,7 +75,12 @@ function EditModal({classes, ProjectData}) {
                     <DialogContentText>
                         To update this project, just fill out the form.
                     </DialogContentText>
-                    <EditTextFields ProjectData={ProjectData}/>
+                    <EditTextFields
+                        ProjectData={props.ProjectData}
+                        title={props.ProjectData.title}
+                        shortDescription={props.ProjectData.shortDescription}
+                        detailedDescription={props.ProjectData.detailedDescription}
+                    />
                 </DialogContent>
                 <DialogActions>
                     <Fab aria_label="close">
@@ -91,23 +95,23 @@ function EditModal({classes, ProjectData}) {
     )
 }
 
-function EditTextFields({ProjectData}){
-    const [title, setTitle] = React.useState(ProjectData.title);
-    const [shortDescription, setShortDescription] = React.useState(ProjectData.shortDescription);
-    const [detailedDescription, setDetailedDescription] = React.useState(ProjectData.detailedDescription);
+function EditTextFields(props){
+    const [title, setTitle] = React.useState(props.title);
+    const [shortDescription, setShortDescription] = React.useState(props.shortDescription);
+    const [detailedDescription, setDetailedDescription] = React.useState(props.detailedDescription);
 
-    const changeTitle = (title) => {
-        setTitle(title);
-        data['title'] = title;
-    }
-    const changeShortDescription = (shortDescription) => {
-        setShortDescription(shortDescription);
-        data['shortDescription'] = shortDescription;
-    }
-    const changeDetailedDescription = (detailedDescription) => {
-        setDetailedDescription(detailedDescription)
-        data['detailedDescription'] = detailedDescription;
-    }
+    const changeTitle = (e) => {
+        setTitle(e.target.value);
+        data['title'] = e.target.value;
+    };
+    const changeShortDescription = (e) => {
+        setShortDescription(e.target.value);
+        data['shortDescription'] = e.target.value;
+    };
+    const changeDetailedDescription = (e) => {
+        setDetailedDescription(e.target.value);
+        data['detailedDescription'] = e.target.value;
+    };
 
     return (
         <div>
@@ -116,7 +120,7 @@ function EditTextFields({ProjectData}){
                 label="title"
                 variant="outlined"
                 defaultValue={title}
-                onChange={e => changeTitle(e.target.value)}
+                onChange={changeTitle}
                 margin="normal"
                 fullWidth
                 autoFocus
@@ -126,7 +130,7 @@ function EditTextFields({ProjectData}){
                 label="shortDescription"
                 variant="outlined"
                 defaultValue={shortDescription}
-                onChange={e => changeShortDescription(e.target.value)}
+                onChange={changeShortDescription}
                 margin="normal"
                 fullWidth
                 multiline
@@ -138,7 +142,7 @@ function EditTextFields({ProjectData}){
                 label="detailedDescription"
                 variant="outlined"
                 defaultValue={detailedDescription}
-                onChange={e => changeDetailedDescription(e.target.value)}
+                onChange={changeDetailedDescription}
                 margin="normal"
                 fullWidth
                 multiline
@@ -150,8 +154,8 @@ function EditTextFields({ProjectData}){
 
 }
 
-function DeleteModal({classes, ProjectData}){
-    const [openDelete, setOpenDelete] = React.useState(false)
+function DeleteModal(props){
+    const [openDelete, setOpenDelete] = React.useState(false);
 
     const handleClickOpenDelete = () => {
         setOpenDelete(true);
@@ -163,17 +167,17 @@ function DeleteModal({classes, ProjectData}){
 
     const handleDelete = () => {
         setOpenDelete(false);
-        projectService.deleteProject(ProjectData.id)
+        projectService.deleteProject(props.ProjectData.id)
         .then(response => {
             console.log(response);
         })
         .catch(err => {
             console.log(err)
         })
-    }
+    };
 
     return (
-        <div className={classes.root}>
+        <div className={props.classes.root}>
             <Fab aria_label="delete">
                 <DeleteOutlineIcon onClick={handleClickOpenDelete} />
             </Fab>

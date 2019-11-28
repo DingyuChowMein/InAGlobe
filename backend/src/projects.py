@@ -233,15 +233,15 @@ def approve_project(data):
     if project.status == PROJECT_STATUS['APPROVED']:
         project.status = PROJECT_STATUS['NEEDS_APPROVAL']
         message = "Project disapproved!"
+        status = "Needs Approval"
     else:
         project.status = PROJECT_STATUS['APPROVED']
         message = "Project approved!"
+        status = "Approved"
     project.save()
     app.logger.info('project approval')
 
-    # TODO change this json format
-    project_json = get_projects_helper([project])[0]
-    response = {'message': message, 'project': project_json}
+    response = {'message': message, 'project': {'id': project.id, 'status': status}}
 
     app.logger.info('project approval published to channel projects')
     redis_client.publish('projects', dumps(response))

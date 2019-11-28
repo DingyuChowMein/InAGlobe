@@ -33,7 +33,7 @@ class CardScrollView extends Component {
     }
 
     goToProposalPage = (card) => {
-        console.log(`Card ${card.id} clicked!`)
+        console.log(`Card ${card.id} clicked!`);
         const dataValue = JSON.stringify(card);
         localStorage.setItem(`proposalPage/${card.id}`, dataValue)
         this.props.history.push(`/main/projectlist/proposalpage/${card.id}`)

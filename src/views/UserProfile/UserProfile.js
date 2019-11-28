@@ -56,21 +56,26 @@ class Profile extends Component {
     get = (id) => {
         return userService.getProfile(id)
             .then(data => {
-                console.log(data)
-                return data
+                console.log(data);
+                this.setState({
+                    data: data
+                });
             })
             .catch(console.log)
-    }
+    };
 
     componentDidMount() {
         window.addEventListener('resize', this.updateDimensions)
-        if (this.pictureList) this.pcitureList.scrollTo(0)
-        const currentUser = JSON.parse(localStorage.getItem("user"))
-        delete currentUser.token
-        const otherUser = this.get(this.props.match.params.id)
-        this.setState({
-            data: this.props.match.params.id ? otherUser : currentUser
-        })
+        if (this.pictureList) this.pictureList.scrollTo(0)
+        if (this.props.match.params.id){
+            this.get(this.props.match.params.id)
+        } else {
+            const currentUser = JSON.parse(localStorage.getItem("user"))
+            delete currentUser.token;
+            this.setState({
+                data: currentUser
+            })
+        }
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateDimensions)
@@ -92,6 +97,7 @@ class Profile extends Component {
         } = this.state.data
 
         let userTypeText
+        console.log(permissions)
         switch (permissions) {
             case 0:
                 userTypeText = "Admin"

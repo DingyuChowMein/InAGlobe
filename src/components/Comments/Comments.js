@@ -198,6 +198,7 @@ class Comments extends Component {
                                     <Avatar
                                         alt="Profile Picture"
                                         src="https://picsum.photos/128"
+                                        onClick={() => this.props.history.push("/main/userprofile/" + comment.ownerId)}
                                     />
                                 </ListItemAvatar>
                                 {this.hasPermissions(comment.ownerId) ?
@@ -231,6 +232,7 @@ class Comments extends Component {
                                             {` — ${comment.text}`}
                                         </React.Fragment>
                                     }
+                                    onClick={() => this.props.history.push("/main/userprofile/" + comment.ownerId)}
                                 />
                             </ListItem>
                             <Divider variant="inset" component="li"/>

@@ -48,13 +48,13 @@ class AddProposal extends Component {
                 shortDescription: "",
                 detailedDescription: "",
                 location: "",
-                // dont need this either, its assigned on the backend
+                // don't need this either, its assigned on the backend
                 // projectOwner: "",
                 documents: [],
                 // Fill these in properly later
                 organisationName: "dummy",
                 organisationLogo: "dummy",
-                // status is not approved by default so we dont need it
+                // status is not approved by default so we don't need it
                 // status: "",
                 images: []
             },
@@ -189,14 +189,12 @@ class AddProposal extends Component {
                                 files={this.state.data.images}
                                 labelIdle='Drag & Drop your images (.jpg, .png. or .bmp) or <span class="filepond--label-action">Browse</span>'
                                 acceptedFileTypes={["image/*"]}
-                                onupdatefiles={pictureItems => {
-                                    this.setState({
-                                        data: {
-                                            ...this.state.data,
-                                            images: pictureItems.map(pictureItem => pictureItem.file)
-                                        }
-                                    })
-                                }}
+                                onupdatefiles={pictureItems => this.setState({
+                                    data: {
+                                        ...this.state.data,
+                                        images: pictureItems.map(pictureItem => pictureItem.file)
+                                    }
+                                })}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -211,15 +209,12 @@ class AddProposal extends Component {
                                     "text/plain",
                                     "application/vnd.oasis.opendocument.text"
                                 ]}
-                                onupdatefiles={fileItems => {
-                                    this.setState({
-                                        data: {
-                                            ...this.state.data,
-                                            documents: fileItems.map(fileItem => fileItem.file)
-                                        }
-                                    })
-                                    console.log(this.state.data.documents)
-                                }}
+                                onupdatefiles={fileItems => this.setState({
+                                    data: {
+                                        ...this.state.data,
+                                        documents: fileItems.map(fileItem => fileItem.file)
+                                    }
+                                })}
                             />
                         </Grid>
                         <div className={classes.cardButtonDiv}>

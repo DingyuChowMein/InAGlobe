@@ -95,7 +95,7 @@ class User(Resource):
         response, code = get_user(identifier)
         return make_response(response, code)
 
-    def patch(self, identifier):
+    def post(self, identifier):
         response, code = update_user(request.get_json(), identifier)
         return make_response(response, code)
 

@@ -42,6 +42,13 @@ const styles = {
     buttonDiv: {
         width: "100%",
         textAlign: "center" 
+    },
+    cardAction: {
+        display: 'block',
+        textAlign: 'initial',
+        width: '100%',
+        height: '100%',
+        fontSize: '110%'
     }
 }
 

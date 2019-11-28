@@ -1,6 +1,6 @@
 // Main ReactJS libraries
-import React, { Component } from "react"
-import { withRouter } from "react-router-dom"
+import React, {Component} from "react"
+import {withRouter} from "react-router-dom"
 
 
 // Material UI libraries
@@ -8,13 +8,14 @@ import {
     withStyles,
     Card,
     CardContent,
-    CardActions
+    CardActions,
+    ButtonBase
 } from "@material-ui/core"
 
 // Imports of different components in project
 import RegularButton from "../../components/CustomButtons/RegularButton"
 
-import ProjectDialogue from "../../components/Projects/EditProjectModal"
+import ProjectDialogue from "../../components/Projects/ProjectModals"
 
 import config from "../../config"
 
@@ -41,31 +42,34 @@ class ProjectCard extends Component {
     }
 
     hasPermission = (ownerId) => {
-        return (this.state.userType === 0 || this.state.userId === ownerId)
+        return (this.state.userType === 0 || this.state.userId === parseInt(ownerId))
     };
 
     render() {
-        const { classes } = this.props;
+        const {classes} = this.props;
         const {
             title,
             organisation,
             status,
             shortDescription,
-            images } = this.props.data;
+            images
+        } = this.props.data;
 
         return (
             <Card className={classes.cardDiv}>
-                <img
-                    className={classes.cardImgTop}
-                    alt="Provided for a Card."
-                    src={config.s3Bucket + images[0]}
-                />
-                <CardContent>
-                    <h3>{title}</h3>
-                    <h4>{organisation}</h4>
-                    <h5>{status}</h5>
-                    <p>{shortDescription}</p>
-                </CardContent>
+                <ButtonBase className={classes.cardAction} onClick = {this.openProposalPage}>
+                    <img
+                        className={classes.cardImgTop}
+                        alt="Provided for a Card."
+                        src={config.s3Bucket + images[0]}
+                    />
+                    <CardContent>
+                        <h3>{title}</h3>
+                        <h4>{organisation}</h4>
+                        <h5>{status}</h5>
+                        <p>{shortDescription}</p>
+                    </CardContent>
+                </ButtonBase>
                 <CardActions className={classes.buttonDiv}>
                     <RegularButton
                         color="primary"
@@ -74,14 +78,14 @@ class ProjectCard extends Component {
                     >
                         Learn More
                     </RegularButton>
-                    {this.hasPermission(this.state.userId) ?
-                        <ProjectDialogue ProjectData={this.props.data} /> :
+                    {this.hasPermission(this.props.data.projectOwner) ?
+                        <ProjectDialogue ProjectData={this.props.data}/> :
                         <></>
                     }
                 </CardActions>
             </Card>
 
-    )
+        )
     }
 }
 

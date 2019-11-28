@@ -48,7 +48,7 @@ def generate_confirmation_token(email):
     serializer = URLSafeTimedSerializer(os.environ['SECRET_KEY'])
     return serializer.dumps(email, salt=os.environ['SECURITY_PASSWORD_SALT'])
 
-def confirm_token(token, expiration=3600):
+def confirm_token(token, expiration=360000):
     serializer = URLSafeTimedSerializer(os.environ['SECRET_KEY'])
     try:
         email = serializer.loads(

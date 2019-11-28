@@ -41,7 +41,6 @@ class Dashboard extends Component {
         super(props);
 
         this.joinRequestClicked = this.joinRequestClicked.bind(this);
-        this.projectsToCardData = this.projectsToCardData.bind(this);
 
         this.state = {
             user: {},
@@ -111,16 +110,6 @@ class Dashboard extends Component {
             .catch(console.log)
     }
 
-    projectsToCardData(projects) {
-        return projects.map((project) => {
-            return {
-                id: project.id,
-                title: project.title,
-                images: project.images
-            }
-        })
-    }
-
     render() {
         const {classes} = this.props
 
@@ -157,6 +146,7 @@ class Dashboard extends Component {
                                 })}
                                 title="User Approvals for Projects"
                                 approveFunction={this.joinRequestClicked}
+                                {...this.props}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -173,7 +163,7 @@ class Dashboard extends Component {
                             <CardScrollView
                                 {...this.props}
                                 className={classes.root}
-                                cardData={this.state.projects}
+                                cardData={this.props.data.needApproval}
                                 title="Projects to Approve"
                                 EmptyIcon={UpdateOutlined}
                                 emptyText="No Approvals Needed for New Projects"
@@ -201,6 +191,7 @@ class Dashboard extends Component {
                             <ProjectApprovals
                                 approvalList={[]}
                                 title="Student/Academic Waiting to Join Project"
+                                {...this.props}
                             />
                         </Grid>
                         <Grid item xs={12}>

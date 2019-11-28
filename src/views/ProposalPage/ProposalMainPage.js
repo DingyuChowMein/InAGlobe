@@ -9,7 +9,7 @@ import Comments from '../../components/Comments/Comments'
 import ProposalPage from "./ProposalPage"
 import RegularButton from '../../components/CustomButtons/RegularButton'
 import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer'
-import ProjectDialogue from "../../components/Projects/EditProjectModal"
+import ProjectDialogue from "../../components/Projects/ProjectModals"
 import config from "../../config"
 
 // Importing class's stylesheet
@@ -142,7 +142,7 @@ class ProposalMainPage extends Component {
                         }
                     </div>
                     <div className={classes.commentsDiv}>
-                        <Comments projectId={this.state.projectData.id}/>
+                        <Comments {...this.props} projectId={this.state.projectData.id}/>
                     </div>
                 </ProposalPage>
             </ResponsiveDrawer>
