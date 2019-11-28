@@ -47,12 +47,12 @@ class MainPage extends Component {
     componentDidMount() {
         this.getProjectList();
         this.eventSource.addEventListener('project-stream', json => this.handleProjectUpdates(json));
-        this.eventSource.addEventListener('error', (err) => {console.log(err.target)});
+        this.eventSource.addEventListener('error', (err) => {console.log(err)});
     };
 
     componentWillUnmount() {
         this.eventSource.removeEventListener('project-stream', json => this.handleProjectUpdates(json));
-        this.eventSource.removeEventListener('error', (err) => {console.log(err.target)});
+        this.eventSource.removeEventListener('error', (err) => {console.log(err)});
         this.eventSource.close();
     };
 
@@ -60,9 +60,9 @@ class MainPage extends Component {
         const v = JSON.parse(json.data);
         console.log(v.project);
         if (v.message === 'Project added to db!'){
-            console.log(v.project.projects[0]);
+            console.log(v.project);
             this.setState({
-                projects: this.state.projects.concat(v.project.projects[0])
+                projects: this.state.projects.concat(v.project)
             })
         }
         else if (v.message === 'Project updated!'){

@@ -298,21 +298,30 @@ def project_stream():
     pub_sub.subscribe('projects')
     app.logger.info('subscribed to projects')
     for message in pub_sub.listen():
+        if message.get('type') == 'subscribe':
+            continue
+
         byte_data = message.get('data')
         try:
             string_data = byte_data.decode('utf-8')
             app.logger.info(string_data)
             data = loads(string_data)
+            project = data.get('project')[0].get('projects')[0]
+            message = data.get('message')
             user = g.current_user
+
+            # print("project: ", project)
+            # print("message: ", message)
             # switch on approval status and user permission
             if (
-                    data.get('project').get('status') == PROJECT_STATUS['APPROVED'] or
+                    project.get('status') == PROJECT_STATUS['APPROVED'] or
                     user.is_admin() or
-                    data.get('project').get('id') in user.projects or
-                    data.get('message') == 'Project disapproved!'
+                    project.get('id') in user.projects or
+                    message == 'Project disapproved!'
             ):
-                yield 'event: project-stream\ndata: {}\n\n'.format(string_data)
-        except (UnicodeDecodeError, AttributeError):
+                yield 'event: project-stream\ndata: {}\n\n'.format(dumps(dict(project=project, message=message)))
+        except (UnicodeDecodeError, AttributeError) as e:
+            # yield 'event: error\ndata: {}, {}\n\n'.format(e, data)
             pass
         finally:
             if datetime.utcnow() > now + timedelta(seconds=45):
