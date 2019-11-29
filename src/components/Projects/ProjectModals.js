@@ -183,7 +183,7 @@ function DeleteModal(props){
             </Fab>
             <Dialog open={openDelete} onClose={handleCloseDelete} aria-labelledby="delete-dialogue">
                 <DialogTitle id="delete-title-dialogue">
-                    Delete Comment?
+                    Delete Project?
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText id="delete-content-dialogue">

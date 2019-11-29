@@ -19,7 +19,7 @@ import {
     Toolbar,
     Typography
 } from '@material-ui/core'
-import { Menu } from '@material-ui/icons'
+import { Menu, Warning } from '@material-ui/icons'
 
 // Importing webpath data for drawer links
 import { drawerRoutes } from '../../routes'
@@ -33,6 +33,7 @@ import logo from '../../assets/img/logo.png'
 // Importing class's stylesheet
 import styles from "../../assets/jss/components/responsiveDrawerStyle"
 import 'react-perfect-scrollbar/dist/css/styles.css'
+import Tooltip from "@material-ui/core/Tooltip";
 
 class ResponsiveDrawer extends Component {
 
@@ -59,6 +60,17 @@ class ResponsiveDrawer extends Component {
     
     render() {
         const { classes, container, name } = this.props
+
+        var alert = null
+        const user = JSON.parse(localStorage.getItem("user"))
+        console.log(user)
+        if (!user.location || !user.shortDescription || !user.longDescription) {
+            alert = (
+                <Tooltip title="Incomplete user profile!">
+                    <Warning/>
+                </Tooltip>
+            )
+        }
 
         const drawer = (
             <div>
@@ -89,8 +101,10 @@ class ResponsiveDrawer extends Component {
                                 classes={{ 
                                     primary: classes.listItemText, 
                                     root: classes.drawerSectionSize 
-                                }} 
+                                }}
                             />
+
+                            {route.name === "User Profile" ? alert : null}
                         </ListItem>
                         : 
                         null

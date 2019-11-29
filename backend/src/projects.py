@@ -93,7 +93,7 @@ def delete_project(project_id):
     if project is None:
         return {'message': 'Project does not exist!'}, 404
     if project in g.current_user.projects or g.current_user.is_admin():
-        response = {'message': 'Project deleted!', 'project': {'id': project_id}}
+        response = {'message': 'Project deleted!', 'project': {'id': project_id, 'projectOwner': project.project_owner, 'status': project.status}}
         app.logger.info('project deleted')
         app.logger.info('delete project published to channel projects')
         redis_client.publish('projects', dumps(response))
@@ -121,7 +121,7 @@ def update_project(data, project_id):
     if p is None:
         return {'message': 'Project does not exist!'}, 404
     if p in g.current_user.projects or g.current_user.is_admin():
-        project_json = {'id': p.id}
+        project_json = {'id': p.id, 'projectOwner': p.project_owner, 'status': p.status}
 
         if not data.items():
             return {'message': 'No changes!'}, 204
@@ -179,6 +179,15 @@ def select_project(data):
     g.current_user.projects.append(project)
     db.session.commit()
     return {'message': 'Project selection requested!'}, 201
+
+@token_auth.login_required
+def deselect_project(data):
+    project = Project.query.filter(Project.id == data['projectId']).first()
+    db.session.query(user_project_joining_table).filter(and_(user_project_joining_table.columns.project_id == data['projectId'], user_project_joining_table.columns.user_id == data['userId'])).delete(synchronize_session=False)
+
+    #g.current_user.projects.remove(project)
+    db.session.commit()
+    return {'message': 'Project deselected!'}, 201
 
 
 ########################################################################################################################
@@ -241,7 +250,10 @@ def approve_project(data):
     project.save()
     app.logger.info('project approval')
 
-    response = {'message': message, 'project': {'id': project.id, 'status': status}}
+    response = {
+            'message': message, 
+            'project': {'id': project.id, 'status': status, 'projectOwner': project.project_owner}
+        }
 
     app.logger.info('project approval published to channel projects')
     redis_client.publish('projects', dumps(response))
@@ -306,19 +318,21 @@ def project_stream():
             string_data = byte_data.decode('utf-8')
             app.logger.info(string_data)
             data = loads(string_data)
-            project = data.get('project')[0].get('projects')[0]
             message = data.get('message')
             user = g.current_user
+            if message == "Project added to the db!":
+                project = data.get('project')[0].get('projects')[0]
+            elif message in ["Project deleted!", "Project updated!", "Project disapproved!", "Project approved!"]:
+                project = data.get('project')
 
             # print("project: ", project)
             # print("message: ", message)
             # switch on approval status and user permission
-            if (
-                    project.get('status') == PROJECT_STATUS['APPROVED'] or
-                    user.is_admin() or
-                    project.get('id') in user.projects or
+            if (project.get('status') == PROJECT_STATUS['APPROVED'] or 
+                    user.is_admin() or 
+                    int(project.get('projectOwner')) == user.get_id() or 
                     message == 'Project disapproved!'
-            ):
+                    ):
                 yield 'event: project-stream\ndata: {}\n\n'.format(dumps(dict(project=project, message=message)))
         except (UnicodeDecodeError, AttributeError) as e:
             # yield 'event: error\ndata: {}, {}\n\n'.format(e, data)
