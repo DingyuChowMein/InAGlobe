@@ -85,9 +85,11 @@ def create_user(data):
         return {'message': 'User created!'}, 201
 
     except ValueError as e:
-        return abort(400, 'Bad {} provided!'.format(e.__str__()))
+        return {'message': '{}'.format(e)}, 400
+        # return abort(400, 'Bad {} provided!'.format(e.__str__()))
     except Exception as e:
-        return abort(400, '{} not valid!'.format(e.__str__()))
+        return {'message': '{}'.format(e)}, 400
+        # return abort(400, '{}'.format(e.__str__()))
 
 
 @token_auth.login_required
