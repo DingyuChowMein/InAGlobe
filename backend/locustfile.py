@@ -1,20 +1,42 @@
+from backend.src.models import USER_TYPE, OWNER_FIELD_LENGTH
 from base64 import b64encode
-from json import loads
+from json import dumps, loads
 from locust import HttpLocust, TaskSet, task, between
 from os import environ
+from random import choice
+import uuid
+import sqlalchemy
 
+email_suffix = '@dummyemail.io'
 
 class UserBehavior(TaskSet):
     def on_start(self):
         """ on_start is called when a Locust start before any task is scheduled """
+        self.db = sqlalchemy.create_engine(environ['DATABASE_URL'])
+        self.email = str(uuid.uuid4())[:OWNER_FIELD_LENGTH - len(email_suffix)] + email_suffix
+        self.password = 'password'
+        self.sign_up()
         self.login()
 
     def on_stop(self):
         """ on_stop is called when the TaskSet is stopping """
         self.logout()
+        self.db.execute('DELETE FROM Users WHERE email = \'{}\''.format(self.email))
+
+    def sign_up(self):
+        self.client.post('/users/', headers={
+            'content-type': 'application/json'
+        }, data=dumps({
+            'email': self.email,
+            'firstName': 'name',
+            'lastName': 'name',
+            'userType': choice(list(USER_TYPE.keys())[1:]),
+            'password': self.password
+        }))
+        self.db.execute('UPDATE Users SET confirmed = 1 WHERE email = \'{}\''.format(self.email))
 
     def login(self):
-        kv = '{0}:{1}'.format(environ['USER_EMAIL'], environ['USER_PASSWORD'])
+        kv = '{0}:{1}'.format(self.email, self.password)
         credentials = b64encode(kv.encode('utf-8')).decode('utf-8')
         rv = self.client.get('/users/tokens/', headers={
             'Authorization': 'Basic ' + credentials
