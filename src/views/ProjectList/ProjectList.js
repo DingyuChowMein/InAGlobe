@@ -15,15 +15,15 @@ import { projectService } from "../../services/projectsService"
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/projectListStyle"
 
-// Import Search
-// import search from "./search"
-
 class ProjectList extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            projects: []
+            projects: [],
+            value: ''
         }
+        this.onSearch.bind(this)
+        this.updateValue.bind(this)
     }
 
     componentDidMount() {
@@ -38,10 +38,36 @@ class ProjectList extends Component {
             .catch(console.log)
     }
 
+    onSearch = (query) => {
+        this.setState({
+        value: query
+      })
+
+      const filteredList = this.state.projects.filter(
+        project => (project.title.toLowerCase().includes(this.state.value.toLowerCase())));
+
+      this.setState({
+        projects: filteredList
+      })
+    }
+
+    updateValue = (query) => {
+
+      if (typeof(query) !== "undefined") {
+        if (query.length <= this.state.value.length) {
+          this.componentDidMount()
+        }
+      }
+      this.setState({value: query})
+    }
+
     render() {
         const {classes} = this.props
         return (
-            <ResponsiveDrawer name={"Project List"}>
+            <ResponsiveDrawer name={"Project List"}
+              onSearch ={this.onSearch}
+              updateValue = {this.updateValue}
+            >
                 <div className={classes.root}>
                     <Grid container spacing={2}>
                         {this.state.projects.map(card => (

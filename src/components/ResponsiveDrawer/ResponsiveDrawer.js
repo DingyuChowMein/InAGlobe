@@ -33,7 +33,7 @@ import RegularButton from "../CustomButtons/RegularButton";
 
 class ResponsiveDrawer extends Component {
 
-    constructor(props) {
+  constructor(props) {
         super(props)
         this.state = {
             mobileOpen: false,
@@ -148,15 +148,16 @@ class ResponsiveDrawer extends Component {
                         </Drawer>
                     </Hidden>
                 </nav>
-
-
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
                     {this.props.children}
-
                 </main>
-              <Search/>
-
+              {name == "Project List" ?
+                <Search
+                  onSearch ={() => this.props.onSearch()}
+                  updateValue = {this.props.updateValue}
+                />
+                : null}
             </div>
         )
     }
