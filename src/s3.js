@@ -36,9 +36,7 @@ function upload(files, dir) {
 } 
 
 function download(dir) {
-    console.log("I am here")
     console.log(dir)
-    console.log("I was here")
     const param = {
         Bucket: process.env.REACT_APP_BUCKET,
         Key : dir

@@ -20,10 +20,12 @@ import {
 import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer'
 
 import styles from "../../assets/jss/views/userProfileStyle"
+import imageNull from "../../assets/img/imageNull.png"
 
 import exampleProfile from "../../assets/data/UserProfileData"
 import { userService } from "../../services/userService"
 import cloneDeep from "lodash.clonedeep"
+import config from "../../config"
 
 class Profile extends Component {
     constructor(props) {
@@ -84,22 +86,9 @@ class Profile extends Component {
 
     render() {
         const { classes } = this.props
-        const {
-            firstName, 
-            lastName, 
-            permissions, 
-            profilePicture, 
-            email, 
-            location, 
-            shortDescription, 
-            longDescription, 
-            pictures,
-            documents 
-        } = this.state.data
 
         let userTypeText
-        console.log(permissions)
-        switch (permissions) {
+        switch (this.state.data.permissions) {
             case -1:
                 userTypeText = "Waiting"
                 break
@@ -120,15 +109,15 @@ class Profile extends Component {
         }
 
         var scrollMenu = null
-        if (pictures) {
+        if (this.state.data.images) {
             scrollMenu = (
                 <ScrollMenu 
                     ref={element => this.pictureList = element}
-                    data={pictures.map((pic, index) => (
+                    data={this.state.data.images.map((pic, index) => (
                             <img
                                 key={index}
                                 alt={`Album Data ${index}`}
-                                src={pic}
+                                src={config.s3Bucket + pic}
                                 className={classes.scrollViewImage}
                             />
                     ))}
@@ -175,21 +164,30 @@ class Profile extends Component {
                         </Grid>
                     }
                     <Grid item xs={12} className={classes.centering}>
-                        <Avatar 
-                            alt="Profile Picture"
-                            src={profilePicture}
-                            className={classes.avatar}
-                        />
+                        {this.state.data.profilePicture
+                            ?
+                            <Avatar 
+                                alt="Profile Picture"
+                                src={config.s3Bucket + this.state.data.profilePicture}
+                                className={classes.avatar}
+                            />
+                            :
+                            <Avatar 
+                                alt="Profile Picture"
+                                src={imageNull}
+                                className={classes.avatar}
+                            />
+                        }
                     </Grid>
                     <Grid item xs={12} className={classes.centering}>
                         <Typography component="h3" variant="h2">
-                            {`${firstName} ${lastName}`}
+                            {`${this.state.data.firstName} ${this.state.data.lastName}`}
                         </Typography>
                     </Grid>
                     <Grid item xs={12} className={classes.leftAlign}>
                         <Typography component="h5" variant="h5">
                             <b>Email Address: </b>
-                            {email}
+                            {this.state.data.email}
                         </Typography>
                     </Grid>
                     <Grid item xs={12} className={classes.leftAlign}>
@@ -201,10 +199,15 @@ class Profile extends Component {
                     <Grid item xs={12} className={classes.leftAlign}>
                         <Typography component="h5" variant="h5">
                             <b>Location: </b>
-                            {location}
+                            {this.state.data.location
+                                ?
+                                this.state.data.location
+                                :
+                                <font color="grey">No Location Available</font>
+                            }
                         </Typography>
                         <Link 
-                            href={`https://www.google.com/maps/search/${location ? location.replace(" ", "+") : ""}`}
+                            href={`https://www.google.com/maps/search/${this.state.data.location ? this.state.data.location.replace(" ", "+") : ""}`}
                             className={classes.mapsLinkIcon}
                         >
                             <LocationOn />
@@ -217,7 +220,12 @@ class Profile extends Component {
                             </Typography>
                             <br />
                             <Typography component="span" variant="body1">
-                                {shortDescription}
+                                {this.state.data.shortDescription
+                                    ?
+                                    this.state.data.shortDescription
+                                    :
+                                    <font color="grey">No Summary Available</font>
+                                }
                             </Typography>
                         </div>
                     </Grid>
@@ -228,51 +236,59 @@ class Profile extends Component {
                             </Typography>
                             <br />
                             <Typography component="span" variant="body1">
-                                {longDescription}
+                                {this.state.data.longDescription
+                                    ?
+                                    this.state.data.longDescription
+                                    :
+                                    <font color="grey">No Biography Available</font>
+                                }
                             </Typography>
                         </div>
                     </Grid>
-                    {this.state.data.images
-                        ? 
-                        <Grid item xs={12} className={classes.leftAlign}>
-                            <div>
-                                <Typography component="h5" variant="h5">
-                                    <b>Album Pictures: </b>
-                                </Typography>
-                                <br />
-                                <Hidden xsDown implementation="css">
-                                    <div style={{ width: `calc(${this.state.width}px - 350px)` }}>
-                                        {scrollMenu}
-                                    </div>
-                                </Hidden>
-                                <Hidden smUp implementation="css">
-                                    <div style={{ width: `calc(${this.state.width}px - 85px)` }}>
-                                        {scrollMenu}
-                                    </div>
-                                </Hidden>
-                            </div>
-                        </Grid>
-                        :
-                        null
-                    }
-                    {this.state.data.documents
-                        ?
-                        <Grid item xs={12} className={classes.leftAlign}>
-                            <div>
-                                <Typography component="h5" variant="h5">
-                                    <b>User Documents: </b>
-                                </Typography>
-                                <br />
-                                {documents.map(document => (
+                    <Grid item xs={12} className={classes.leftAlign}>
+                        <div>
+                            <Typography component="h5" variant="h5">
+                                <b>Album Pictures: </b>
+                            </Typography>
+                            <br />
+                            
+                            {this.state.data.images.length !== 0
+                                ? 
+                                <div>
+                                    <Hidden xsDown implementation="css">
+                                        <div style={{ width: `calc(${this.state.width}px - 350px)` }}>
+                                            {scrollMenu}
+                                        </div>
+                                    </Hidden>
+                                    <Hidden smUp implementation="css">
+                                        <div style={{ width: `calc(${this.state.width}px - 85px)` }}>
+                                            {scrollMenu}
+                                        </div>
+                                    </Hidden>
+                                </div>
+                                :
+                                <font color="grey" style={{ fontSize: "1.4em" }}>No Album Pictures Available</font>
+                            }
+                        </div>
+                    </Grid>
+                    <Grid item xs={12} className={classes.leftAlign}>
+                        <div>
+                            <Typography component="h5" variant="h5">
+                                <b>User Documents: </b>
+                            </Typography>
+                            <br />
+                            {this.state.data.documents.length !== 0
+                                ?
+                                this.state.data.documents.map(document => (
                                     <Link href={config.s3Bucket + document}>
                                         {/[^/]*$/.exec(document)[0]}{"\n"}
                                     </Link>
-                                ))}
-                            </div>
-                        </Grid>
-                        :
-                        null
-                    }
+                                ))
+                                :
+                                <font color="grey" style={{ fontSize: "1.4em" }}>No Documents Available</font>
+                            }
+                        </div>
+                    </Grid>
                 </Grid>
             </ResponsiveDrawer>
         )

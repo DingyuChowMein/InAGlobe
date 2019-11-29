@@ -60,8 +60,12 @@ class EditProfile extends Component {
     }
 
     componentDidMount() {
-        this.images.addFiles(this.state.data.images.map(image => download(image)))
-        this.documents.addFiles(this.state.data.documents.map(document => download(document)))
+        const images = this.state.data.images.map(image => download(image))
+        const documents = this.state.data.documents.map(document => download(document))
+        console.log(images)
+        console.log(documents)
+        this.images.addFiles(images)
+        this.documents.addFiles(documents)
     }
 
     checkIfNotEmpty = () => Object.values(this.state.data).every(e => !e || e.length !== 0)
@@ -158,7 +162,6 @@ class EditProfile extends Component {
                 className={classes.avatar}
             />
         )
-        
 
         return (
             <div>
@@ -311,7 +314,6 @@ class EditProfile extends Component {
                                         }
                                     
                                     })
-                                    console.log(this.state.data)
                                 }}
                             />
                         </Grid>
@@ -334,7 +336,6 @@ class EditProfile extends Component {
                                             documents: fileItems.map(fileItem => fileItem.file)
                                         }
                                     })
-                                    console.log(this.state.data)
                                 }}
                             />
                         </Grid>
@@ -415,53 +416,6 @@ class EditProfile extends Component {
                         </Grid>
                     </Grid>
                 </Dialog>
-
-                {/* <Dialog
-                    fullWidth={true}
-                    maxWidth="lg"
-                    open={this.state.previewOpen}
-                    onClose={() => this.setState({
-                        previewOpen: false
-                    })}
-                    aria-labelledby="previewDialogTitle"
-                    aria-describedby="previewDialogDes"
-                >
-                        <Grid container>
-                            <Grid item xs={12}>
-                                <Grid container>
-                                    <Grid item xs={10}>
-                                        <DialogTitle id="previewDialogTitle">
-                                            Project Preview
-                                        </DialogTitle>
-                                    </Grid>
-                                    <Grid item xs={2} className={classes.rightAlign}>
-                                        <IconButton 
-                                            onClick={() => this.setState({
-                                                previewOpen: false
-                                            })}
-                                        >
-                                            <Close fontSize="medium" />
-                                        </IconButton>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <DialogContent>
-                                    {this.checkIfNotEmpty() 
-                                        ? 
-                                        <UserProfile />
-                                        : 
-                                        <DialogContentText 
-                                            id="previewDialogDes" 
-                                            className={classes.centering}
-                                        >
-                                            Please fill in all the entries provided before previewing.
-                                        </DialogContentText>
-                                    }
-                                </DialogContent>
-                            </Grid>
-                        </Grid>
-                </Dialog> */}
 
                 <Dialog
                     fullWidth={true}
