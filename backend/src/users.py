@@ -85,7 +85,7 @@ def create_user(data):
         return {'message': 'User created!'}, 201
 
     except ValueError as e:
-        return {'message': '{}'.format(e)}, 400
+        return {'message': 'Bad {} provided!'.format(e)}, 400
         # return abort(400, 'Bad {} provided!'.format(e.__str__()))
     except Exception as e:
         return {'message': '{}'.format(e)}, 400
