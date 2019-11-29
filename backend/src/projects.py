@@ -185,7 +185,7 @@ def deselect_project(data):
     project = Project.query.filter(Project.id == data['projectId']).first()
     db.session.query(user_project_joining_table).filter(and_(user_project_joining_table.columns.project_id == data['projectId'], user_project_joining_table.columns.user_id == data['userId'])).delete(synchronize_session=False)
 
-    #g.current_user.projects.remove(project)
+#     g.current_user.projects.remove(project)
     db.session.commit()
     return {'message': 'Project deselected!'}, 201
 

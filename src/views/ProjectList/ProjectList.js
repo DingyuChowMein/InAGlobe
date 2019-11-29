@@ -10,6 +10,7 @@ import ProjectCard from "./ProjectCard"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/projectListStyle"
+import {projectService} from "../../services/projectsService";
 
 class ProjectList extends Component {
     constructor(props) {

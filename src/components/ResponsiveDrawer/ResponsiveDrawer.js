@@ -34,6 +34,7 @@ import logo from '../../assets/img/logo.png'
 import styles from "../../assets/jss/components/responsiveDrawerStyle"
 import 'react-perfect-scrollbar/dist/css/styles.css'
 import Tooltip from "@material-ui/core/Tooltip";
+import Search from "../Search/Search";
 
 
 class ResponsiveDrawer extends Component {
@@ -171,26 +172,18 @@ class ResponsiveDrawer extends Component {
                         </Drawer>
                     </Hidden>
                 </nav>
-<<<<<<< HEAD
-
-
-=======
->>>>>>> Basic_Search
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
                     {this.props.children}
                 </main>
-<<<<<<< HEAD
+                {name == "Project List" ?
+                    <Search
+                        onSearch ={() => this.props.onSearch()}
+                        updateValue = {this.props.updateValue}
+                    />
+                    : null}
             </PerfectScrollbar>
-=======
-              {name == "Project List" ?
-                <Search
-                  onSearch ={() => this.props.onSearch()}
-                  updateValue = {this.props.updateValue}
-                />
-                : null}
-            </div>
->>>>>>> Basic_Search
+
         )
     }
 }
