@@ -23,22 +23,26 @@ import styles from "../../assets/jss/views/userProfileStyle"
 
 import exampleProfile from "../../assets/data/UserProfileData"
 import { userService } from "../../services/userService"
+import cloneDeep from "lodash.clonedeep"
 
 class Profile extends Component {
     constructor(props) {
         super(props)
-
-        let currentUser
-        if (this.props.match.params.id) {
-            currentUser = this.get(this.props.match.params.id)
-        } else {
-            currentUser = JSON.parse(localStorage.getItem("user"))
-            delete currentUser.token
-        }
-
         this.state = {
             width: window.innerWidth,
-            data: currentUser
+            data: {
+                firstName: "",
+                lastName: "",
+                email: "",
+                location: "",
+                profilePicture: "",
+                permissions: -1,
+                userId: -1,
+                shortDescription: "",
+                longDescription: "",
+                images: [],
+                documents: []
+            }
         }
         this.pictureList = null
     }
@@ -49,11 +53,21 @@ class Profile extends Component {
         })
     }
 
-    get = (id) => {
-        return userService.getProfile(id)
+    get = () => {
+        const currentUser = JSON.parse(localStorage.getItem("user"))
+        const id = this.props.match.params.id ? this.props.match.params.id : currentUser.userId
+
+        userService.getProfile(id)
             .then(data => {
                 console.log(data)
-                return data
+                this.setState({
+                    data: data
+                })
+                if (id === currentUser.userId) {
+                    let updatedUser = cloneDeep(data)
+                    updatedUser["token"] = cloneDeep(currentUser.token)
+                    localStorage.setItem("user", JSON.stringify(updatedUser))
+                }
             })
             .catch(console.log)
     }
@@ -61,8 +75,9 @@ class Profile extends Component {
     componentDidMount() {
         window.addEventListener('resize', this.updateDimensions)
         if (this.pictureList) this.pictureList.scrollTo(0)
-        
+        this.get()
     }
+
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateDimensions)
     }
@@ -85,6 +100,9 @@ class Profile extends Component {
         let userTypeText
         console.log(permissions)
         switch (permissions) {
+            case -1:
+                userTypeText = "Waiting"
+                break
             case 0:
                 userTypeText = "Admin"
                 break
@@ -214,7 +232,7 @@ class Profile extends Component {
                             </Typography>
                         </div>
                     </Grid>
-                    {pictures 
+                    {this.state.data.images
                         ? 
                         <Grid item xs={12} className={classes.leftAlign}>
                             <div>
@@ -232,6 +250,24 @@ class Profile extends Component {
                                         {scrollMenu}
                                     </div>
                                 </Hidden>
+                            </div>
+                        </Grid>
+                        :
+                        null
+                    }
+                    {this.state.data.documents
+                        ?
+                        <Grid item xs={12} className={classes.leftAlign}>
+                            <div>
+                                <Typography component="h5" variant="h5">
+                                    <b>User Documents: </b>
+                                </Typography>
+                                <br />
+                                {documents.map(document => (
+                                    <Link href={config.s3Bucket + document}>
+                                        {/[^/]*$/.exec(document)[0]}{"\n"}
+                                    </Link>
+                                ))}
                             </div>
                         </Grid>
                         :

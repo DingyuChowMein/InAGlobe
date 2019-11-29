@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component'
 
-import { withStyles } from "@material-ui/core"
+import { withStyles, Link } from "@material-ui/core"
 import { School } from '@material-ui/icons'
 
 import config from "../../config"
@@ -41,9 +41,9 @@ class ProposalPage extends Component {
                 </div>
                 <div className={classes.container}>
                     {data.documents.map(doc => (
-                        <a href={isPreview ? URL.createObjectURL(doc) : config.s3Bucket + doc}>
+                        <Link href={isPreview ? URL.createObjectURL(doc) : config.s3Bucket + doc}>
                             {isPreview ? doc["name"] : /[^/]*$/.exec(doc)[0]}{"\n"}
-                        </a>
+                        </Link>
                     ))}
                 </div>
                 <VerticalTimeline>

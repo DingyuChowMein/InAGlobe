@@ -27,7 +27,8 @@ import RegularButton from "../../components/CustomButtons/RegularButton"
 import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer'
 
 // Importing the helper functions from other files
-import upload from "../../s3"
+import { upload, download } from "../../s3"
+import config from "../../config"
 import { generateId } from "../../helpers/utils"
 import { userService } from "../../services/userService"
 import cloneDeep from "lodash.clonedeep"
@@ -53,8 +54,14 @@ class EditProfile extends Component {
             submitting: false,
         }
         this.images = null
+        this.documents = null
         registerPlugin(FilePondPluginImagePreview)
         registerPlugin(FilePondPluginFileValidateType)
+    }
+
+    componentDidMount() {
+        this.images.addFiles(this.state.data.images.map(image => download(image)))
+        this.documents.addFiles(this.state.data.documents.map(document => download(document)))
     }
 
     checkIfNotEmpty = () => Object.values(this.state.data).every(e => !e || e.length !== 0)
@@ -111,14 +118,6 @@ class EditProfile extends Component {
         })
     }
 
-    currentAvatar = () => {
-        const { profilePicture } = this.state.data
-        if (profilePicture) {
-            return profilePicture instanceof String ? profilePicture : URL.createObjectURL(profilePicture)
-        }
-        return imageNull
-    }
-
     render() {
         const { classes } = this.props
 
@@ -144,7 +143,7 @@ class EditProfile extends Component {
         let pic
         if (profilePicture) {
             if (typeof profilePicture === "string") {
-                pic = profilePicture
+                pic = config.s3Bucket + profilePicture
             } else {
                 pic = URL.createObjectURL(profilePicture)
             }
@@ -269,6 +268,8 @@ class EditProfile extends Component {
                                 id="shortDescription"
                                 labelText="Summary"
                                 inputProps={{
+                                    rows: 4,
+                                    rowsMax: 6,
                                     onChange: this.handleFormChange,
                                     required: "true",
                                     defaultValue: this.state.data.shortDescription
@@ -276,6 +277,7 @@ class EditProfile extends Component {
                                 formControlProps={{
                                     fullWidth: true
                                 }}
+                                extraLines={true}
                             />
                         </Grid>
                         <Grid item xs={12} className={classes.leftAlign}>
@@ -283,6 +285,8 @@ class EditProfile extends Component {
                                 id="longDescription"
                                 labelText="Biography"
                                 inputProps={{
+                                    rows: 6,
+                                    rowsMax: 12,
                                     onChange: this.handleFormChange,
                                     required: "true",
                                     defaultValue: this.state.data.longDescription
@@ -290,13 +294,13 @@ class EditProfile extends Component {
                                 formControlProps={{
                                     fullWidth: true
                                 }}
+                                extraLines={true}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             <FilePond
                                 ref={ref => this.images = ref}
                                 allowMultiple={true}
-                                files={this.state.data.images}
                                 labelIdle='Drag & Drop your images (.jpg, .png. or .bmp) or <span class="filepond--label-action">Browse</span>'
                                 acceptedFileTypes={["image/*"]}
                                 onupdatefiles={pictureItems => {
@@ -313,8 +317,8 @@ class EditProfile extends Component {
                         </Grid>
                         <Grid item xs={12}>
                             <FilePond
+                                ref={ref => this.documents = ref}
                                 allowMultiple={true}
-                                files={this.state.data.documents}
                                 labelIdle='Drag & Drop your documents (.pdf, .docx, .doc, .txt and .odt) or <span class="filepond--label-action">Browse</span>'
                                 acceptedFileTypes={[
                                     "application/msword",
@@ -375,6 +379,7 @@ class EditProfile extends Component {
                                 buttonText="Choose image"
                                 onChange={pictureFiles => {
                                     if (pictureFiles.length > 0) {
+                                        console.log(pictureFiles[pictureFiles.length - 1])
                                         this.setState({
                                             data: {
                                                 ...this.state.data,
@@ -491,7 +496,7 @@ class EditProfile extends Component {
                                 this.setState({
                                     submissionOpen: false
                                 })
-                                window.location.reload()
+                                this.props.history.push("/main/userprofile")
                             }}
                             className={classes.okButton}
                         >

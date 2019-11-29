@@ -17,6 +17,7 @@
 		"history": "latest",
 		"lodash.clonedeep": "^4.5.0",
 		"lodash.pick": "^4.4.0",
+		"mime-types": "^2.1.25",
 		"react": "latest",
 		"react-dom": "latest",
 		"react-filepond": "^7.0.1",
