@@ -5,9 +5,9 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import { withRouter } from 'react-router-dom'
 
 // Material UI libraries
-import { 
-    withStyles, 
-    AppBar, 
+import {
+    withStyles,
+    AppBar,
     CssBaseline,
     Drawer,
     Hidden,
@@ -35,9 +35,10 @@ import styles from "../../assets/jss/components/responsiveDrawerStyle"
 import 'react-perfect-scrollbar/dist/css/styles.css'
 import Tooltip from "@material-ui/core/Tooltip";
 
+
 class ResponsiveDrawer extends Component {
 
-    constructor(props) {
+  constructor(props) {
         super(props)
         this.state = {
             mobileOpen: false,
@@ -57,7 +58,7 @@ class ResponsiveDrawer extends Component {
         const history = this.props.history
         history.push(link)
     }
-    
+
     render() {
         const { classes, container, name } = this.props
 
@@ -86,27 +87,27 @@ class ResponsiveDrawer extends Component {
                     {drawerRoutes.map(route => (
                         route.icon !== null && route.userLevel >= this.state.userPermissions
                         ?
-                        <ListItem 
-                            button 
+                        <ListItem
+                            button
                             onClick={() => this.redirectTo(route.layout + route.path)}
                             key={route.name}
                             className={classes.centering}
                         >
-                            {this.state.mobileOpen ? 
-                            <ListItemIcon><route.icon fontSize="large" /></ListItemIcon> : 
+                            {this.state.mobileOpen ?
+                            <ListItemIcon><route.icon fontSize="large" /></ListItemIcon> :
                             <ListItemIcon className={classes.iconColor}><route.icon fontSize="large" /></ListItemIcon>}
 
-                            <ListItemText 
+                            <ListItemText
                                 primary={route.name}
-                                classes={{ 
-                                    primary: classes.listItemText, 
-                                    root: classes.drawerSectionSize 
+                                classes={{
+                                    primary: classes.listItemText,
+                                    root: classes.drawerSectionSize
                                 }}
                             />
 
                             {route.name === "User Profile" ? alert : null}
                         </ListItem>
-                        : 
+                        :
                         null
                     ))}
                 </List>
@@ -136,8 +137,8 @@ class ResponsiveDrawer extends Component {
 
                     </Toolbar>
                 </AppBar>
-                <nav 
-                    className={classes.drawer} 
+                <nav
+                    className={classes.drawer}
                     aria-label="mailbox folders">
                     {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
                     <Hidden smUp implementation="css">
@@ -170,13 +171,26 @@ class ResponsiveDrawer extends Component {
                         </Drawer>
                     </Hidden>
                 </nav>
+<<<<<<< HEAD
 
-            
+
+=======
+>>>>>>> Basic_Search
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
                     {this.props.children}
                 </main>
+<<<<<<< HEAD
             </PerfectScrollbar>
+=======
+              {name == "Project List" ?
+                <Search
+                  onSearch ={() => this.props.onSearch()}
+                  updateValue = {this.props.updateValue}
+                />
+                : null}
+            </div>
+>>>>>>> Basic_Search
         )
     }
 }

@@ -49,7 +49,7 @@ const styles = {
       position: "absolute",
       top: "18px",
       right: "0",
-      zIndex: "2",
+      zIndex: "0",
       display: "block",
       width: "24px",
       height: "24px",
