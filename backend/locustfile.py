@@ -4,16 +4,16 @@ from json import dumps, loads
 from locust import HttpLocust, TaskSet, task, between
 from os import environ
 from random import choice
-import uuid
-import sqlalchemy
+from uuid import uuid4
+from sqlalchemy import create_engine
 
 email_suffix = '@dummyemail.io'
 
 class UserBehavior(TaskSet):
     def on_start(self):
         """ on_start is called when a Locust start before any task is scheduled """
-        self.db = sqlalchemy.create_engine(environ['DATABASE_URL'])
-        self.email = str(uuid.uuid4())[:OWNER_FIELD_LENGTH - len(email_suffix)] + email_suffix
+        self.db = create_engine(environ['DATABASE_URL'])
+        self.email = str(uuid4())[:OWNER_FIELD_LENGTH - len(email_suffix)] + email_suffix
         self.password = 'password'
         self.sign_up()
         self.login()
