@@ -44,12 +44,12 @@ class ProjectApprovals extends Component {
                         </CardContent>
                     </Grid>
                     <Grid item xs={1} className={classes.acceptButton}>
-                        <IconButton aria-label="accept-icon" onClick={() => approveFunction(card.projectId, card.userId, card.notifyId)}>
+                        <IconButton aria-label="accept-icon" onClick={() => approveFunction(card.projectId, card.userId, card.notifyId, true)}>
                             <Done fontSize="medium" className={classes.acceptIcon}/>
                         </IconButton>
                     </Grid>
                     <Grid item xs={1} className={classes.declineButton}>
-                        <IconButton aria-label="reject-icon">
+                        <IconButton aria-label="reject-icon" onClick={() => approveFunction(card.projectId, card.userId, card.notifyId, false)}>
                             <Close fontSize="medium" className={classes.declineIcon}/>
                         </IconButton>
                     </Grid>

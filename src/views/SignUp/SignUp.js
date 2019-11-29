@@ -1,5 +1,5 @@
 // Main ReactJS libraries
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 
 // Material UI libraries
 import {
@@ -17,7 +17,7 @@ import {
     MenuItem,
     Select,
     TextField,
-    Typography
+    Typography, FormControlLabel
 } from '@material-ui/core'
 
 
@@ -25,11 +25,13 @@ import {
 import Copyright from "../../components/Copyright/Copyright"
 
 // Importing helper or service functions
-import { userService } from "../../services/userService"
+import {userService} from "../../services/userService"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/signUpStyle"
+import privacyPolicy from '../../assets/data/privacy-policy.pdf'
 import termsOfService from '../../assets/data/terms-and-conditions-template.pdf'
+import Checkbox from "@material-ui/core/Checkbox";
 
 class SignUp extends Component {
 
@@ -57,6 +59,10 @@ class SignUp extends Component {
                 error: "",
                 value: ""
             },
+            agree: {
+                error: "",
+                checked: false
+            },
             userType: "STUDENT",
             labelWidth: 0,
             signingUp: false
@@ -71,6 +77,12 @@ class SignUp extends Component {
         let lastNameError = ""
         let passwordError = ""
         let confirmPasswordError = ""
+        let agreeError = ""
+
+        if (!this.state.agree.checked) {
+            agreeError = "You must agree to both the Terms of Service and the Privacy Policy."
+            success = false
+        }
 
         if (!this.state.email.value.match(/^[\w\d]+@[\w\d]+\.(ac|org)\..*$/)) {
             emailError = "Must have .ac or .org email!"
@@ -130,6 +142,10 @@ class SignUp extends Component {
             confirmPassword: {
                 ...prevState.confirmPassword,
                 error: confirmPasswordError
+            },
+            agree: {
+                ...prevState.agree,
+                error: agreeError
             }
         }))
         return success
@@ -137,6 +153,8 @@ class SignUp extends Component {
 
     handleFormChange = (e) => {
         const {name, value} = e.target
+        console.log(name)
+        console.log(value)
         this.setState({
             [name]: {
                 error: "",
@@ -190,7 +208,6 @@ class SignUp extends Component {
 
     render() {
         const {classes} = this.props
-
         return (
             <Container component="main" maxWidth="xs">
                 <CssBaseline/>
@@ -297,10 +314,24 @@ class SignUp extends Component {
                                         <MenuItem value={"STUDENT"}>Student</MenuItem>
                                     </Select>
                                 </FormControl>
-                                <h5 align={'center'}>By registering you agree to the
-                                    <a href={termsOfService}
-                                       style={{cursor: "pointer"}}> Terms of Service</a>
-                                </h5>
+                                <Grid item xs={12}>
+                                    <>
+                                    <FormControlLabel style={{display: "table", textAlign: "center"}}
+                                                      control={<Checkbox value="agree" color="primary"
+                                                                         checked={this.state.agree.checked}
+                                                                         onChange={this.handleAgreeCheckBoxClick}/>}
+                                                      label={<>
+                                                          I agree to the
+                                                          <a href={termsOfService} style={{cursor: "pointer"}}> Terms of
+                                                              Service </a>
+                                                          and the
+                                                          <a href={privacyPolicy} style={{cursor: "pointer"}}> Privacy
+                                                              Policy</a>
+                                                      </>}
+                                    />
+                                    <div style={{color: "red"}}>{this.state.agree.error}</div>
+                                    </>
+                                </Grid>
                             </Grid>
                         </Grid>
                         <Button
@@ -325,6 +356,16 @@ class SignUp extends Component {
                     <Copyright/>
                 </Box>
             </Container>
+        )
+    }
+
+    handleAgreeCheckBoxClick = () => {
+        this.setState(prevState => ({
+                agree: {
+                    checked: !prevState.agree.checked,
+                    error: ""
+                }
+            })
         )
     }
 }
