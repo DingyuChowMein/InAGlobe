@@ -81,13 +81,13 @@ class MainPage extends Component {
                     projects: array
                 });
             }
-            this.setState({
-                '/home': {
-                    needApproval: this.state.projects.filter(project => project.status === "Needs Approval"),
-                },
-                '/projectlist': this.state.projects,
-            });
         }
+        this.setState({
+            '/home': {
+                needApproval: this.state.projects.filter(project => project.status === "Needs Approval"),
+            },
+            '/projectlist': this.state.projects,
+        });
     };
 
     getProjectList = () => {
