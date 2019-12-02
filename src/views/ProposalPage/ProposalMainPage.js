@@ -20,7 +20,11 @@ class ProposalMainPage extends Component {
     constructor(props) {
         super(props);
         const userType = JSON.parse(localStorage.getItem('user')).permissions;
-        const projectData = JSON.parse(localStorage.getItem('projects')).projects.filter(project => project.id == this.props.match.params.id)[0]
+        const projectData = JSON.parse(
+            localStorage.getItem('projects')
+        ).projects.filter(project =>
+            project.id === this.props.match.params.id
+        )[0];
 
         console.log(projectData);
         this.state = {
@@ -38,8 +42,8 @@ class ProposalMainPage extends Component {
         this.hasPermissions = this.hasPermissions.bind(this);
 
         console.log("UserType:" + this.state.userType);
-        console.log(userType)
-        console.log(projectData.status)
+        console.log(userType);
+        console.log(projectData.status);
         console.log(this.state.buttonDisabled)
     }
 
@@ -68,7 +72,7 @@ class ProposalMainPage extends Component {
                 console.log(err)
             })
         } else if ((this.state.userType === 2 || this.state.userType === 3)) {
-            if (this.state.projectData.joined == 0) {
+            if (this.state.projectData.joined === 0) {
                 new_project_data = this.state.projectData;
                 new_project_data.joined = 1;
                 this.setState({

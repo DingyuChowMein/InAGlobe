@@ -15,7 +15,6 @@ import timeDiff from "../../helpers/DynamicTimeDiff"
 
 import styles from "../../assets/jss/components/notificationsStyle"
 import Button from "@material-ui/core/Button";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 
 class Notifications extends Component {
 
