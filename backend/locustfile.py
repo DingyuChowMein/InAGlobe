@@ -9,12 +9,16 @@ from sqlalchemy import create_engine
 
 email_suffix = '@dummyemail.io'
 
+
 class UserBehavior(TaskSet):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.password = 'password'
+        self.email = str(uuid4())[:OWNER_FIELD_LENGTH - len(email_suffix)] + email_suffix
+        self.db = create_engine(environ['DATABASE_URL'])
+
     def on_start(self):
         """ on_start is called when a Locust start before any task is scheduled """
-        self.db = create_engine(environ['DATABASE_URL'])
-        self.email = str(uuid4())[:OWNER_FIELD_LENGTH - len(email_suffix)] + email_suffix
-        self.password = 'password'
         self.sign_up()
         self.login()
 
