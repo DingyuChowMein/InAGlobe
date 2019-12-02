@@ -34,12 +34,16 @@ class ProjectList extends Component {
         if (prevProps.data !== this.props.data) {
             this.setState({
                 projects: this.props.data,
+                // ... we also have to update search results to account for these changes ...
+                searchResults: this.props.data.filter(project =>
+                    project.title.toLowerCase().includes(
+                        this.state.searchQuery
+                    )
+                ),
             });
         }
-        // ... we also have to update search results to account for these changes ...
-        if (prevProps.data !== this.props.data ||
-            // ... or if a new search query has been entered.
-            prevState.searchQuery !== this.state.searchQuery) {
+        // ... or if a new search query has been entered.
+        if (prevState.searchQuery !== this.state.searchQuery) {
             this.setState({
                 searchResults: this.state.projects.filter(project =>
                     project.title.toLowerCase().includes(
