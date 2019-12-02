@@ -1,13 +1,12 @@
 // Main ReactJS libraries
 import React, {Component} from "react"
-import {Switch, Route, Redirect} from "react-router-dom"
+import {Switch, Redirect} from "react-router-dom"
 
 // Material UI libraries
 import {withStyles} from "@material-ui/styles"
 
 // Importing webpath data for logins
 import {mainRoutes} from "../../routes"
-import {checkpointRoutes} from "../../routes"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/layouts/mainPageStyle"
@@ -29,7 +28,6 @@ class MainPage extends Component {
             '/home': {
                 needApproval: []
             },
-
             '/projectlist': [],
             '/proposalpage/:id': []
         };
@@ -59,43 +57,53 @@ class MainPage extends Component {
         if (v.message === 'Project added to db!'){
             console.log(v.project);
             this.setState({
-                ['/projectlist']: this.state['/projectlist'].concat(v.project)
+                projects: this.state.projects.concat(v.project)
             })
         }
-        else if (v.message === 'Project updated!'
-            || v.message === 'Project approved!'
-            || v.message === 'Project disapproved') {
-            const array = [...this.state['/projectlist']];
-            const index = array.findIndex(function(item){
+        else {
+            const array = [...this.state.projects];
+            const index = array.findIndex(function (item) {
                 return item.id === v.project.id;
             });
             if (index !== -1) {
-                array.splice(index, 1);
+                if (v.message === 'Project updated!') {
+                    Object.keys(v.project).forEach((key) => {
+                        array[index][key] = v.project[key];
+                    });
+                } else if (v.message === 'Project approved!') {
+                    Object.keys(v.project).forEach((key) => {
+                        array[index][key] = v.project[key];
+                    });
+                } else if (v.message === 'Project disapproved!') {
+                    array.splice(index, 1);
+                }
                 this.setState({
-                    ['/projectlist']: array,
-                    ['/proposalpage/:id']: array
+                    projects: array
                 });
             }
+            this.setState({
+                '/home': {
+                    needApproval: this.state.projects.filter(project => project.status === "Needs Approval"),
+                },
+                '/projectlist': this.state.projects,
+            });
         }
-
-        this.setState({
-            ['/home']: { needApproval: this.state.projects.filter(project => project.status === "Needs Approval") }
-        });
     };
 
     getProjectList = () => {
         projectService.getProjects()
             .then(data => {
                 console.log(data);
-                data.projects.forEach(project => project.status = (project.status === 0 ? "Needs Approval" : "Approved"))
+                data.projects
+                    .forEach(project => project.status = (project.status === 0 ? "Needs Approval" : "Approved"));
                 localStorage.setItem("projects", JSON.stringify(data));
                 this.setState({
                     projects: data.projects,
-                    ['/home']: {
+                    '/home': {
                         needApproval: data.projects.filter(project => project.status === "Needs Approval")
                     },
-                    ['/projectlist']:  data.projects,
-                    ['/proposalpage/:id']:  data.projects
+                    '/projectlist':  data.projects,
+                    '/proposalpage/:id':  data.projects,
                 })
             })
             .catch(console.log);
