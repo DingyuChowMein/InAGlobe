@@ -5,7 +5,7 @@ import {Switch, Redirect} from "react-router-dom"
 // Material UI libraries
 import {withStyles} from "@material-ui/styles"
 
-// Importing webpath data for logins
+// Importing web path data for logins
 import {mainRoutes} from "../../routes"
 
 // Importing class's stylesheet
@@ -53,9 +53,7 @@ class MainPage extends Component {
 
     handleProjectUpdates(json) {
         const v = JSON.parse(json.data);
-        console.log(v.project);
         if (v.message === 'Project added to db!'){
-            console.log(v.project);
             this.setState({
                 projects: this.state.projects.concat(v.project)
             })
@@ -70,11 +68,11 @@ class MainPage extends Component {
                     Object.keys(v.project).forEach((key) => {
                         array[index][key] = v.project[key];
                     });
-                } else if (v.message === 'Project approved!') {
+                } else if (v.message === 'Project approved!' || v.message === 'Project disapproved!') {
                     Object.keys(v.project).forEach((key) => {
                         array[index][key] = v.project[key];
                     });
-                } else if (v.message === 'Project disapproved!') {
+                } else if (v.message === 'Project deleted!') {
                     array.splice(index, 1);
                 }
                 this.setState({
@@ -93,9 +91,9 @@ class MainPage extends Component {
     getProjectList = () => {
         projectService.getProjects()
             .then(data => {
-                console.log(data);
-                data.projects
-                    .forEach(project => project.status = (project.status === 0 ? "Needs Approval" : "Approved"));
+                data.projects.forEach(project =>
+                    project.status = (project.status === 0 ? "Needs Approval" : "Approved")
+                );
                 localStorage.setItem("projects", JSON.stringify(data));
                 this.setState({
                     projects: data.projects,
@@ -104,7 +102,7 @@ class MainPage extends Component {
                     },
                     '/projectlist':  data.projects,
                     '/proposalpage/:id':  data.projects,
-                })
+                });
             })
             .catch(console.log);
     };
