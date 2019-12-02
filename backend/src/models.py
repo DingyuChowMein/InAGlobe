@@ -8,6 +8,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
 
 # TODO: update field length values
+ID_LENGTH = 64
 TITLE_FIELD_LENGTH = 124
 SHORT_FIELD_LENGTH = 256
 LONG_FIELD_LENGTH = 1024
@@ -33,10 +34,19 @@ USER_TYPE = {
 }
 
 
+def get_rand_uuid():
+    from uuid import uuid4
+    uuid = str(uuid4())[:ID_LENGTH]
+    while db.session.query.filter(id == uuid).first() is not None:
+        uuid = str(uuid4())[:ID_LENGTH]
+    return uuid
+
+
 class Model:
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
+    # id = db.Column(db.String(ID_LENGTH), default=get_rand_uuid, primary_key=True)
 
     def save(self):
         db.session.add(self)
@@ -50,18 +60,21 @@ class Model:
         return '<id {}>'.format(self.id)
 
 
-user_project_joining_table = db.Table('UserProjects', db.Model.metadata,
-                                      db.Column('user_id', db.Integer, ForeignKey('Users.id')),
-                                      db.Column('project_id', db.Integer, ForeignKey('Projects.id')),
-                                      db.Column('approved', db.Integer, default=0),
-                                      db.Column('date_time', db.DateTime, default=datetime.now())
-                                      )
+user_project_joining_table = db.Table(
+    'UserProjects', db.Model.metadata,
+    db.Column('user_id', db.Integer, ForeignKey('Users.id')),
+    db.Column('project_id', db.Integer, ForeignKey('Projects.id')),
+    db.Column('approved', db.Integer, default=0),
+    db.Column('date_time', db.DateTime, default=datetime.now())
+)
+
 db.Index('myindex', user_project_joining_table.c.user_id, user_project_joining_table.c.project_id, unique=True)
 
-user_comment_joining_table = db.Table('UserComments', db.Model.metadata,
-                                      db.Column('user_id', db.Integer, ForeignKey('Users.id')),
-                                      db.Column('comment_id', db.Integer, ForeignKey('Comments.id'))
-                                      )
+user_comment_joining_table = db.Table(
+    'UserComments', db.Model.metadata,
+    db.Column('user_id', db.Integer, ForeignKey('Users.id')),
+    db.Column('comment_id', db.Integer, ForeignKey('Comments.id'))
+)
 
 
 # checkpoint_project_joining_table = db.Table('CheckpointProjects', db.Model.metadata,
