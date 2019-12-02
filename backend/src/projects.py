@@ -100,14 +100,18 @@ def delete_project(project_id):
         redis_client.publish('projects', dumps(response))
 
         # TODO create tests
-        from .models import Comment
+        from .models import Comment, Checkpoint, CheckpointFile
         from .comments import delete_comment
-        for comment in Comment.query.filter(Comment.project_id == project_id).all():
-            delete_comment(comment.id)
+
+        [delete_comment(comment.id) for comment in Comment.query.filter(Comment.project_id == project_id).all()]
+
+        for checkpoint in Checkpoint.query.filter(Checkpoint.project_id == project_id).all():
+            [x.delete() for x in CheckpointFile.query.filter(Checkpoint.id == checkpoint.id).all()]
+            checkpoint.delete()
+
 
         # TODO delete files in s3 & test
-        for file in File.query.filter(File.project_id == project_id).all():
-            file.delete()
+        [file.delete() for file in File.query.filter(File.project_id == project_id).all()]
 
         project.delete()
         return response, 200
