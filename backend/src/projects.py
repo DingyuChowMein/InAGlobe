@@ -74,7 +74,8 @@ def upload_project(data):
         g.current_user.projects.append(project)
         db.session.commit()
 
-        project_json = get_projects_helper([project])
+        _project_json, _int = get_projects_helper([project])
+        project_json = _project_json.get('projects')[0]
         response = {'message': 'Project added to db!', 'project': project_json}
 
         app.logger.info('upload project published to channel projects')
@@ -93,7 +94,7 @@ def delete_project(project_id):
     if project is None:
         return {'message': 'Project does not exist!'}, 404
     if project in g.current_user.projects or g.current_user.is_admin():
-        response = {'message': 'Project deleted!', 'project': {'id': project_id, 'projectOwner': project.project_owner, 'status': project.status}}
+        response = {'message': 'Project deleted!', 'project': {'id': project_id, 'projectOwner': project.project_owner}}
         app.logger.info('project deleted')
         app.logger.info('delete project published to channel projects')
         redis_client.publish('projects', dumps(response))
@@ -121,7 +122,7 @@ def update_project(data, project_id):
     if p is None:
         return {'message': 'Project does not exist!'}, 404
     if p in g.current_user.projects or g.current_user.is_admin():
-        project_json = {'id': p.id, 'projectOwner': p.project_owner, 'status': p.status}
+        project_json = {'id': p.id, 'projectOwner': p.project_owner}
 
         if not data.items():
             return {'message': 'No changes!'}, 204
@@ -320,17 +321,11 @@ def project_stream():
             data = loads(string_data)
             message = data.get('message')
             user = g.current_user
-            if message == "Project added to the db!":
-                project = data.get('project')[0].get('projects')[0]
-            elif message in ["Project deleted!", "Project updated!", "Project disapproved!", "Project approved!"]:
-                project = data.get('project')
-
-            # print("project: ", project)
-            # print("message: ", message)
-            # switch on approval status and user permission
-            if (project.get('status') == PROJECT_STATUS['APPROVED'] or 
-                    user.is_admin() or 
-                    int(project.get('projectOwner')) == user.get_id() or 
+            project = data.get('project')
+            if (
+                    user.is_admin() or
+                    project.get('status') == PROJECT_STATUS['APPROVED'] or
+                    int(project.get('projectOwner')) == user.get_id() or
                     message == 'Project disapproved!'
                     ):
                 yield 'event: project-stream\ndata: {}\n\n'.format(dumps(dict(project=project, message=message)))
