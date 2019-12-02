@@ -1,9 +1,7 @@
-import React , { Component } from 'react';
-import {withStyles, AppBar, Toolbar, IconButton, Typography, InputBase} from '@material-ui/core/';
+import React from 'react';
+import {withStyles, InputBase} from '@material-ui/core/';
 import { fade } from '@material-ui/core/styles';
-import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
-import { projectService } from "../../services/projectsService"
 
 
 const styles = theme => ({
@@ -61,17 +59,14 @@ const styles = theme => ({
 
 class Search extends React.Component {
 
-  constructor(props) {
-        super(props);
-    }
-
-    query(query) {
-      this.props.onSearch(query)
-      this.props.updateValue(query)
-    }
+  query(e) {
+      if (typeof(e) !== "undefined"){
+          this.props.onSearch(e.target.value);
+      }
+  }
 
   render() {
-    const { classes } = this.props
+    const { classes } = this.props;
 
     return (
       <div className={classes.root}>
@@ -81,7 +76,7 @@ class Search extends React.Component {
               </div>
               <InputBase
                 placeholder="Search…"
-                onChange={(e) => this.query(e.target.value)}
+                onChange={e => this.query(e)}
 
                 classes={{
                   root: classes.inputRoot,

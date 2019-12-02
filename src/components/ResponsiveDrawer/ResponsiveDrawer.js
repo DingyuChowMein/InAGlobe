@@ -176,10 +176,9 @@ class ResponsiveDrawer extends Component {
                     <div className={classes.toolbar} />
                     {this.props.children}
                 </main>
-                {name == "Project List" ?
+                {name === "Project List" ?
                     <Search
-                        onSearch ={() => this.props.onSearch()}
-                        updateValue = {this.props.updateValue}
+                        onSearch ={this.props.onSearch}
                     />
                     : null}
             </PerfectScrollbar>
