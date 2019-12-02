@@ -23,10 +23,9 @@ class ProposalMainPage extends Component {
         const projectData = JSON.parse(
             localStorage.getItem('projects')
         ).projects.filter(project =>
-            project.id === this.props.match.params.id
+            project.id === parseInt(this.props.match.params.id)
         )[0];
 
-        console.log(projectData);
         this.state = {
             userId: JSON.parse(localStorage.getItem('user')).userId,
             userType: userType,
