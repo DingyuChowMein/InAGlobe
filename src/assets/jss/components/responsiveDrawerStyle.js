@@ -11,7 +11,7 @@ const styles = theme => ({
 		},
 	},
 	appBar: {
-		zIndex: 0,
+		zIndex: theme.zIndex.drawer + 1,
 		marginLeft: drawerWidth,
 		[theme.breakpoints.up('sm')]: {
 			width: `calc(100% - ${drawerWidth}px)`,
