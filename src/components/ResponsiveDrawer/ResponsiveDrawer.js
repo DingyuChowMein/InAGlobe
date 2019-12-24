@@ -61,11 +61,11 @@ class ResponsiveDrawer extends Component {
     }
 
     render() {
-        const { classes, container, name } = this.props
+        const { classes, container, name } = this.props;
 
-        var alert = null
-        const user = JSON.parse(localStorage.getItem("user"))
-        console.log(user)
+        var alert = null;
+        const user = JSON.parse(localStorage.getItem("user"));
+        // console.log(user)
         if (!user.location || !user.shortDescription || !user.longDescription) {
             alert = (
                 <Tooltip title="Incomplete user profile!">
@@ -135,7 +135,12 @@ class ResponsiveDrawer extends Component {
                         <Typography variant="h6" noWrap>
                             {name}
                         </Typography>
-
+                        {name === "Project List" ?
+                            <Search
+                                onSearch ={this.props.onSearch}
+                            />
+                            : null
+                        }
                     </Toolbar>
                 </AppBar>
                 <nav
@@ -176,11 +181,6 @@ class ResponsiveDrawer extends Component {
                     <div className={classes.toolbar} />
                     {this.props.children}
                 </main>
-                {name === "Project List" ?
-                    <Search
-                        onSearch ={this.props.onSearch}
-                    />
-                    : null}
             </PerfectScrollbar>
 
         )
