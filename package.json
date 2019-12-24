@@ -22,6 +22,7 @@
 		"react": "latest",
 		"react-dom": "latest",
 		"react-filepond": "^7.0.1",
+		"react-ga": "^2.7.0",
 		"react-horizontal-scrolling-menu": "^0.7.3",
 		"react-images-upload": "^1.2.7",
 		"react-perfect-scrollbar": "^1.5.3",
