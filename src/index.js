@@ -1,8 +1,9 @@
 // Main ReactJS libraries
 import React from 'react'
 import ReactDOM from 'react-dom'
+import ReactGA from 'react-ga';
 import { createBrowserHistory } from "history"
-import { Router, Route, Switch, Redirect, IndexRoute } from "react-router-dom"
+import { Router, Route, Switch, Redirect } from "react-router-dom"
 
 // Importing and applying a global stylesheet
 import "./assets/css/material-dashboard-react.css?=1.8.0"
@@ -13,8 +14,7 @@ import Authentication from "./layouts/Authentication/Authentication"
 import MainPage from './layouts/MainPage/MainPage'
 import { createMuiTheme } from '@material-ui/core'
 import { ThemeProvider } from '@material-ui/styles'
-import {PrivateRoute} from "./helpers/PrivateRoute";
-import ConfirmEmail from "./views/ConfirmEmail/ConfirmEmail";
+import { PrivateRoute } from "./helpers/PrivateRoute";
 
 const hist = createBrowserHistory();
 
@@ -28,7 +28,19 @@ const theme = createMuiTheme({
             main: "#5E92A8"
 		}
 	}
-})
+});
+
+const trackingId = process.env.REACT_GA_ID;
+
+ReactGA.initialize(trackingId);
+ReactGA.set({
+	userId: localStorage.getItem('user').id
+});
+
+hist.listen(location => {
+	ReactGA.set({page: location.pathname});
+	ReactGA.pageview(location.pathname);
+});
 
 ReactDOM.render(
 	<ThemeProvider theme={theme}>
@@ -41,7 +53,7 @@ ReactDOM.render(
 		</Router>
 	</ThemeProvider>,
 	document.getElementById("root"),
-)
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
