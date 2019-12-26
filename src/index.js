@@ -34,7 +34,7 @@ const trackingId = process.env.REACT_GA_ID;
 
 ReactGA.initialize(trackingId);
 ReactGA.set({
-	userId: localStorage.getItem('user').id
+	userId: localStorage.getItem('user').userId
 });
 
 hist.listen(location => {
