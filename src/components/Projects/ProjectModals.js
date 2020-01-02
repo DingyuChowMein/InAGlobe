@@ -83,11 +83,11 @@ function EditModal(props) {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Fab aria_label="close">
-                        <CloseIcon onClick={handleCloseEdit} />
+                    <Fab aria_label="close" onClick={handleCloseEdit}>
+                        <CloseIcon  />
                     </Fab>
-                    <Fab color="primary" aria_label="save">
-                        <SaveIcon onClick={handleSave} />
+                    <Fab color="primary" aria_label="save" onClick={handleSave}>
+                        <SaveIcon  />
                     </Fab>
                 </DialogActions>
             </Dialog>
