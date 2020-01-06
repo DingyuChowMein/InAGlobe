@@ -64,8 +64,8 @@ function EditModal(props) {
 
     return (
         <div className={props.classes.root}>
-            <Fab color="secondary" aria_label="edit">
-                <EditIcon onClick={handleClickOpenEdit} />
+            <Fab color="secondary" aria_label="edit" onClick={handleClickOpenEdit}>
+                <EditIcon />
             </Fab>
             <Dialog open={openEdit} onClose={handleCloseEdit} aria-labelledby="edit-dialogue">
                 <DialogTitle id="edit-title-dialogue">
@@ -84,10 +84,10 @@ function EditModal(props) {
                 </DialogContent>
                 <DialogActions>
                     <Fab aria_label="close" onClick={handleCloseEdit}>
-                        <CloseIcon  />
+                        <CloseIcon />
                     </Fab>
                     <Fab color="primary" aria_label="save" onClick={handleSave}>
-                        <SaveIcon  />
+                        <SaveIcon />
                     </Fab>
                 </DialogActions>
             </Dialog>
@@ -178,8 +178,8 @@ function DeleteModal(props){
 
     return (
         <div className={props.classes.root}>
-            <Fab aria_label="delete">
-                <DeleteOutlineIcon onClick={handleClickOpenDelete} />
+            <Fab aria_label="delete" onClick={handleClickOpenDelete}>
+                <DeleteOutlineIcon />
             </Fab>
             <Dialog open={openDelete} onClose={handleCloseDelete} aria-labelledby="delete-dialogue">
                 <DialogTitle id="delete-title-dialogue">
