@@ -31,12 +31,13 @@ const theme = createMuiTheme({
 });
 
 const trackingId = process.env.REACT_APP_GA_ID;
-
+console.log(trackingId);
 ReactGA.initialize(trackingId);
 
 hist.listen(location => {
-	ReactGA.set({page: location.pathname});
-	ReactGA.pageview(location.pathname);
+    ReactGA.set({ page: location.pathname }); // Update the user's current page
+    ReactGA.pageview(location.pathname); // Record a pageview for the given page
+    console.log(location.pathname);
 });
 
 ReactDOM.render(

@@ -21,7 +21,7 @@ import config from "../../config"
 
 // Import class's stylesheet
 import styles from "../../assets/jss/views/projectCardStyle"
-import {Event} from "../../components/Tracking/Tracking";
+import {Event, initGA} from "../../components/Tracking/Tracking";
 
 class ProjectCard extends Component {
     constructor(props) {
@@ -34,6 +34,10 @@ class ProjectCard extends Component {
         };
         this.openProposalPage = this.openProposalPage.bind(this);
         this.hasPermission = this.hasPermission.bind(this);
+    }
+
+    componentDidMount() {
+        initGA();
     }
 
     openProposalPage() {

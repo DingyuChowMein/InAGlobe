@@ -1,7 +1,7 @@
 import * as ReactGA from "react-ga";
 
 export const initGA = () => {
-    ReactGA.initialize(process.env.REACT_APP_GI_ID);
+    ReactGA.initialize(process.env.REACT_APP_GA_ID);
 };
 
 export const PageView = () => {
