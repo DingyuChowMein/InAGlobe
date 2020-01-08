@@ -20,6 +20,7 @@ import {
 
 import styles from "../../assets/jss/components/cardScrollViewStyle"
 import config from "../../config";
+import {GAEvent} from "../Tracking/Tracking";
 
 
 class CardScrollView extends Component {
@@ -35,7 +36,7 @@ class CardScrollView extends Component {
     goToProposalPage = (card) => {
         console.log(`Card ${card.id} clicked!`);
         const dataValue = JSON.stringify(card);
-        Event("Dashboard", "Card Clicked", dataValue.id + "|" + dataValue.title);
+        GAEvent("Dashboard", "Card Clicked", dataValue.id + "|" + dataValue.title);
         localStorage.setItem(`proposalPage/${card.id}`, dataValue)
         this.props.history.push(`/main/projectlist/proposalpage/${card.id}`)
     }

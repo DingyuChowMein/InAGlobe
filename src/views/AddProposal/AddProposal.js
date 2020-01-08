@@ -34,6 +34,7 @@ import cloneDeep from "lodash.clonedeep"
 import styles from "../../assets/jss/views/addProposalStyle"
 import "filepond/dist/filepond.min.css"
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css'
+import {GAEvent} from "../../components/Tracking/Tracking";
 
 
 class AddProposal extends Component {
@@ -227,7 +228,7 @@ class AddProposal extends Component {
                                     this.setState({
                                         previewOpen: true
                                     });
-                                    Event("Add Proposal", "Preview Clicked", "");
+                                    GAEvent("Add Proposal", "Preview Clicked", "");
                                 }}
                                 className={classes.previewButton}
                             >
@@ -240,7 +241,7 @@ class AddProposal extends Component {
                                         submitting: true,
                                         submissionOpen: true
                                     })
-                                    Event("Add Proposal", "Post Clicked", "");
+                                    GAEvent("Add Proposal", "Post Clicked", "");
                                     this.post()
                                 }}
                                 className={classes.submitButton}

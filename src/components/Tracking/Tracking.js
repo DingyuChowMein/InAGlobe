@@ -10,12 +10,12 @@ export const PageView = () => {
 };
 
 /**
- * Event - Add custom tracking event.
+ * GAEvent - Add custom tracking event.
  * @param {string} category
  * @param {string} action
  * @param {string} label
  */
-export const Event = (category, action, label) => {
+export const GAEvent = (category, action, label) => {
     ReactGA.event({
         category: category,
         action: action,

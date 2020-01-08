@@ -14,6 +14,7 @@ import config from "../../config"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/proposalMainPageStyle"
+import {GAEvent} from "../../components/Tracking/Tracking";
 
 class ProposalMainPage extends Component {
 
@@ -49,7 +50,7 @@ class ProposalMainPage extends Component {
     actionButtonClicked = () => {
         const token = JSON.parse(localStorage.getItem('user')).token;
         const bearer = 'Bearer ' + token;
-        Event("Project", this.state.buttonMessage + " clicked", this.state.projectData.id + this.state.userId);
+        GAEvent("Project", this.state.buttonMessage + " clicked",toString(this.state.projectData.id));
         let new_project_data;
         if (this.state.userType === 0) {
             new_project_data = this.state.projectData;
