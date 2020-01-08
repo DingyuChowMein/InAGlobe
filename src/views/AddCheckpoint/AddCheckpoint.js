@@ -14,6 +14,7 @@ import {generateId} from "../../helpers/utils"
 import upload from "../../s3"
 
 import styles from "../../assets/jss/views/addCheckpointStyle"
+import {projectService} from "../../services/projectsService";
 
 class AddCheckpoint extends Component {
 
@@ -52,7 +53,7 @@ class AddCheckpoint extends Component {
         checkpointService.postCheckpoint(match.params.id, this.state.data)
             .then((response) => {
                 console.log(response);
-
+                projectService.refreshProjects();
                 // Redirect here based on response
                 this.props.history.push("/main/projectlist/")
             }).catch((err) => {

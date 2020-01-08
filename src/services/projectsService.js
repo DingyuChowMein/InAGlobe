@@ -56,6 +56,17 @@ function updateProject(projectId, data) {
     })
 }
 
+
+function refreshProjects() {
+    getProjects().then(data => {
+            data.projects.forEach(project =>
+                project.status = (project.status === 0 ? "Needs Approval" : "Approved")
+            );
+            localStorage.setItem("projects", JSON.stringify(data));
+        }
+    );
+}
+
 export const projectService = {
-    getProjects, postProject, deleteProject, updateProject
+    getProjects, postProject, deleteProject, updateProject, refreshProjects
 };

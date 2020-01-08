@@ -28,6 +28,7 @@ import {dashboardService} from "../../services/dashboardService"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/homePageStyle"
+import {projectService} from "../../services/projectsService";
 
 // Example data
 // import data from "../../assets/data/ProjectData"
@@ -111,6 +112,7 @@ class Dashboard extends Component {
             })
             .catch(console.log)
 
+        projectService.refreshProjects();
         // Get the list of project join requests
         fetch(config.apiUrl + '/joiningApprove/', {
             method: 'get',
