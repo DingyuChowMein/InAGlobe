@@ -10,6 +10,7 @@ import ProjectCard from "./ProjectCard"
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/projectListStyle"
 import {initGA, PageView} from "../../components/Tracking/Tracking";
+import {projectService} from "../../services/projectsService";
 
 class ProjectList extends Component {
     constructor(props) {
@@ -24,6 +25,7 @@ class ProjectList extends Component {
 
     componentDidMount() {
         // By default search query is empty string, so search displays all projects.
+        projectService.refreshProjects();
         this.setState({
             searchResults: this.state.projects,
         });

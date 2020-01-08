@@ -51,14 +51,14 @@ class AddProposal extends Component {
                 location: "",
                 // don't need this either, its assigned on the backend
                 // projectOwner: "",
-                documents: [],
                 // Fill these in properly later
                 organisationName: "dummy",
                 organisationLogo: "dummy",
                 // status is not approved by default so we don't need it
                 // status: "",
-                images: []
             },
+            documents: [],
+            images: [],
             previewOpen: false,
             submissionOpen: false,
             submissionResult: "",
@@ -88,8 +88,8 @@ class AddProposal extends Component {
         if (this.checkIfNotEmpty()) {
             const id = generateId()
             const modifiedData = cloneDeep(this.state.data)
-            modifiedData.documents = upload(modifiedData.documents, id + '/Documents')
-            modifiedData.images = upload(modifiedData.images, id + '/Images')
+            modifiedData.documents = upload(this.state.documents, id + '/Documents')
+            modifiedData.images = upload(this.state.images, id + '/Images')
             console.log(modifiedData)
             projectService.postProject(modifiedData)
                 .then(response => {
@@ -190,21 +190,18 @@ class AddProposal extends Component {
                         <Grid item xs={12}>
                             <FilePond
                                 allowMultiple={true}
-                                files={this.state.data.images}
+                                files={this.state.images}
                                 labelIdle='Drag & Drop your images (.jpg, .png. or .bmp) or <span class="filepond--label-action">Browse</span>'
                                 acceptedFileTypes={["image/*"]}
                                 onupdatefiles={pictureItems => this.setState({
-                                    data: {
-                                        ...this.state.data,
-                                        images: pictureItems.map(pictureItem => pictureItem.file)
-                                    }
+                                    images: pictureItems.map(pictureItem => pictureItem.file)
                                 })}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             <FilePond
                                 allowMultiple={true}
-                                files={this.state.data.documents}
+                                files={this.state.documents}
                                 labelIdle='Drag & Drop your documents (.pdf, .docx, .doc, .txt and .odt) or <span class="filepond--label-action">Browse</span>'
                                 acceptedFileTypes={[
                                     "application/msword",
@@ -214,10 +211,7 @@ class AddProposal extends Component {
                                     "application/vnd.oasis.opendocument.text"
                                 ]}
                                 onupdatefiles={fileItems => this.setState({
-                                    data: {
-                                        ...this.state.data,
-                                        documents: fileItems.map(fileItem => fileItem.file)
-                                    }
+                                    documents: fileItems.map(fileItem => fileItem.file)
                                 })}
                             />
                         </Grid>
