@@ -10,44 +10,75 @@ import styles from "../../assets/jss/views/proposalPageStyle"
 import 'react-vertical-timeline-component/style.min.css'
 
 class ProposalPage extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            title: props.data.title,
+            organisation: props.data.organisation,
+            images: props.data.images,
+            documents: props.data.documents,
+            status: props.data.status,
+            location: props.data.location,
+            checkpoints: props.data.checkpoints,
+        }
+    }
+
+    componentWillReceiveProps () {
+
+        this.setState({
+            title: this.props.data.title,
+            organisation: this.props.data.organisation,
+            images: this.props.data.images,
+            status: this.props.data.status,
+            documents: this.props.data.documents,
+            location: this.props.data.location,
+            checkpoints: this.props.data.checkpoints,
+        });
+
+    }
+
     render() {
         const {classes, data, children, isPreview} = this.props
+
+        console.log("Rendering proposal page");
+        console.log(this.props);
+        console.log(this.state);
 
         return (
             <div>
                 <div className={classes.container}>
-                    <h1>{data.title}</h1>
+                    <h1>{this.state.title}</h1>
                 </div>
                 <div className={classes.container}>
-                    <h2>{data.organisation}</h2>
+                    <h2>{this.state.organisation}</h2>
                 </div>
-                {data.images.map(image => (
+                {this.state.images.map(image => (
                     <div className={classes.imagesContainer}>
                         <img
-                            alt={data.title}
+                            alt={this.state.title}
                             src={isPreview ? URL.createObjectURL(image) : config.s3Bucket + image}
                             className={classes.projectImages}
                         />
                     </div>
                 ))}
                 <div className={classes.container}>
-                    <h3>{data.status}</h3>
+                    <h3>{this.state.status}</h3>
                 </div>
                 <div className={classes.container}>
-                    <h4>{data.location}</h4>
+                    <h4>{this.state.location}</h4>
                 </div>
                 <div className={classes.container}>
-                    <h5>{data.detailedDescription}</h5>
+                    <h5>{this.state.detailedDescription}</h5>
                 </div>
                 <div className={classes.container}>
-                    {data.documents.map(doc => (
+                    {this.state.documents.map(doc => (
                         <Link href={isPreview ? URL.createObjectURL(doc) : config.s3Bucket + doc}>
                             {isPreview ? doc["name"] : /[^/]*$/.exec(doc)[0]}{"\n"}
                         </Link>
                     ))}
                 </div>
                 <VerticalTimeline>
-                    {data.checkpoints ? data.checkpoints.map(event => (
+                    {this.state.checkpoints ? this.state.checkpoints.map(event => (
                         <VerticalTimelineElement
                             className="vertical-timeline-element--work"
                             iconStyle={{background: 'rgb(33, 150, 243)', color: '#fff'}}

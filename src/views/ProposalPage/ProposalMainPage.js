@@ -171,10 +171,9 @@ class ProposalMainPage extends Component {
 
     render() {
         const {classes, match} = this.props;
-        const proposalData = JSON.parse(localStorage.getItem(`proposalPage/${match.params.id}`));
         return (
             <ResponsiveDrawer name={"Project Page"}>
-                <ProposalPage {...this.props} data={proposalData} isPreview={false}>
+                <ProposalPage {...this.props} data={this.state.projectData} isPreview={false}>
                     <div className={classes.buttonsDiv}>
                         <RegularButton
                             color="primary"
