@@ -16,6 +16,7 @@ import {projectService} from "../../services/projectsService";
 // Importing helper or service functions
 import {EventSourcePolyfill} from "event-source-polyfill";
 import config from "../../config";
+import {Route} from "react-router";
 
 
 class MainPage extends Component {
@@ -42,7 +43,9 @@ class MainPage extends Component {
 
     async componentDidMount() {
         this.eventSource.addEventListener('project-stream', json => this.handleProjectUpdates(json));
-        this.eventSource.addEventListener('error', (err) => {console.log(err)});
+        this.eventSource.addEventListener('error', (err) => {
+            console.log(err)
+        });
         try {
             this.interval = setInterval(async () => {
                 this.getProjectList();
@@ -54,7 +57,9 @@ class MainPage extends Component {
 
     componentWillUnmount() {
         this.eventSource.removeEventListener('project-stream', json => this.handleProjectUpdates(json));
-        this.eventSource.removeEventListener('error', (err) => {console.log(err)});
+        this.eventSource.removeEventListener('error', (err) => {
+            console.log(err)
+        });
         this.eventSource.close();
         console.log("Unmounting");
         clearInterval(this.interval);
@@ -62,7 +67,7 @@ class MainPage extends Component {
 
     handleProjectUpdates(json) {
         const v = JSON.parse(json.data);
-        if (v.message === 'Project added to db!'){
+        if (v.message === 'Project added to db!') {
             this.setState({
                 projects: this.state.projects.concat(v.project)
             })
@@ -110,8 +115,8 @@ class MainPage extends Component {
                     '/home': {
                         needApproval: data.projects.filter(project => project.status === "Needs Approval")
                     },
-                    '/projectlist':  data.projects,
-                    '/proposalpage/:id':  data.projects,
+                    '/projectlist': data.projects,
+                    '/proposalpage/:id': data.projects,
                 });
             })
             .catch(console.log);
@@ -131,6 +136,10 @@ class MainPage extends Component {
                         />
                     )
                 })}
+                {/*<Route path='/analytics' component={() => {*/}
+                    {/*window.location.href = 'http://www.google.com';*/}
+                    {/*return null*/}
+                {/*}}/>*/}
                 <Redirect strict from="/main" to="/main/home"/>
             </Switch>
         )
