@@ -112,7 +112,6 @@ class Dashboard extends Component {
             })
             .catch(console.log)
 
-        projectService.refreshProjects();
         // Get the list of project join requests
         fetch(config.apiUrl + '/joiningApprove/', {
             method: 'get',

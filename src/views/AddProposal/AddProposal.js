@@ -74,8 +74,6 @@ class AddProposal extends Component {
     };
 
     handleFormChange = (event) => {
-        console.log(event.target.id)
-        console.log(event.target.value)
         this.setState({
             data: {
                 ...this.state.data,
@@ -329,7 +327,13 @@ class AddProposal extends Component {
                                 this.setState({
                                     submissionOpen: false
                                 })
-                                this.props.history.push("/main/projectlist")
+                                projectService.getProjects().then(data => {
+                                    data.projects.forEach(project =>
+                                        project.status = (project.status === 0 ? "Needs Approval" : "Approved")
+                                    );
+                                    localStorage.setItem("projects", JSON.stringify(data));
+                                    this.props.history.push("/main/projectlist")
+                                })
                             }}
                             className={classes.okButton}
                         >

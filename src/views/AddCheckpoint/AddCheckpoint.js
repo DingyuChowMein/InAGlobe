@@ -53,9 +53,14 @@ class AddCheckpoint extends Component {
         checkpointService.postCheckpoint(match.params.id, this.state.data)
             .then((response) => {
                 console.log(response);
-                projectService.refreshProjects();
                 // Redirect here based on response
-                this.props.history.push("/main/projectlist/")
+                projectService.getProjects().then(data => {
+                                    data.projects.forEach(project =>
+                                        project.status = (project.status === 0 ? "Needs Approval" : "Approved")
+                                    );
+                                    localStorage.setItem("projects", JSON.stringify(data));
+                                    this.props.history.push("/main/projectlist")
+                                });
             }).catch((err) => {
             console.log(err)
         })

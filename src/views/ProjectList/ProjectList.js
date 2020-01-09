@@ -25,7 +25,6 @@ class ProjectList extends Component {
 
     componentDidMount() {
         // By default search query is empty string, so search displays all projects.
-        projectService.refreshProjects();
         this.setState({
             searchResults: this.state.projects,
         });
