@@ -49,7 +49,7 @@ class MainPage extends Component {
         try {
             this.interval = setInterval(async () => {
                 this.getProjectList();
-            }, 5000)
+            }, 2000)
         } catch (e) {
             console.log(e);
         }
