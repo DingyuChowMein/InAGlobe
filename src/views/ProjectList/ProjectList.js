@@ -1,7 +1,7 @@
 // Main ReactJS libraries
 import React, {Component} from 'react'
 // Material UI libraries
-import {withStyles, Grid} from '@material-ui/core'
+import {withStyles, Grid, Icon} from '@material-ui/core'
 
 // Imports of different components in project
 import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer'
@@ -9,8 +9,11 @@ import ProjectCard from "./ProjectCard"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/projectListStyle"
-import {initGA, PageView} from "../../components/Tracking/Tracking";
-import {projectService} from "../../services/projectsService";
+import { initGA, PageView } from "../../components/Tracking/Tracking";
+import { projectService } from "../../services/projectsService";
+import GoogleMapReact from 'google-map-react'
+import Geocode from "react-geocode"
+import { PersonPinCircle } from '@material-ui/icons'
 
 class ProjectList extends Component {
     constructor(props) {
@@ -19,8 +22,15 @@ class ProjectList extends Component {
             projects: this.props.data,
             searchQuery: '',
             searchResults: [],
-        };
-        this.onSearch = this.onSearch.bind(this);
+        }
+    }
+
+    static defaultProps = {
+        center: {
+            lat: 51.05,
+            lng: 0.1
+        },
+        zoom: 2,
     }
 
     componentDidMount() {
@@ -69,12 +79,42 @@ class ProjectList extends Component {
                 onSearch={this.onSearch}
             >
                 <div className={classes.root}>
-                    <Grid container spacing={2}>
-                        {this.state.searchResults.map(card => (
-                            <Grid item xs={12} sm={12} md={6} key={card.id}>
-                                <ProjectCard data={card}/>
+                    <Grid container>
+                        <Grid item xs={12} sm={12} md={6}>
+                            <GoogleMapReact
+                                bootstrapURLKeys={{ key: process.env.REACT_APP_GMAPS_API_KEY }}
+                                defaultCenter={this.props.center}
+                                defaultZoom={this.props.zoom}
+                            >
+                                {this.state.searchResults.map(result => {
+                                    Geocode.setApiKey(process.env.REACT_APP_GEOCODE_KEY)
+                                    Geocode.setLanguage("en")
+                                    return Geocode.fromAddress(result.location).then(response => {
+                                        const { lat, lng } = response.results[0].geometry.location
+                                        return (
+                                            <Icon 
+                                                color="red"
+                                                lat={lat}
+                                                lng={lng}
+                                                text={result.title}
+                                            >
+                                                <PersonPinCircle />
+                                            </Icon>
+                                        )
+                                    })
+                                    .catch(console.log)
+                                })}
+                            </GoogleMapReact>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={6}>
+                            <Grid container spacing={2}>
+                                {this.state.searchResults.map(card => (
+                                    <Grid item xs={12} sm={12} md={3} key={card.id}>
+                                        <ProjectCard data={card}/>
+                                    </Grid>
+                                ))}
                             </Grid>
-                        ))}
+                        </Grid>
                     </Grid>
                 </div>
             </ResponsiveDrawer>

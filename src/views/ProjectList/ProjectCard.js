@@ -63,7 +63,7 @@ class ProjectCard extends Component {
 
         return (
             <Card className={classes.cardDiv}>
-                <ButtonBase className={classes.cardAction} onClick = {this.openProposalPage}>
+                <ButtonBase className={classes.cardAction} onClick={this.openProposalPage}>
                     <img
                         className={classes.cardImgTop}
                         alt="Provided for a Card."

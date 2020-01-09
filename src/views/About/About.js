@@ -11,7 +11,7 @@ class About extends Component {
     render() {
         return (
             <ResponsiveDrawer name="About">
-
+                
             </ResponsiveDrawer>
         )
     }

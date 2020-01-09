@@ -32,6 +32,7 @@ import config from "../../config"
 import { generateId } from "../../helpers/utils"
 import { userService } from "../../services/userService"
 import cloneDeep from "lodash.clonedeep"
+import { lookup } from "mime-types"
 
 // Importing class's stylesheet
 import imageNull from "../../assets/img/imageNull.png"
@@ -46,25 +47,12 @@ class EditProfile extends Component {
         super(props)
 
         let userData = JSON.parse(localStorage.getItem("user"))
-        delete userData.token
 
-        userData.images = userData.images.map(image => {
-            return {
-                source: config.s3Bucket + image,
-                options: {
-                  type: "local"
-                }
-            }
-        })
+        this.initImages = cloneDeep(userData.images)
+        this.initDocuments = cloneDeep(userData.documents)
 
-        userData.documents = userData.documents.map(document => {
-            return {
-                source: config.s3Bucket + document,
-                options: {
-                    type: "local"
-                }
-            }
-        })
+        userData.images = []
+        userData.documents = []
 
         this.state = {
             data: userData,
@@ -73,11 +61,28 @@ class EditProfile extends Component {
             profilePicEdit: false,
             profilePicChanged: false,
             submissionResult: "",
-            submitting: false,
+            submitting: false
         }
         this.resetData()
+        this.imagePond = null
+        this.documentPond = null
         registerPlugin(FilePondPluginImagePreview)
         registerPlugin(FilePondPluginFileValidateType)
+    }
+
+    componentDidMount() {
+        this.initImages.forEach(image => this.srcToFile(image, this.imagePond))
+        this.initDocuments.forEach(document => this.srcToFile(document, this.documentPond))
+    }
+
+    srcToFile = (src, filePond) => {
+        let fileName = src.split("/")
+        fileName = fileName[fileName.length - 1]
+        const fileType = lookup(fileName)
+        return fetch(config.s3Bucket + src)
+            .then(res => res.arrayBuffer())
+            .then(buf => new File([buf], fileName, { type: fileType }))
+            .then(file => filePond.addFile(file))
     }
 
     checkIfNotEmpty = () => Object.values(this.state.data).every(e => !e || e.length !== 0)
@@ -98,7 +103,7 @@ class EditProfile extends Component {
             const id = generateId()
 
             const modifiedData = cloneDeep(this.state.data)
-            delete modifiedData.token
+            const token =  modifiedData.token
 
             if (this.state.profilePicChanged) {
                 modifiedData.profilePicture = upload([modifiedData.profilePicture], id + '/Images')[0]
@@ -107,8 +112,6 @@ class EditProfile extends Component {
             modifiedData.documents = upload(modifiedData.documents, id + '/Documents')
             modifiedData.images = upload(modifiedData.images, id + '/Images')
 
-            console.log(modifiedData)
-
             userService.updateProfile(this.state.data.userId, modifiedData)
                 .then(response => {
                     console.log(response)
@@ -116,6 +119,8 @@ class EditProfile extends Component {
                         submitting: false,
                         submissionResult: "Submission Successful"
                     })
+                    modifiedData.token = token
+                    localStorage.setItem("user", JSON.stringify(modifiedData))
                 }).catch(err => {
                     console.log(err)
                     this.setState({
@@ -134,24 +139,6 @@ class EditProfile extends Component {
     resetData = () => {
         let userData = JSON.parse(localStorage.getItem("user"))
         delete userData.token
-
-        userData.images = userData.images.map(image => {
-            return {
-                source: config.s3Bucket + "/" + image,
-                options: {
-                  type: "local"
-                }
-            }
-        })
-
-        userData.documents = userData.documents.map(document => {
-            return {
-                source: config.s3Bucket + "/" + document,
-                options: {
-                    type: "local"
-                }
-            }
-        })
 
         this.setState({
             data: userData
@@ -338,6 +325,7 @@ class EditProfile extends Component {
                         </Grid>
                         <Grid item xs={12}>
                             <FilePond
+                                ref={ref => this.imagePond = ref}
                                 files={this.state.data.images}
                                 allowMultiple={true}
                                 labelIdle='Drag & Drop your images (.jpg, .png. or .bmp) or <span class="filepond--label-action">Browse</span>'
@@ -355,6 +343,7 @@ class EditProfile extends Component {
                         </Grid>
                         <Grid item xs={12}>
                             <FilePond
+                                ref={ref => this.documentPond = ref}
                                 files={this.state.data.documents}
                                 allowMultiple={true}
                                 labelIdle='Drag & Drop your documents (.pdf, .docx, .doc, .txt and .odt) or <span class="filepond--label-action">Browse</span>'
