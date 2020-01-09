@@ -1,8 +1,8 @@
 // Main ReactJS libraries
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import PerfectScrollbar from 'react-perfect-scrollbar'
-import { withRouter } from 'react-router-dom'
+import {withRouter} from 'react-router-dom'
 
 // Material UI libraries
 import {
@@ -19,10 +19,10 @@ import {
     Toolbar,
     Typography
 } from '@material-ui/core'
-import { Menu, Warning } from '@material-ui/icons'
+import {Menu, Warning} from '@material-ui/icons'
 
 // Importing webpath data for drawer links
-import { drawerRoutes } from '../../routes'
+import {drawerRoutes} from '../../routes'
 
 // Imports of different components in project
 import RegularButton from "../CustomButtons/RegularButton"
@@ -35,11 +35,12 @@ import styles from "../../assets/jss/components/responsiveDrawerStyle"
 import 'react-perfect-scrollbar/dist/css/styles.css'
 import Tooltip from "@material-ui/core/Tooltip";
 import Search from "../Search/Search";
+import Assessment from "@material-ui/icons/esm/Assessment";
 
 
 class ResponsiveDrawer extends Component {
 
-  constructor(props) {
+    constructor(props) {
         super(props)
         this.state = {
             mobileOpen: false,
@@ -54,7 +55,7 @@ class ResponsiveDrawer extends Component {
     }
 
     render() {
-        const { classes, container, name } = this.props;
+        const {classes, container, name} = this.props;
 
         var alert = null;
         const user = JSON.parse(localStorage.getItem("user"));
@@ -69,9 +70,9 @@ class ResponsiveDrawer extends Component {
 
         const drawer = (
             <div>
-                <div className={classes.toolbar} style={{ textAlign: "left" }}>
+                <div className={classes.toolbar} style={{textAlign: "left"}}>
                     <span className={classes.logoImage}>
-                        <img src={logo} alt="logo" className={classes.img} />
+                        <img src={logo} alt="logo" className={classes.img}/>
                     </span>
                     <span className={classes.logoText}>
                         <p className={classes.logoTextFont}>InAGlobe</p>
@@ -80,40 +81,65 @@ class ResponsiveDrawer extends Component {
                 <List>
                     {drawerRoutes.map(route => (
                         route.icon !== null && route.userLevel >= this.state.userPermissions
-                        ?
+                            ?
+                            <ListItem
+                                button
+                                onClick={() => this.redirectTo(route.layout + route.path)}
+                                key={route.name}
+                                className={classes.centering}
+                            >
+                                {this.state.mobileOpen ?
+                                    <ListItemIcon>
+                                        <route.icon fontSize="large"/>
+                                    </ListItemIcon> :
+                                    <ListItemIcon className={classes.iconColor}>
+                                        <route.icon fontSize="large"/>
+                                    </ListItemIcon>}
+
+                                <ListItemText
+                                    primary={route.name}
+                                    classes={{
+                                        primary: classes.listItemText,
+                                        root: classes.drawerSectionSize
+                                    }}
+                                />
+
+                                {route.name === "User Profile" ? alert : null}
+                            </ListItem>
+                            :
+                            null
+                    ))}
+                    {this.state.userPermissions === 0 ?
                         <ListItem
                             button
-                            onClick={() => this.props.history.push(route.layout + route.path)}
-                            key={route.name}
+                            onClick={() => window.open("https://analytics.google.com/")}
+                            key={"Analytics"}
                             className={classes.centering}
                         >
                             {this.state.mobileOpen ?
-                            <ListItemIcon><route.icon fontSize="large" /></ListItemIcon> :
-                            <ListItemIcon className={classes.iconColor}><route.icon fontSize="large" /></ListItemIcon>}
+                                <ListItemIcon><Assessment fontSize="large"/></ListItemIcon> :
+                                <ListItemIcon className={classes.iconColor}><Assessment
+                                    fontSize="large"/></ListItemIcon>}
 
                             <ListItemText
-                                primary={route.name}
+                                primary={"Analytics"}
                                 classes={{
                                     primary: classes.listItemText,
                                     root: classes.drawerSectionSize
                                 }}
                             />
-
-                            {route.name === "User Profile" ? alert : null}
-                        </ListItem>
-                        :
-                        null
-                    ))}
+                        </ListItem> : null}
                 </List>
                 <div className={classes.logoutButton}>
-                    <RegularButton onClick={() => this.props.history.push("/login")} color="primary">LogOut</RegularButton>
+                    <RegularButton onClick={() => this.props.history.push("/login")}
+                                   color="primary">LogOut</RegularButton>
                 </div>
             </div>
         )
 
         return (
             <PerfectScrollbar component="div" className={classes.root}>
-                <CssBaseline />
+                <CssBaseline/>
                 <AppBar position="fixed" color="secondary" className={classes.appBar} elevation={0}>
                     <Toolbar>
                         <IconButton
@@ -123,14 +149,14 @@ class ResponsiveDrawer extends Component {
                             onClick={this.handleDrawerToggle}
                             className={classes.menuButton}
                         >
-                            <Menu />
+                            <Menu/>
                         </IconButton>
                         <Typography variant="h6" noWrap>
                             {name}
                         </Typography>
                         {name === "Project List" ?
                             <Search
-                                onSearch ={this.props.onSearch}
+                                onSearch={this.props.onSearch}
                             />
                             : null
                         }
@@ -171,7 +197,7 @@ class ResponsiveDrawer extends Component {
                     </Hidden>
                 </nav>
                 <main className={classes.content}>
-                    <div className={classes.toolbar} />
+                    <div className={classes.toolbar}/>
                     {this.props.children}
                 </main>
             </PerfectScrollbar>
@@ -181,7 +207,7 @@ class ResponsiveDrawer extends Component {
 }
 
 ResponsiveDrawer.propTypes = {
-	container: PropTypes.instanceOf(typeof Element === 'undefined' ? Object : Element),
+    container: PropTypes.instanceOf(typeof Element === 'undefined' ? Object : Element),
 }
 
 export default withRouter(withStyles(styles)(ResponsiveDrawer))

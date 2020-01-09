@@ -31,7 +31,7 @@ import {commentsService} from "../../services/commentsService"
 import styles from "../../assets/jss/components/commentsStyle"
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
-import { EventSourcePolyfill } from 'event-source-polyfill';
+import {EventSourcePolyfill} from 'event-source-polyfill';
 
 
 class Comments extends Component {
@@ -63,24 +63,47 @@ class Comments extends Component {
 
     }
 
-    componentDidMount() {
+
+    async componentDidMount() {
+        console.log("Did Mount");
+        this.getComments();
+        try {
+            this.interval = setInterval(async () => {
+                console.log("Getting comments!");
+                this.getComments();
+            }, 5000);
+        } catch (e) {
+            console.log(e);
+        }
+
+        this.eventSource.addEventListener('commentstream', (json) => this.handleCommentUpdates(json));
+        this.eventSource.addEventListener('error', (err) => {
+            console.log(err)
+        });
+    }
+
+
+    getComments() {
         commentsService.getComments(this.props.projectId)
             .then(c => c.json())
             .then(json => {
-                    console.log(json);
-                    this.setState({
-                        comments: json.comments
-                    })
+                console.log(json);
+                this.setState({
+                    comments: json.comments
                 })
+            })
             .catch(err => console.log(err));
-        this.eventSource.addEventListener('commentstream', (json) => this.handleCommentUpdates(json));
-        this.eventSource.addEventListener('error', (err) => {console.log(err)});
     }
 
+
     componentWillUnmount() {
+        console.log("Will unmount");
         this.eventSource.removeEventListener('commentstream', (json) => this.handleCommentUpdates(json));
-        this.eventSource.removeEventListener('error', (err) => {console.log(err)});
+        this.eventSource.removeEventListener('error', (err) => {
+            console.log(err)
+        });
         this.eventSource.close();
+        clearInterval(this.interval);
     }
 
     handleCommentUpdates(json) {
@@ -88,7 +111,7 @@ class Comments extends Component {
         console.log(v);
         if (v.message === 'Comment deleted!') {
             const array = [...this.state.comments];
-            const index = array.findIndex(function(item){
+            const index = array.findIndex(function (item) {
                 return item.commentId === v.comment.commentId
             });
             if (index !== -1) {
@@ -211,7 +234,7 @@ class Comments extends Component {
                                                 })
                                             }}
                                         >
-                                            <Close />
+                                            <Close/>
                                         </IconButton>
                                     </ListItemSecondaryAction>
                                     :

@@ -38,7 +38,7 @@ class ProjectApprovals extends Component {
                             </Typography>
                             <Typography component="h3" variant="body2" className={classes.userRegisterDate}>
                                 <b>
-                                    {timeDiff(new Date(card.registrationDate))}
+                                    A few mins ago
                                 </b>
                             </Typography>
                         </CardContent>
