@@ -50,11 +50,25 @@ class ProposalMainPage extends Component {
             project.id === parseInt(this.props.match.params.id)
         );
 
+
+        const localKey = "pdata" + this.props.match.params.id;
         if (!(projectData.length === 0)) {
             this.setState({
                projectData: projectData[0]
             });
+            localStorage.setItem(localKey, JSON.stringify(projectData[0]));
             return projectData[0];
+        } else {
+            const localProjectData = localStorage.getItem(localKey);
+            console.log(localProjectData);
+            if (localProjectData === null) {
+                this.props.history.push("/main/home")
+            } else {
+                this.setState({
+                    "projectData": JSON.parse(localProjectData)
+                });
+                return JSON.parse(localProjectData);
+            }
         }
     }
 
