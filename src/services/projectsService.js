@@ -56,6 +56,8 @@ function updateProject(projectId, data) {
     })
 }
 
+
+
 export const projectService = {
     getProjects, postProject, deleteProject, updateProject
 };

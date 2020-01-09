@@ -1,19 +1,20 @@
 import React, {Component} from 'react'
-import { FilePond, registerPlugin } from "react-filepond"
+import {FilePond, registerPlugin} from "react-filepond"
 import FilePondPluginImagePreview from "filepond-plugin-image-preview"
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type"
 
-import { withStyles, Grid } from "@material-ui/core"
+import {withStyles, Grid} from "@material-ui/core"
 
 import CustomInput from "../../components/CustomInput/CustomInput"
 import RegularButton from "../../components/CustomButtons/RegularButton"
 import ResponsiveDrawer from "../../components/ResponsiveDrawer/ResponsiveDrawer"
 
-import { checkpointService } from "../../services/checkpointService"
-import { generateId } from "../../helpers/utils"
+import {checkpointService} from "../../services/checkpointService"
+import {generateId} from "../../helpers/utils"
 import upload from "../../s3"
 
 import styles from "../../assets/jss/views/addCheckpointStyle"
+import {projectService} from "../../services/projectsService";
 
 class AddCheckpoint extends Component {
 
@@ -34,8 +35,6 @@ class AddCheckpoint extends Component {
     }
 
     handleFormChange = (event) => {
-        console.log(event.target.id)
-        console.log(event.target.value)
         this.setState({
             data: {
                 ...this.state.data,
@@ -46,16 +45,22 @@ class AddCheckpoint extends Component {
 
     post = () => {
         const id = generateId()
-        this.setState({data: {documents:upload(this.state.data.documents, id + '/Documents')}});
-        this.setState({data: {images: upload(this.state.data.images, id + '/Images')}});
-        console.log(this.state.data)
+        this.state.data.documents = upload(this.state.data.documents, id + '/Documents');
+        this.state.data.images = upload(this.state.data.images, id + '/Images');
+
+        console.log(this.state.data);
         const {match} = this.props
         checkpointService.postCheckpoint(match.params.id, this.state.data)
             .then((response) => {
-                console.log(response)
-
+                console.log(response);
                 // Redirect here based on response
-                this.props.history.push("/main/projectlist/")
+                projectService.getProjects().then(data => {
+                                    data.projects.forEach(project =>
+                                        project.status = (project.status === 0 ? "Needs Approval" : "Approved")
+                                    );
+                                    localStorage.setItem("projects", JSON.stringify(data));
+                                    this.props.history.push("/main/projectlist")
+                                });
             }).catch((err) => {
             console.log(err)
         })

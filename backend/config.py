@@ -10,7 +10,7 @@ class Config(object):
     SECRET_KEY = os.environ['SECRET_KEY']
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_ENGINE_OPTIONS = {'pool_size': 10, 'max_overflow': 10}
+    SQLALCHEMY_ENGINE_OPTIONS = {'pool_size': 10000, 'max_overflow': 10000}
     BUNDLE_ERRORS = True
     CORS_ORIGINS = [os.environ['SITE_URL'], os.environ['SITE_URL'] + '*']
     CORS_HEADERS = ['Content-Type', 'Authorization']

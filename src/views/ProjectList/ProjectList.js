@@ -1,6 +1,5 @@
 // Main ReactJS libraries
 import React, {Component} from 'react'
-
 // Material UI libraries
 import {withStyles, Grid} from '@material-ui/core'
 
@@ -10,6 +9,8 @@ import ProjectCard from "./ProjectCard"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/projectListStyle"
+import {initGA, PageView} from "../../components/Tracking/Tracking";
+import {projectService} from "../../services/projectsService";
 
 class ProjectList extends Component {
     constructor(props) {

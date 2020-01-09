@@ -21,6 +21,7 @@ import config from "../../config"
 
 // Import class's stylesheet
 import styles from "../../assets/jss/views/projectCardStyle"
+import {GAEvent, initGA} from "../../components/Tracking/Tracking";
 
 class ProjectCard extends Component {
     constructor(props) {
@@ -35,7 +36,12 @@ class ProjectCard extends Component {
         this.hasPermission = this.hasPermission.bind(this);
     }
 
+    componentDidMount() {
+        initGA();
+    }
+
     openProposalPage() {
+        GAEvent("Project", "Learn More Button", this.props.data.id + "|" + this.props.data.title);
         const dataValue = JSON.stringify(this.props.data);
         localStorage.setItem(`proposalPage/${this.props.data.id}`, dataValue);
         this.props.history.push(`/main/projectlist/proposalpage/${this.props.data.id}`)

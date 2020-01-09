@@ -1,22 +1,22 @@
 // Main ReactJS libraries
-import React, { Component } from 'react'
-import { FilePond, registerPlugin } from "react-filepond"
+import React, {Component} from 'react'
+import {FilePond, registerPlugin} from "react-filepond"
 import FilePondPluginImagePreview from "filepond-plugin-image-preview"
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type"
 
 // Material UI libraries
-import { 
+import {
     withStyles,
-    CircularProgress, 
-    Dialog, 
+    CircularProgress,
+    Dialog,
     DialogActions,
     DialogContent,
     DialogContentText,
     DialogTitle,
-    Grid, 
+    Grid,
     IconButton
 } from "@material-ui/core"
-import { Close } from '@material-ui/icons'
+import {Close} from '@material-ui/icons'
 
 // Imports of different components in project
 import CustomInput from '../../components/CustomInput/CustomInput'
@@ -26,14 +26,15 @@ import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer
 
 // Importing the helper functions from other files
 import upload from "../../s3"
-import { generateId } from "../../helpers/utils"
-import { projectService } from "../../services/projectsService"
+import {generateId} from "../../helpers/utils"
+import {projectService} from "../../services/projectsService"
 import cloneDeep from "lodash.clonedeep"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/addProposalStyle"
 import "filepond/dist/filepond.min.css"
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css'
+import {GAEvent} from "../../components/Tracking/Tracking";
 
 
 class AddProposal extends Component {
@@ -50,14 +51,14 @@ class AddProposal extends Component {
                 location: "",
                 // don't need this either, its assigned on the backend
                 // projectOwner: "",
-                documents: [],
                 // Fill these in properly later
                 organisationName: "dummy",
                 organisationLogo: "dummy",
                 // status is not approved by default so we don't need it
                 // status: "",
-                images: []
             },
+            documents: [],
+            images: [],
             previewOpen: false,
             submissionOpen: false,
             submissionResult: "",
@@ -73,8 +74,6 @@ class AddProposal extends Component {
     };
 
     handleFormChange = (event) => {
-        console.log(event.target.id)
-        console.log(event.target.value)
         this.setState({
             data: {
                 ...this.state.data,
@@ -87,8 +86,8 @@ class AddProposal extends Component {
         if (this.checkIfNotEmpty()) {
             const id = generateId()
             const modifiedData = cloneDeep(this.state.data)
-            modifiedData.documents = upload(modifiedData.documents, id + '/Documents')
-            modifiedData.images = upload(modifiedData.images, id + '/Images')
+            modifiedData.documents = upload(this.state.documents, id + '/Documents')
+            modifiedData.images = upload(this.state.images, id + '/Images')
             console.log(modifiedData)
             projectService.postProject(modifiedData)
                 .then(response => {
@@ -98,8 +97,8 @@ class AddProposal extends Component {
                         submissionResult: "Submission Successful"
                     })
                 }).catch(err => {
-                    console.log(err)
-                })
+                console.log(err)
+            })
         } else {
             this.setState({
                 submitting: false,
@@ -109,7 +108,7 @@ class AddProposal extends Component {
     }
 
     render() {
-        const { classes } = this.props
+        const {classes} = this.props
         return (
             <div>
                 <ResponsiveDrawer name={"Add Proposal"}>
@@ -189,21 +188,18 @@ class AddProposal extends Component {
                         <Grid item xs={12}>
                             <FilePond
                                 allowMultiple={true}
-                                files={this.state.data.images}
+                                files={this.state.images}
                                 labelIdle='Drag & Drop your images (.jpg, .png. or .bmp) or <span class="filepond--label-action">Browse</span>'
                                 acceptedFileTypes={["image/*"]}
                                 onupdatefiles={pictureItems => this.setState({
-                                    data: {
-                                        ...this.state.data,
-                                        images: pictureItems.map(pictureItem => pictureItem.file)
-                                    }
+                                    images: pictureItems.map(pictureItem => pictureItem.file)
                                 })}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             <FilePond
                                 allowMultiple={true}
-                                files={this.state.data.documents}
+                                files={this.state.documents}
                                 labelIdle='Drag & Drop your documents (.pdf, .docx, .doc, .txt and .odt) or <span class="filepond--label-action">Browse</span>'
                                 acceptedFileTypes={[
                                     "application/msword",
@@ -213,19 +209,19 @@ class AddProposal extends Component {
                                     "application/vnd.oasis.opendocument.text"
                                 ]}
                                 onupdatefiles={fileItems => this.setState({
-                                    data: {
-                                        ...this.state.data,
-                                        documents: fileItems.map(fileItem => fileItem.file)
-                                    }
+                                    documents: fileItems.map(fileItem => fileItem.file)
                                 })}
                             />
                         </Grid>
                         <div className={classes.cardButtonDiv}>
                             <RegularButton
                                 color="primary"
-                                onClick={() => this.setState({
-                                    previewOpen: true
-                                })}
+                                onClick={() => {
+                                    this.setState({
+                                        previewOpen: true
+                                    });
+                                    GAEvent("Add Proposal", "Preview Clicked", "");
+                                }}
                                 className={classes.previewButton}
                             >
                                 Preview
@@ -237,6 +233,7 @@ class AddProposal extends Component {
                                         submitting: true,
                                         submissionOpen: true
                                     })
+                                    GAEvent("Add Proposal", "Post Clicked", "");
                                     this.post()
                                 }}
                                 className={classes.submitButton}
@@ -256,41 +253,45 @@ class AddProposal extends Component {
                     })}
                     aria-labelledby="previewDialogTitle"
                     aria-describedby="previewDialogDes">
-                        <Grid container>
-                            <Grid item xs={12}>
-                                <Grid container>
-                                    <Grid item xs={10}>
-                                        <DialogTitle id="previewDialogTitle">
-                                            Project Preview
-                                        </DialogTitle>
-                                    </Grid>
-                                    <Grid item xs={2} className={classes.rightAlign}>
-                                        <IconButton 
-                                            onClick={() => this.setState({
+                    <Grid container>
+                        <Grid item xs={12}>
+                            <Grid container>
+                                <Grid item xs={10}>
+                                    <DialogTitle id="previewDialogTitle">
+                                        Project Preview
+                                    </DialogTitle>
+                                </Grid>
+                                <Grid item xs={2} className={classes.rightAlign}>
+                                    <IconButton
+                                        onClick={() => {
+                                            this.setState({
                                                 previewOpen: false
-                                            })}
-                                        >
-                                            <Close fontSize="medium" />
-                                        </IconButton>
-                                    </Grid>
+                                            });
+
+
+                                        }}
+                                    >
+                                        <Close fontSize="medium"/>
+                                    </IconButton>
                                 </Grid>
                             </Grid>
-                            <Grid item xs={12}>
-                                <DialogContent>
-                                    {this.checkIfNotEmpty() 
-                                        ? 
-                                        <ProposalPreviewPage data={this.state.data} /> 
-                                        : 
-                                        <DialogContentText 
-                                            id="previewDialogDes" 
-                                            className={classes.centering}
-                                        >
-                                            Please fill in all the entries provided before previewing.
-                                        </DialogContentText>
-                                    }
-                                </DialogContent>
-                            </Grid>
                         </Grid>
+                        <Grid item xs={12}>
+                            <DialogContent>
+                                {this.checkIfNotEmpty()
+                                    ?
+                                    <ProposalPreviewPage data={this.state.data}/>
+                                    :
+                                    <DialogContentText
+                                        id="previewDialogDes"
+                                        className={classes.centering}
+                                    >
+                                        Please fill in all the entries provided before previewing.
+                                    </DialogContentText>
+                                }
+                            </DialogContent>
+                        </Grid>
+                    </Grid>
                 </Dialog>
 
                 <Dialog
@@ -308,25 +309,31 @@ class AddProposal extends Component {
                     </DialogTitle>
                     <DialogContent>
                         <DialogContentText id="submissionDialogDes" className={classes.centering}>
-                            {this.state.submitting ? <CircularProgress /> : this.state.submissionResult}
+                            {this.state.submitting ? <CircularProgress/> : this.state.submissionResult}
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <RegularButton 
-                            color="primary" 
+                        <RegularButton
+                            color="primary"
                             onClick={() => this.setState({
                                 submissionOpen: false
                             })}
                             className={classes.closeButton}>
                             Close
                         </RegularButton>
-                        <RegularButton 
-                            color="primary" 
+                        <RegularButton
+                            color="primary"
                             onClick={() => {
                                 this.setState({
                                     submissionOpen: false
                                 })
-                                this.props.history.push("/main/projectlist")
+                                projectService.getProjects().then(data => {
+                                    data.projects.forEach(project =>
+                                        project.status = (project.status === 0 ? "Needs Approval" : "Approved")
+                                    );
+                                    localStorage.setItem("projects", JSON.stringify(data));
+                                    this.props.history.push("/main/projectlist")
+                                })
                             }}
                             className={classes.okButton}
                         >

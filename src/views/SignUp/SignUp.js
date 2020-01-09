@@ -84,9 +84,11 @@ class SignUp extends Component {
             success = false
         }
 
-        if (!this.state.email.value.match(/^[\w\d]+@[\w\d]+\.(ac|org)\..*$/)) {
-            emailError = "Must have .ac or .org email!"
-            success = false
+        if (this.state.userType.value === "STUDENT" || this.state.userType.value === "ACADEMIC") {
+            if (!this.state.email.value.match(/^[\w\d]+@[\w\d]+\.(ac|org)\..*$/)) {
+                emailError = "Must have .ac or .org email!";
+                success = false
+            }
         }
 
         if (this.state.firstName.value === "") {
@@ -112,7 +114,7 @@ class SignUp extends Component {
         var passw = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/
         if (!this.state.password.value.match(passw)) {
             passwordError = "Password must be between 6-20 characters," +
-                " contain one uppercase and one lowecase character as well as a number!"
+                " contain one uppercase and one lowercase character as well as a number!"
             success = false
         }
 
@@ -147,14 +149,12 @@ class SignUp extends Component {
                 ...prevState.agree,
                 error: agreeError
             }
-        }))
+        }));
         return success
     }
 
     handleFormChange = (e) => {
         const {name, value} = e.target
-        console.log(name)
-        console.log(value)
         this.setState({
             [name]: {
                 error: "",

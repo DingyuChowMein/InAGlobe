@@ -1,4 +1,5 @@
 import config from '../config'
+import ReactGA from 'react-ga';
 import { authHeader } from '../helpers/auth-header'
 
 
@@ -116,6 +117,9 @@ function login(email, password) {
         .then(user => {
             if (user) {
                 localStorage.setItem('user', JSON.stringify(user))
+                ReactGA.set({
+                    userId: localStorage.getItem('user').userId
+                });
             }
 
             return user
