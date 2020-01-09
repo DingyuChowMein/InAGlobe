@@ -84,7 +84,7 @@ class ResponsiveDrawer extends Component {
                             ?
                             <ListItem
                                 button
-                                onClick={() => this.redirectTo(route.layout + route.path)}
+                                onClick={() => this.props.history.push(route.layout + route.path)}
                                 key={route.name}
                                 className={classes.centering}
                             >
