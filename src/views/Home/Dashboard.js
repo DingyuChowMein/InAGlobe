@@ -28,7 +28,7 @@ import {dashboardService} from "../../services/dashboardService"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/homePageStyle"
-import {projectService} from "../../services/projectsService";
+import {projectService} from "../../services/projectsService"
 
 // Example data
 // import data from "../../assets/data/ProjectData"
@@ -37,9 +37,9 @@ import {projectService} from "../../services/projectsService";
 
 class Dashboard extends Component {
     constructor(props) {
-        super(props);
+        super(props)
 
-        this.joinRequestClicked = this.joinRequestClicked.bind(this);
+        this.joinRequestClicked = this.joinRequestClicked.bind(this)
 
         this.state = {
             user: {},
@@ -51,7 +51,7 @@ class Dashboard extends Component {
     }
 
     joinRequestClicked = (project_id, user_id, index, isApproved) => {
-        var token = JSON.parse(localStorage.getItem('user')).token;
+        var token = JSON.parse(localStorage.getItem('user')).token
         var bearer = 'Bearer ' + token
         if (!isApproved) {
             fetch(config.apiUrl + '/dashboard/', {
@@ -64,10 +64,10 @@ class Dashboard extends Component {
             }).then((response) => {
                 // Redirect here based on response
                 console.log(response)
-                alert("Request disapproved.");
+                alert("Request disapproved.")
                 this.setState({
                     requests: this.state.requests.filter((_, i) => i !== index)
-                });
+                })
             })
                 .catch((err) => {
                     console.log(err)
@@ -89,7 +89,7 @@ class Dashboard extends Component {
                 alert("Request approved.")
                 this.setState({
                     requests: this.state.requests.filter((_, i) => i !== index)
-                });
+                })
             }).catch(err => console.log(err))
         }
     }
@@ -97,27 +97,27 @@ class Dashboard extends Component {
     async componentDidMount() {
         this.setState({
             user: localStorage.getItem('user'),
-        });
+        })
 
-        this.getDashboardData();
+        this.getDashboardData()
         try {
             this.interval = setInterval(async () => {
-                console.log("Getting dashboard!");
-                this.getDashboardData();
-            }, 2000);
+                console.log("Getting dashboard!")
+                this.getDashboardData()
+            }, 2000)
         } catch (e) {
-            console.log(e);
+            console.log(e)
         }
-        this.getDashboardData();
+        this.getDashboardData()
     }
 
     componentWillUnmount() {
-        clearInterval(this.interval);
+        clearInterval(this.interval)
     }
 
     getDashboardData() {
-        var token = JSON.parse(localStorage.getItem('user')).token;
-        var bearer = 'Bearer ' + token;
+        var token = JSON.parse(localStorage.getItem('user')).token
+        var bearer = 'Bearer ' + token
 
         dashboardService.getDashboard()
             .then(data => {
@@ -173,7 +173,7 @@ class Dashboard extends Component {
                                         notifyId: i,
                                         userId: request.user_id,
                                         projectId: request.project_id,
-                                        userProfilePic: `https://picsum.photos/${Math.floor(Math.random() * 31) + 120}`,
+                                        userProfilePic: request.profile_picture,
                                         userName: request.user_first_name + " " + request.user_last_name,
                                         projectName: request.project_title,
                                         details: request.project_short_description,

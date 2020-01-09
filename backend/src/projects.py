@@ -293,6 +293,7 @@ def get_joining_requests():
     requests_json = [{
         "project_id": request.project_id,
         "user_id": request.user_id,
+        "user_profile_pic": request.profile_picture,
         "user_first_name": request.User.first_name,
         "user_last_name": request.User.last_name,
         "project_title": request.Project.title,
