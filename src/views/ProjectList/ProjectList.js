@@ -1,7 +1,7 @@
 // Main ReactJS libraries
 import React, {Component} from 'react'
 // Material UI libraries
-import {withStyles, Grid, Icon} from '@material-ui/core'
+import {withStyles, Grid, Icon, Tooltip, Zoom } from '@material-ui/core'
 
 // Imports of different components in project
 import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer'
@@ -22,22 +22,26 @@ class ProjectList extends Component {
             projects: this.props.data,
             searchQuery: '',
             searchResults: [],
+            markers: []
         }
+        Geocode.setApiKey(process.env.REACT_APP_GEOCODE_KEY)
+        Geocode.setLanguage("en")
     }
 
     static defaultProps = {
         center: {
-            lat: 51.05,
-            lng: 0.1
+            lat: 0.0,
+            lng: 0.0
         },
-        zoom: 2,
+        zoom: 1,
     }
 
     componentDidMount() {
         // By default search query is empty string, so search displays all projects.
         this.setState({
             searchResults: this.state.projects,
-        });
+        })
+        this.getCoordsList(this.state.searchResults)
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -51,7 +55,8 @@ class ProjectList extends Component {
                         this.state.searchQuery
                     )
                 ),
-            });
+            })
+            this.getCoordsList(this.state.searchResults)
         }
         // ... or if a new search query has been entered.
         if (prevState.searchQuery !== this.state.searchQuery) {
@@ -61,8 +66,23 @@ class ProjectList extends Component {
                         this.state.searchQuery
                     )
                 ),
-            });
+            })
+            this.getCoordsList(this.state.searchResults)
         }
+    }
+
+    getCoordsList = (projects) => {
+        projects.forEach(project => {
+            Geocode.fromAddress(project.location).then(response => {
+                const { lat, lng } = response.results[0].geometry.location
+                console.log(`The coordinates for ${project.title} are (${lat}, ${lng})`)
+                // const bufferLat = ((Math.random() / 10000) - 0.00050).toPrecision(6)
+                // const bufferLng = ((Math.random() / 10000) - 0.00050).toPrecision(6)
+                this.setState({
+                    markers: [...this.state.markers, {latitude: lat, longitude: lng, name: project.title, projectId: project.id}]
+                })
+            })
+        })
     }
 
     onSearch = (query) => {
@@ -79,42 +99,36 @@ class ProjectList extends Component {
                 onSearch={this.onSearch}
             >
                 <div className={classes.root}>
-                    <Grid container>
-                        <Grid item xs={12} sm={12} md={6}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={12} md={12} style={{ height: "500px" }}>
                             <GoogleMapReact
                                 bootstrapURLKeys={{ key: process.env.REACT_APP_GMAPS_API_KEY }}
                                 defaultCenter={this.props.center}
                                 defaultZoom={this.props.zoom}
                             >
-                                {this.state.searchResults.map(result => {
-                                    Geocode.setApiKey(process.env.REACT_APP_GEOCODE_KEY)
-                                    Geocode.setLanguage("en")
-                                    return Geocode.fromAddress(result.location).then(response => {
-                                        const { lat, lng } = response.results[0].geometry.location
-                                        return (
-                                            <Icon 
-                                                color="red"
-                                                lat={lat}
-                                                lng={lng}
-                                                text={result.title}
-                                            >
-                                                <PersonPinCircle />
-                                            </Icon>
-                                        )
-                                    })
-                                    .catch(console.log)
-                                })}
+                                {this.state.markers.map(marker => (
+                                    <Tooltip 
+                                        title={marker.name} 
+                                        TransitionComponent={Zoom}
+                                        lat={marker.latitude}
+                                        lng={marker.longitude}
+                                        arrow
+                                    >
+                                        <Icon
+                                            color="primary"
+                                            onClick={() => this.props.history.push(`/main/projectlist/proposalpage/${marker.id}`)}
+                                        >
+                                            <PersonPinCircle />
+                                        </Icon>
+                                    </Tooltip>
+                                ))}
                             </GoogleMapReact>
                         </Grid>
-                        <Grid item xs={12} sm={12} md={6}>
-                            <Grid container spacing={2}>
-                                {this.state.searchResults.map(card => (
-                                    <Grid item xs={12} sm={12} md={3} key={card.id}>
-                                        <ProjectCard data={card}/>
-                                    </Grid>
-                                ))}
+                        {this.state.searchResults.map(card => (
+                            <Grid item xs={12} sm={12} md={6} key={card.id}>
+                                <ProjectCard data={card}/>
                             </Grid>
-                        </Grid>
+                        ))}
                     </Grid>
                 </div>
             </ResponsiveDrawer>
