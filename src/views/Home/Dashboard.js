@@ -94,11 +94,28 @@ class Dashboard extends Component {
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         this.setState({
             user: localStorage.getItem('user'),
         });
 
+        this.getDashboardData();
+        try {
+            this.interval = setInterval(async () => {
+                console.log("Getting dashboard!");
+                this.getDashboardData();
+            }, 5000);
+        } catch (e) {
+            console.log(e);
+        }
+        this.getDashboardData();
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval);
+    }
+
+    getDashboardData() {
         var token = JSON.parse(localStorage.getItem('user')).token;
         var bearer = 'Bearer ' + token;
 

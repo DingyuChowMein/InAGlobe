@@ -40,15 +40,24 @@ class MainPage extends Component {
         });
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         this.eventSource.addEventListener('project-stream', json => this.handleProjectUpdates(json));
         this.eventSource.addEventListener('error', (err) => {console.log(err)});
+        try {
+            this.interval = setInterval(async () => {
+                this.getProjectList();
+            }, 5000)
+        } catch (e) {
+            console.log(e);
+        }
     };
 
     componentWillUnmount() {
         this.eventSource.removeEventListener('project-stream', json => this.handleProjectUpdates(json));
         this.eventSource.removeEventListener('error', (err) => {console.log(err)});
         this.eventSource.close();
+        console.log("Unmounting");
+        clearInterval(this.interval);
     };
 
     handleProjectUpdates(json) {
@@ -89,6 +98,7 @@ class MainPage extends Component {
     };
 
     getProjectList = () => {
+        console.log("Getting projects!");
         projectService.getProjects()
             .then(data => {
                 data.projects.forEach(project =>

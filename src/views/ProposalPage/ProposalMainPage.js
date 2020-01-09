@@ -21,12 +21,8 @@ class ProposalMainPage extends Component {
     constructor(props) {
         super(props);
         const userType = JSON.parse(localStorage.getItem('user')).permissions;
-        const projectData = JSON.parse(
-            localStorage.getItem('projects')
-        ).projects.filter(project =>
-            project.id === parseInt(this.props.match.params.id)
-        )[0];
-
+        console.log(this.props);
+        const projectData = this.getProjectData();
         this.state = {
             userId: JSON.parse(localStorage.getItem('user')).userId,
             userType: userType,
@@ -36,15 +32,30 @@ class ProposalMainPage extends Component {
             comments: [],
             showModal: false,
         };
-
         this.actionButtonClicked = this.actionButtonClicked.bind(this);
         this.getButtonMessage = this.getButtonMessage.bind(this);
         this.hasPermissions = this.hasPermissions.bind(this);
 
         console.log("UserType:" + this.state.userType);
         console.log(userType);
-        console.log(projectData.status);
         console.log(this.state.buttonDisabled)
+    }
+
+    componentWillReceiveProps () {
+        this.getProjectData();
+    }
+
+    getProjectData() {
+        const projectData = this.props.data.filter(project =>
+            project.id === parseInt(this.props.match.params.id)
+        );
+
+        if (!(projectData.length === 0)) {
+            this.setState({
+               projectData: projectData[0]
+            });
+            return projectData[0];
+        }
     }
 
     actionButtonClicked = () => {
