@@ -31,27 +31,37 @@ class SignInSide extends Component {
 
     constructor(props) {
         super(props)
-        userService.logout()
-        this.state = {
-            email: "",
-            password: "",
-            loginFailed: false,
-            loggingIn: false,
-        }
 
-        this.handleFormChange = this.handleFormChange.bind(this)
-        this.loginPressed = this.loginPressed.bind(this)
+        const remembered = JSON.parse(localStorage.getItem("remember"))
+        userService.logout()
+
+        if (remembered) {
+            this.state = {
+                email: remembered.email,
+                password: remembered.password,
+                loginFailed: false,
+                loggingIn: false,
+                remember: true
+            }
+        } else {
+            this.state = {
+                email: "",
+                password: "",
+                loginFailed: false,
+                loggingIn: false,
+                remember: false
+            }
+        }
     }
 
-
-    handleFormChange(e) {
-        const {name, value} = e.target
+    handleFormChange = (e) => {
+        const { name, value } = e.target
         this.setState({
             [name]: value
         })
     }
 
-    loginPressed() {
+    loginPressed = () => {
         // You can authenticate here
         this.setState({
             loggingIn: true
@@ -65,6 +75,12 @@ class SignInSide extends Component {
                         loggingIn: false
                     })
                 } else {
+                    if (this.state.remember) {
+                        localStorage.setItem("remember", JSON.stringify({ email: this.state.email, password: this.state.password }))
+                    } else {
+                        localStorage.setItem("remember", JSON.stringify({ email: "", password: "" }))
+                    }
+
                     this.props.history.push("/main")
                     this.setState({
                         loginFailed: false
@@ -100,6 +116,7 @@ class SignInSide extends Component {
                                 <TextField
                                     variant="outlined"
                                     margin="normal"
+                                    defaultValue={this.state.email}
                                     required
                                     fullWidth
                                     id="email"
@@ -113,6 +130,7 @@ class SignInSide extends Component {
                                 <TextField
                                     variant="outlined"
                                     margin="normal"
+                                    defaultValue={this.state.password}
                                     required
                                     fullWidth
                                     name="password"
@@ -124,8 +142,16 @@ class SignInSide extends Component {
                                     onKeyPress={event => event.key === "Enter" ? this.loginPressed() : null}
                                 />
                                 <FormControlLabel
-                                    control={<Checkbox value="remember" color="primary"/>}
-                                    label="Remember me"
+                                    control={<Checkbox 
+                                                color="primary" 
+                                                checked={this.state.remember} 
+                                                onChange={e => {
+                                                    this.setState({ 
+                                                        remember: e.target.checked 
+                                                    })
+                                                }}
+                                            />}
+                                    label="Remember Me"
                                 />
                                 <RegularButton
                                     fullWidth

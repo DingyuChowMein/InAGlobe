@@ -57,21 +57,23 @@ class Profile extends Component {
 
     get = () => {
         const currentUser = JSON.parse(localStorage.getItem("user"))
-        const id = this.props.match.params.id ? this.props.match.params.id : currentUser.userId
+        const id = this.props.match.params.id
 
-        userService.getProfile(id)
+        if (id) {
+            userService.getProfile(id)
             .then(data => {
                 console.log(data)
                 this.setState({
                     data: data
                 })
-                if (id === currentUser.userId) {
-                    let updatedUser = cloneDeep(data)
-                    updatedUser["token"] = cloneDeep(currentUser.token)
-                    localStorage.setItem("user", JSON.stringify(updatedUser))
-                }
             })
             .catch(console.log)
+        } else {
+            delete currentUser.token
+            this.setState({
+                data: currentUser
+            })
+        }
     }
 
     componentDidMount() {

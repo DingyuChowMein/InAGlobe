@@ -10,19 +10,19 @@ import {mainRoutes} from "../../routes"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/layouts/mainPageStyle"
-import {PrivateRoute} from "../../helpers/PrivateRoute";
-import {projectService} from "../../services/projectsService";
+import {PrivateRoute} from "../../helpers/PrivateRoute"
+import {projectService} from "../../services/projectsService"
 
 // Importing helper or service functions
-import {EventSourcePolyfill} from "event-source-polyfill";
-import config from "../../config";
+import { EventSourcePolyfill } from "event-source-polyfill"
+import config from "../../config"
 
 
 class MainPage extends Component {
 
     constructor(props) {
-        super(props);
-        this.getProjectList();
+        super(props)
+        this.getProjectList()
         this.state = {
             projects: [],
             '/home': {
@@ -30,54 +30,54 @@ class MainPage extends Component {
             },
             '/projectlist': [],
             '/proposalpage/:id': []
-        };
-        this.getProjectList = this.getProjectList.bind(this);
-        this.handleProjectUpdates = this.handleProjectUpdates.bind(this);
+        }
+        this.getProjectList = this.getProjectList.bind(this)
+        this.handleProjectUpdates = this.handleProjectUpdates.bind(this)
         this.eventSource = new EventSourcePolyfill(config.apiUrl + '/project-stream/', {
             headers: {
                 'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('user')).token
             }
-        });
+        })
     }
 
     componentDidMount() {
-        this.eventSource.addEventListener('project-stream', json => this.handleProjectUpdates(json));
-        this.eventSource.addEventListener('error', (err) => {console.log(err)});
-    };
+        this.eventSource.addEventListener('project-stream', json => this.handleProjectUpdates(json))
+        this.eventSource.addEventListener('error', (err) => {console.log(err)})
+    }
 
     componentWillUnmount() {
-        this.eventSource.removeEventListener('project-stream', json => this.handleProjectUpdates(json));
-        this.eventSource.removeEventListener('error', (err) => {console.log(err)});
-        this.eventSource.close();
-    };
+        this.eventSource.removeEventListener('project-stream', json => this.handleProjectUpdates(json))
+        this.eventSource.removeEventListener('error', (err) => {console.log(err)})
+        this.eventSource.close()
+    }
 
     handleProjectUpdates(json) {
-        const v = JSON.parse(json.data);
+        const v = JSON.parse(json.data)
         if (v.message === 'Project added to db!'){
             this.setState({
                 projects: this.state.projects.concat(v.project)
             })
         }
         else {
-            const array = [...this.state.projects];
+            const array = [...this.state.projects]
             const index = array.findIndex(function (item) {
-                return item.id === v.project.id;
-            });
+                return item.id === v.project.id
+            })
             if (index !== -1) {
                 if (v.message === 'Project updated!') {
                     Object.keys(v.project).forEach((key) => {
-                        array[index][key] = v.project[key];
-                    });
+                        array[index][key] = v.project[key]
+                    })
                 } else if (v.message === 'Project approved!' || v.message === 'Project disapproved!') {
                     Object.keys(v.project).forEach((key) => {
-                        array[index][key] = v.project[key];
-                    });
+                        array[index][key] = v.project[key]
+                    })
                 } else if (v.message === 'Project deleted!') {
-                    array.splice(index, 1);
+                    array.splice(index, 1)
                 }
                 this.setState({
                     projects: array
-                });
+                })
             }
         }
         this.setState({
@@ -85,16 +85,16 @@ class MainPage extends Component {
                 needApproval: this.state.projects.filter(project => project.status === "Needs Approval"),
             },
             '/projectlist': this.state.projects,
-        });
-    };
+        })
+    }
 
     getProjectList = () => {
         projectService.getProjects()
             .then(data => {
                 data.projects.forEach(project =>
                     project.status = (project.status === 0 ? "Needs Approval" : "Approved")
-                );
-                localStorage.setItem("projects", JSON.stringify(data));
+                )
+                localStorage.setItem("projects", JSON.stringify(data))
                 this.setState({
                     projects: data.projects,
                     '/home': {
@@ -102,10 +102,10 @@ class MainPage extends Component {
                     },
                     '/projectlist':  data.projects,
                     '/proposalpage/:id':  data.projects,
-                });
+                })
             })
-            .catch(console.log);
-    };
+            .catch(console.log)
+    }
 
     render() {
         return (

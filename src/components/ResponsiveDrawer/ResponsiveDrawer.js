@@ -44,20 +44,13 @@ class ResponsiveDrawer extends Component {
         this.state = {
             mobileOpen: false,
             userPermissions: JSON.parse(localStorage.getItem('user')).permissions
-        };
-        this.handleDrawerToggle = this.handleDrawerToggle.bind(this)
-        this.redirectTo = this.redirectTo.bind(this)
+        }
     }
 
-	handleDrawerToggle() {
+	handleDrawerToggle = () => {
 		this.setState({
             mobileOpen: !this.state.mobileOpen
         })
-    }
-
-    redirectTo(link) {
-        const history = this.props.history
-        history.push(link)
     }
 
     render() {
@@ -90,7 +83,7 @@ class ResponsiveDrawer extends Component {
                         ?
                         <ListItem
                             button
-                            onClick={() => this.redirectTo(route.layout + route.path)}
+                            onClick={() => this.props.history.push(route.layout + route.path)}
                             key={route.name}
                             className={classes.centering}
                         >

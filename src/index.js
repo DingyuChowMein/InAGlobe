@@ -1,7 +1,7 @@
 // Main ReactJS libraries
 import React from 'react'
 import ReactDOM from 'react-dom'
-import ReactGA from 'react-ga';
+import ReactGA from 'react-ga'
 import { createBrowserHistory } from "history"
 import { Router, Route, Switch, Redirect } from "react-router-dom"
 
@@ -14,9 +14,9 @@ import Authentication from "./layouts/Authentication/Authentication"
 import MainPage from './layouts/MainPage/MainPage'
 import { createMuiTheme } from '@material-ui/core'
 import { ThemeProvider } from '@material-ui/styles'
-import { PrivateRoute } from "./helpers/PrivateRoute";
+import { PrivateRoute } from "./helpers/PrivateRoute"
 
-const hist = createBrowserHistory();
+const hist = createBrowserHistory()
 
 const theme = createMuiTheme({
 	palette: {
@@ -28,19 +28,21 @@ const theme = createMuiTheme({
             main: "#5E92A8"
 		}
 	}
-});
+})
 
-const trackingId = process.env.REACT_GA_ID;
+const trackingId = process.env.REACT_GA_ID
 
-ReactGA.initialize(trackingId);
-ReactGA.set({
-	userId: localStorage.getItem('user').userId
-});
+ReactGA.initialize(trackingId)
+if (localStorage.getItem('user')) {
+	ReactGA.set({
+		userId: localStorage.getItem('user').userId
+	})
+}
 
 hist.listen(location => {
-	ReactGA.set({page: location.pathname});
-	ReactGA.pageview(location.pathname);
-});
+	ReactGA.set({page: location.pathname})
+	ReactGA.pageview(location.pathname)
+})
 
 ReactDOM.render(
 	<ThemeProvider theme={theme}>
@@ -53,7 +55,7 @@ ReactDOM.render(
 		</Router>
 	</ThemeProvider>,
 	document.getElementById("root"),
-);
+)
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

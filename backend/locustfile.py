@@ -15,7 +15,7 @@ class UserBehavior(TaskSet):
         super().__init__(parent)
         self.password = 'password'
         self.email = str(uuid4())[:OWNER_FIELD_LENGTH - len(email_suffix)] + email_suffix
-        self.db = create_engine(environ['DATABASE_URL'])
+        self.db = create_engine(environ['DATABASE_URL'], pool_size=50, max_overflow=50)
 
     def on_start(self):
         """ on_start is called when a Locust start before any task is scheduled """

@@ -1,5 +1,6 @@
 import AWS from 'aws-sdk'
 import { lookup } from "mime-types"
+import config from "./config"
 
 const s3 = new AWS.S3({
     accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY,
@@ -8,10 +9,11 @@ const s3 = new AWS.S3({
 
 function upload(files, dir) {
     const links = []
-    console.log(files)
 
     files.forEach(file => {
-        if (typeof file !== "string") {
+        console.log(file)
+        console.log(typeof file)
+        if (typeof file !== typeof "") {
             const name = dir + '/' + file.name
             const params = {
                 Bucket: process.env.REACT_APP_BUCKET,
@@ -20,34 +22,53 @@ function upload(files, dir) {
             }
 
             links.push(name)
-            console.log(name)
 
             s3.upload(params, (err, data) => {
                 if (err) throw err
                 console.log(`File uploaded successfully: ${data.Location}`)
-                return data.Location
             })
         }
-        return file
 
     })
 
     return links
 } 
 
-function download(dir) {
-    console.log(dir)
-    const param = {
-        Bucket: process.env.REACT_APP_BUCKET,
-        Key : dir
-    }
+function download(dirs, isImage) {
+    // const param = {
+    //     Bucket: process.env.REACT_APP_BUCKET,
+    //     Key : dir
+    // }
+    const files = []
 
-    const splitDir = dir.split("/")
-    const fileName = splitDir[splitDir.length - 1]
-    return s3.getObject(param, (err, data) => {
-        if (err) throw err
-        return new File(data.Body, fileName, { type: lookup(fileName) })
+    dirs.forEach(dir => {
+        const splitDir = dir.split("/")
+        const fileName = splitDir[splitDir.length - 1]
+        console.log(fileName)
+        console.log(lookup(fileName))
+
+        fetch(config.s3Bucket + "/" + dir)
+            .then(res => res.blob())
+            .then(data => {
+                if (isImage) {
+                    let image = new Image([data])
+                    files.push(image)
+                } else {
+                    files.push(new File([data], fileName, { type: lookup(fileName) }))
+                }
+            })
+            .catch(console.log)
     })
+
+    // return s3.getObject(param, (err, data) => {
+    //     if (err) throw err
+    //     console.log(data)
+    //     let file  = new File(data.Body, fileName, { type: lookup(fileName) })
+    //     console.log(file)
+    //     return file
+    // })
+
+    return files
 }
 
 

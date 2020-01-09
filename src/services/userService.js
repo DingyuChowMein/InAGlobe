@@ -23,7 +23,10 @@ function logout() {
         fetch(config.apiUrl + '/users/tokens/', requestOptions)
             .then(handleResponse)
 
+        const remembered = localStorage.getItem("remember")
         localStorage.clear()
+        localStorage.setItem("remember", remembered)
+        
         console.log("Logged out")
     }
 }

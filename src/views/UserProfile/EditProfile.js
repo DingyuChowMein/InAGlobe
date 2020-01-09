@@ -19,7 +19,7 @@ import {
     Avatar,
     Typography
 } from "@material-ui/core"
-import { Close, Create } from '@material-ui/icons'
+import { Close, Create, ThreeSixty } from '@material-ui/icons'
 
 // Imports of different components in project
 import CustomInput from '../../components/CustomInput/CustomInput'
@@ -27,7 +27,7 @@ import RegularButton from "../../components/CustomButtons/RegularButton"
 import ResponsiveDrawer from '../../components/ResponsiveDrawer/ResponsiveDrawer'
 
 // Importing the helper functions from other files
-import { upload, download } from "../../s3"
+import { upload } from "../../s3"
 import config from "../../config"
 import { generateId } from "../../helpers/utils"
 import { userService } from "../../services/userService"
@@ -38,16 +38,36 @@ import imageNull from "../../assets/img/imageNull.png"
 import styles from "../../assets/jss/views/editProfileStyle"
 import "filepond/dist/filepond.min.css"
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css'
-import UserProfile from './UserProfile'
 
 
 class EditProfile extends Component {
 
     constructor(props) {
         super(props)
-        console.log(JSON.parse(localStorage.getItem("user")))
+
+        let userData = JSON.parse(localStorage.getItem("user"))
+        delete userData.token
+
+        userData.images = userData.images.map(image => {
+            return {
+                source: config.s3Bucket + image,
+                options: {
+                  type: "local"
+                }
+            }
+        })
+
+        userData.documents = userData.documents.map(document => {
+            return {
+                source: config.s3Bucket + document,
+                options: {
+                    type: "local"
+                }
+            }
+        })
+
         this.state = {
-            data: JSON.parse(localStorage.getItem("user")),
+            data: userData,
             previewOpen: false,
             submissionOpen: false,
             profilePicEdit: false,
@@ -55,19 +75,9 @@ class EditProfile extends Component {
             submissionResult: "",
             submitting: false,
         }
-        this.images = null
-        this.documents = null
+        this.resetData()
         registerPlugin(FilePondPluginImagePreview)
         registerPlugin(FilePondPluginFileValidateType)
-    }
-
-    componentDidMount() {
-        const images = this.state.data.images.map(image => download(image))
-        const documents = this.state.data.documents.map(document => download(document))
-        console.log(images)
-        console.log(documents)
-        this.images.addFiles(images)
-        this.documents.addFiles(documents)
     }
 
     checkIfNotEmpty = () => Object.values(this.state.data).every(e => !e || e.length !== 0)
@@ -122,8 +132,29 @@ class EditProfile extends Component {
     }
 
     resetData = () => {
+        let userData = JSON.parse(localStorage.getItem("user"))
+        delete userData.token
+
+        userData.images = userData.images.map(image => {
+            return {
+                source: config.s3Bucket + "/" + image,
+                options: {
+                  type: "local"
+                }
+            }
+        })
+
+        userData.documents = userData.documents.map(document => {
+            return {
+                source: config.s3Bucket + "/" + document,
+                options: {
+                    type: "local"
+                }
+            }
+        })
+
         this.setState({
-            data: JSON.parse(localStorage.getItem("user"))
+            data: userData
         })
     }
 
@@ -149,14 +180,12 @@ class EditProfile extends Component {
         }
 
         const { profilePicture } = this.state.data
-        console.log(profilePicture)
         let pic
         if (profilePicture) {
-            if (typeof profilePicture === "string") {
+            if (typeof profilePicture === typeof "") {
                 pic = config.s3Bucket + profilePicture
             } else {
                 pic = URL.createObjectURL(profilePicture)
-                console.log(pic)
             }
         } else {
             pic = imageNull
@@ -172,7 +201,7 @@ class EditProfile extends Component {
 
         return (
             <div>
-                <ResponsiveDrawer name={"Add Proposal"}>
+                <ResponsiveDrawer name="Add Proposal">
                     <Grid container>
                         <Grid item xs={12} className={classes.rightAlign}>
                             <RegularButton
@@ -309,7 +338,7 @@ class EditProfile extends Component {
                         </Grid>
                         <Grid item xs={12}>
                             <FilePond
-                                ref={ref => this.images = ref}
+                                files={this.state.data.images}
                                 allowMultiple={true}
                                 labelIdle='Drag & Drop your images (.jpg, .png. or .bmp) or <span class="filepond--label-action">Browse</span>'
                                 acceptedFileTypes={["image/*"]}
@@ -326,7 +355,7 @@ class EditProfile extends Component {
                         </Grid>
                         <Grid item xs={12}>
                             <FilePond
-                                ref={ref => this.documents = ref}
+                                files={this.state.data.documents}
                                 allowMultiple={true}
                                 labelIdle='Drag & Drop your documents (.pdf, .docx, .doc, .txt and .odt) or <span class="filepond--label-action">Browse</span>'
                                 acceptedFileTypes={[
