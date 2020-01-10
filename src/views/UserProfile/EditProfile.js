@@ -188,7 +188,7 @@ class EditProfile extends Component {
 
         return (
             <div>
-                <ResponsiveDrawer name="Add Proposal">
+                <ResponsiveDrawer name="Edit Profile">
                     <Grid container>
                         <Grid item xs={12} className={classes.rightAlign}>
                             <RegularButton

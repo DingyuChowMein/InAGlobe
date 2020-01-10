@@ -31,13 +31,13 @@ import {commentsService} from "../../services/commentsService"
 import styles from "../../assets/jss/components/commentsStyle"
 import 'react-confirm-alert/src/react-confirm-alert.css'
 
-import {EventSourcePolyfill} from 'event-source-polyfill';
+import {EventSourcePolyfill} from 'event-source-polyfill'
 
 
 class Comments extends Component {
 
     constructor(props) {
-        super(props);
+        super(props)
         this.state = {
             text: "",
             dialogBoxOpened: false,
@@ -46,128 +46,116 @@ class Comments extends Component {
             comments: [],
             userType: JSON.parse(localStorage.getItem('user')).permissions,
             userId: JSON.parse(localStorage.getItem('user')).userId,
-        };
+        }
         this.eventSource = new EventSourcePolyfill(config.apiUrl + '/comment-stream/' + this.props.projectId, {
             mode: 'cors',
             headers: {
                 'Authorization': 'Bearer ' + JSON.parse(localStorage.getItem('user')).token
             }
-        });
-
-        this.handleCommentUpdates = this.handleCommentUpdates.bind(this);
-        this.handleFormChange = this.handleFormChange.bind(this);
-        this.post = this.post.bind(this);
-        this.deleteComment = this.deleteComment.bind(this);
-        this.hasPermissions = this.hasPermissions.bind(this);
-        this.renderConfirmDialog = this.renderConfirmDialog.bind(this);
-
+        })
     }
 
 
     async componentDidMount() {
-        console.log("Did Mount");
-        this.getComments();
+        console.log("Did Mount")
+        this.getComments()
         try {
             this.interval = setInterval(async () => {
-                console.log("Getting comments!");
-                this.getComments();
-            }, 2000);
+                console.log("Getting comments!")
+                this.getComments()
+            }, 2000)
         } catch (e) {
-            console.log(e);
+            console.log(e)
         }
 
-        this.eventSource.addEventListener('commentstream', (json) => this.handleCommentUpdates(json));
-        this.eventSource.addEventListener('error', (err) => {
-            console.log(err)
-        });
+        this.eventSource.addEventListener('commentstream', (json) => this.handleCommentUpdates(json))
+        this.eventSource.addEventListener('error', console.log)
     }
 
 
-    getComments() {
+    getComments = () => {
         commentsService.getComments(this.props.projectId)
             .then(c => c.json())
             .then(json => {
-                console.log(json);
+                console.log(json)
                 this.setState({
                     comments: json.comments
                 })
             })
-            .catch(err => console.log(err));
+            .catch(err => console.log(err))
     }
 
 
     componentWillUnmount() {
-        console.log("Will unmount");
-        this.eventSource.removeEventListener('commentstream', (json) => this.handleCommentUpdates(json));
+        console.log("Will unmount")
+        this.eventSource.removeEventListener('commentstream', (json) => this.handleCommentUpdates(json))
         this.eventSource.removeEventListener('error', (err) => {
             console.log(err)
-        });
-        this.eventSource.close();
-        clearInterval(this.interval);
+        })
+        this.eventSource.close()
+        clearInterval(this.interval)
     }
 
-    handleCommentUpdates(json) {
-        const v = JSON.parse(json.data);
-        console.log(v);
+    handleCommentUpdates = (json) => {
+        const v = JSON.parse(json.data)
+        console.log(v)
         if (v.message === 'Comment deleted!') {
-            const array = [...this.state.comments];
+            const array = [...this.state.comments]
             const index = array.findIndex(function (item) {
                 return item.commentId === v.comment.commentId
-            });
+            })
             if (index !== -1) {
-                array.splice(index, 1);
-                console.log(array);
+                array.splice(index, 1)
+                console.log(array)
                 this.setState({
                     comments: array
-                });
+                })
             }
         } else if (v.message === 'Comment added!') {
             this.setState({
                 comments: this.state.comments.concat(v.comment)
             })
         }
-    };
+    }
 
 
     handleFormChange = (e) => {
         this.setState({
             [e.target.id]: e.target.value
         })
-    };
+    }
 
     post = () => {
-        const today = new Date();
+        const today = new Date()
         this.setState({
             postLoading: true,
             date: `${today.getFullYear()}/${today.getMonth() + 1}/${today.getDate()}`
-        });
+        })
 
         commentsService.postComment(this.props.projectId, this.state.text)
             .then(response => response.json())
             .then(response => {
-                console.log(response);
+                console.log(response)
                 this.setState({
                     postLoading: false,
                     text: ""
                 })
             })
-            .catch(err => console.log(err))
-    };
+            .catch(console.log)
+    }
 
     deleteComment = (commentId) => {
         commentsService.deleteComment(commentId)
             .then(response => {
-                console.log(response);
+                console.log(response)
             })
-            .catch(err => {
-                console.log(err)
-            })
+            .catch(console.log)
 
-    };
+    }
 
     hasPermissions = (ownerId) => {
         return (this.state.userType === 0 || this.state.userId === ownerId)
-    };
+    }
 
     renderConfirmDialog = () => {
         return (
@@ -188,7 +176,7 @@ class Comments extends Component {
                 <DialogActions>
                     <Button
                         onClick={() => {
-                            this.setState({dialogBoxOpened: false});
+                            this.setState({dialogBoxOpened: false})
                         }}
                         color="primary"
                     >
@@ -196,8 +184,8 @@ class Comments extends Component {
                     </Button>
                     <Button
                         onClick={() => {
-                            this.deleteComment(this.state.selectedCommentId);
-                            this.setState({dialogBoxOpened: false});
+                            this.deleteComment(this.state.selectedCommentId)
+                            this.setState({dialogBoxOpened: false})
                         }}
                         color="primary"
                         autoFocus
@@ -207,7 +195,7 @@ class Comments extends Component {
                 </DialogActions>
             </Dialog>
         )
-    };
+    }
 
     render() {
         const {classes} = this.props
@@ -220,7 +208,7 @@ class Comments extends Component {
                                 <ListItemAvatar>
                                     <Avatar
                                         alt="Profile Picture"
-                                        src="https://picsum.photos/128"
+                                        src={comment.ownerProfilePic}
                                         onClick={() => this.props.history.push("/main/userprofile/" + comment.ownerId)}
                                     />
                                 </ListItemAvatar>

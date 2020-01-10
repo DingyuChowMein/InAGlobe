@@ -36,15 +36,23 @@ def add_comment(data, project_id):
 def get_comments(project_id):
     if not project_id:
         return {'message': "No project id"}
-    project_comments = Comment.query.filter_by(project_id=project_id).all()
+    # project_comments = Comment.query.filter_by(project_id=project_id).all()
+    project_comments = db.session.query(comment_user_joining_table, Comment, User) \
+        .filter_by(project_id=project_id) \
+        .join(Comment, Comment.owner_id == comment_user_joining_table.c.owner_id) \
+        .join(User, User.id == comment_user_joining_table.c.user_id) \
+        .all()
+
     comments_json = [{
         "commentId": comment.id,
         "text": comment.text,
         "ownerId": comment.owner_id,
+        "ownerProfilePic": comment.profile_picture,
         "ownerFirstName": comment.owner_first_name,
         "ownerLastName": comment.owner_last_name,
         "date": comment.date_time.strftime("%Y-%m-%d %H:%M:%S")
     } for comment in project_comments]
+    
     app.logger.info('getting comments')
     return {"comments": comments_json}, 200
 
