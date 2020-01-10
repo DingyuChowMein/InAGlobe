@@ -14,15 +14,15 @@ import config from "../../config"
 
 // Importing class's stylesheet
 import styles from "../../assets/jss/views/proposalMainPageStyle"
-import {GAEvent} from "../../components/Tracking/Tracking";
+import {GAEvent} from "../../components/Tracking/Tracking"
 
 class ProposalMainPage extends Component {
 
     constructor(props) {
-        super(props);
-        const userType = JSON.parse(localStorage.getItem('user')).permissions;
-        console.log(this.props);
-        const projectData = this.getProjectData();
+        super(props)
+        const userType = JSON.parse(localStorage.getItem('user')).permissions
+        console.log(this.props)
+        const projectData = this.getProjectData()
         this.state = {
             userId: JSON.parse(localStorage.getItem('user')).userId,
             userType: userType,
@@ -31,59 +31,59 @@ class ProposalMainPage extends Component {
             buttonMessage: this.getButtonMessage(userType, projectData.status, projectData.joined),
             comments: [],
             showModal: false,
-        };
-        this.actionButtonClicked = this.actionButtonClicked.bind(this);
-        this.getButtonMessage = this.getButtonMessage.bind(this);
-        this.hasPermissions = this.hasPermissions.bind(this);
+        }
+        this.actionButtonClicked = this.actionButtonClicked.bind(this)
+        this.getButtonMessage = this.getButtonMessage.bind(this)
+        this.hasPermissions = this.hasPermissions.bind(this)
 
-        console.log("UserType:" + this.state.userType);
-        console.log(userType);
+        console.log("UserType:" + this.state.userType)
+        console.log(userType)
         console.log(this.state.buttonDisabled)
     }
 
     componentWillReceiveProps () {
-        this.getProjectData();
+        this.getProjectData()
     }
 
     getProjectData() {
         const projectData = this.props.data.filter(project =>
             project.id === parseInt(this.props.match.params.id)
-        );
+        )
 
 
-        const localKey = "pdata" + this.props.match.params.id;
+        const localKey = "pdata" + this.props.match.params.id
         if (!(projectData.length === 0)) {
             this.setState({
                projectData: projectData[0]
-            });
-            localStorage.setItem(localKey, JSON.stringify(projectData[0]));
-            return projectData[0];
+            })
+            localStorage.setItem(localKey, JSON.stringify(projectData[0]))
+            return projectData[0]
         } else {
-            const localProjectData = localStorage.getItem(localKey);
-            console.log(localProjectData);
+            const localProjectData = localStorage.getItem(localKey)
+            console.log(localProjectData)
             if (localProjectData === null) {
                 this.props.history.push("/main/home")
             } else {
                 this.setState({
                     "projectData": JSON.parse(localProjectData)
-                });
-                return JSON.parse(localProjectData);
+                })
+                return JSON.parse(localProjectData)
             }
         }
     }
 
     actionButtonClicked = () => {
-        const token = JSON.parse(localStorage.getItem('user')).token;
-        const bearer = 'Bearer ' + token;
-        GAEvent("Project", this.state.buttonMessage + " clicked",toString(this.state.projectData.id));
-        let new_project_data;
+        const token = JSON.parse(localStorage.getItem('user')).token
+        const bearer = 'Bearer ' + token
+        GAEvent("Project", this.state.buttonMessage + " clicked",toString(this.state.projectData.id))
+        let new_project_data
         if (this.state.userType === 0) {
-            new_project_data = this.state.projectData;
-            new_project_data.status = new_project_data.status === "Approved" ? "Needs Approval" : "Approved";
+            new_project_data = this.state.projectData
+            new_project_data.status = new_project_data.status === "Approved" ? "Needs Approval" : "Approved"
             this.setState({
                 projectData: new_project_data,
                 buttonMessage: this.getButtonMessage(this.state.userType, new_project_data.status, new_project_data.joined)
-            });
+            })
             fetch(config.apiUrl + '/approve/', {
                 method: 'post',
                 headers: {
@@ -99,12 +99,12 @@ class ProposalMainPage extends Component {
             })
         } else if ((this.state.userType === 2 || this.state.userType === 3)) {
             if (this.state.projectData.joined === 0) {
-                new_project_data = this.state.projectData;
-                new_project_data.joined = 1;
+                new_project_data = this.state.projectData
+                new_project_data.joined = 1
                 this.setState({
                     projectData: new_project_data,
                     buttonMessage: this.getButtonMessage(this.state.userType, new_project_data.status, new_project_data.joined)
-                });
+                })
 
                 fetch(config.apiUrl + '/dashboard/', {
                     method: 'post',
@@ -121,12 +121,12 @@ class ProposalMainPage extends Component {
                         console.log(err)
                     })
             } else {
-                new_project_data = this.state.projectData;
-                new_project_data.joined = 0;
+                new_project_data = this.state.projectData
+                new_project_data.joined = 0
                 this.setState({
                     projectData: new_project_data,
                     buttonMessage: this.getButtonMessage(this.state.userType, new_project_data.status, new_project_data.joined)
-                });
+                })
 
                 fetch(config.apiUrl + '/dashboard/', {
                     method: 'delete',
@@ -146,7 +146,7 @@ class ProposalMainPage extends Component {
             }
 
         }
-    };
+    }
 
     getButtonMessage = (userType, status, joined) => {
         if (userType === 0) {
@@ -163,14 +163,14 @@ class ProposalMainPage extends Component {
         } else {
             return "Leave project"
         }
-    };
+    }
 
     hasPermissions = (ownerId) => {
         return (this.state.userType === 0 || this.state.userId === parseInt(ownerId))
-    };
+    }
 
     render() {
-        const {classes, match} = this.props;
+        const {classes, match} = this.props
         return (
             <ResponsiveDrawer name={"Project Page"}>
                 <ProposalPage {...this.props} data={this.state.projectData} isPreview={false}>
