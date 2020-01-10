@@ -173,7 +173,7 @@ class Dashboard extends Component {
                                         notifyId: i,
                                         userId: request.user_id,
                                         projectId: request.project_id,
-                                        userProfilePic: request.profile_picture,
+                                        userProfilePic: request.user_profile_pic,
                                         userName: request.user_first_name + " " + request.user_last_name,
                                         projectName: request.project_title,
                                         details: request.project_short_description,
