@@ -5,6 +5,7 @@ import Home from "@material-ui/icons/Home"
 import List from "@material-ui/icons/List"
 import Subject from "@material-ui/icons/Subject"
 import PersonOutline from '@material-ui/icons/PersonOutline'
+import Info from "@material-ui/icons/Info"
 
 // Importing reference to all the different views
 import SignInSide from './views/SignInSide/SignInSide'
@@ -18,8 +19,9 @@ import ProposalPreviewPage from './views/ProposalPage/ProposalPreviewPage'
 import AddCheckpoint from "./views/AddCheckpoint/AddCheckpoint"
 import EditProfile from "./views/UserProfile/EditProfile"
 import UserProfile from "./views/UserProfile/UserProfile"
-import SendEmail from "./views/ResetPassword/SendEmail";
-import ResetPassword from "./views/ResetPassword/ResetPassword";
+import SendEmail from "./views/ResetPassword/SendEmail"
+import ResetPassword from "./views/ResetPassword/ResetPassword"
+import About from './views/About/About'
 
 const loginRoutes = [
     {
@@ -103,7 +105,7 @@ const proposalRoutes = [
         layout: "/main/projectlist",
         userLevel: 3
     },
-];
+]
 
 const drawerRoutes = [
     {
@@ -137,8 +139,16 @@ const drawerRoutes = [
         component: UserProfile,
         layout: "/main",
         userLevel: 3
+    },
+    {
+        path: "/about",
+        name: "About",
+        icon: Info,
+        component: About,
+        layout: "/main",
+        userLevel: 3
     }
-];
+]
 
 const mainRoutes = [...drawerRoutes, ...proposalRoutes, ...profileRoutes]
 
