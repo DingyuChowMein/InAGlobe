@@ -18,6 +18,7 @@ class ProposalPage extends Component {
             images: props.data.images,
             documents: props.data.documents,
             status: props.data.status,
+            detailedDescription: props.data.detailedDescription,
             location: props.data.location,
             checkpoints: props.data.checkpoints,
         }
@@ -30,6 +31,7 @@ class ProposalPage extends Component {
             organisation: this.props.data.organisation,
             images: this.props.data.images,
             status: this.props.data.status,
+            detailedDescription: this.props.data.detailedDescription,
             documents: this.props.data.documents,
             location: this.props.data.location,
             checkpoints: this.props.data.checkpoints,
