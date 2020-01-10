@@ -114,10 +114,7 @@ class ProjectList extends Component {
                                         lng={marker.longitude}
                                         arrow
                                     >
-                                        <Icon
-                                            color="primary"
-                                            onClick={() => this.props.history.push(`/main/projectlist/proposalpage/${marker.id}`)}
-                                        >
+                                        <Icon color="primary" onClick={() => this.props.history.push(`/main/projectlist/proposalpage/${marker.projectId}`)}>
                                             <PersonPinCircle />
                                         </Icon>
                                     </Tooltip>
