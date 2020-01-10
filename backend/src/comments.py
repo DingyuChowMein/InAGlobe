@@ -1,7 +1,7 @@
 from flask import g, stream_with_context, current_app as app
 from . import db, redis_client
 from .auth import token_auth
-from .models import Comment, user_comment_joining_table
+from .models import Comment, User, user_comment_joining_table
 from json import dumps
 
 
