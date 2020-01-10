@@ -208,7 +208,7 @@ class Comments extends Component {
                                 <ListItemAvatar>
                                     <Avatar
                                         alt="Profile Picture"
-                                        src={comment.ownerProfilePic}
+                                        src="https://picsum.photos/200"
                                         onClick={() => this.props.history.push("/main/userprofile/" + comment.ownerId)}
                                     />
                                 </ListItemAvatar>
