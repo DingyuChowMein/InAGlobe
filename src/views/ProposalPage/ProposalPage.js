@@ -84,7 +84,7 @@ class ProposalPage extends Component {
                         <VerticalTimelineElement
                             className="vertical-timeline-element--work"
                             iconStyle={{background: 'rgb(33, 150, 243)', color: '#fff'}}
-                            date={event.date}
+                            date={event.date.substring(0,16)}
                             icon={<School />}
                         >
                             <h3 className="vertical-timeline-element-title">{event.title}</h3>
