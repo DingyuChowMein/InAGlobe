@@ -17,15 +17,17 @@ import {
     ListItemIcon,
     ListItemText,
     Toolbar,
+    Tooltip,
     Typography
 } from '@material-ui/core'
-import {Menu, Warning} from '@material-ui/icons'
+import { Menu, Warning, Assessment } from '@material-ui/icons'
 
 // Importing webpath data for drawer links
 import {drawerRoutes} from '../../routes'
 
 // Imports of different components in project
 import RegularButton from "../CustomButtons/RegularButton"
+import Search from "../Search/Search"
 
 // Importing images from assets
 import logo from '../../assets/img/logo.png'
@@ -33,9 +35,6 @@ import logo from '../../assets/img/logo.png'
 // Importing class's stylesheet
 import styles from "../../assets/jss/components/responsiveDrawerStyle"
 import 'react-perfect-scrollbar/dist/css/styles.css'
-import Tooltip from "@material-ui/core/Tooltip";
-import Search from "../Search/Search";
-import Assessment from "@material-ui/icons/esm/Assessment";
 
 
 class ResponsiveDrawer extends Component {
@@ -55,10 +54,10 @@ class ResponsiveDrawer extends Component {
     }
 
     render() {
-        const {classes, container, name} = this.props;
+        const {classes, container, name} = this.props
 
-        var alert = null;
-        const user = JSON.parse(localStorage.getItem("user"));
+        var alert = null
+        const user = JSON.parse(localStorage.getItem("user"))
         // console.log(user)
         if (!user.location || !user.shortDescription || !user.longDescription) {
             alert = (
