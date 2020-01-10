@@ -294,6 +294,7 @@ def get_joining_requests():
         "project_id": request.project_id,
         "user_id": request.user_id,
         "user_first_name": request.User.first_name,
+        "user_profile_pic": request.User.profile_picture,
         "user_last_name": request.User.last_name,
         "project_title": request.Project.title,
         "project_short_description": request.Project.short_description,
