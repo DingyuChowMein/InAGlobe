@@ -1,7 +1,7 @@
 from flask import g, stream_with_context, current_app as app
 from . import db, redis_client
 from .auth import token_auth
-from .models import Comment
+from .models import Comment, user_comment_joining_table
 from json import dumps
 
 
@@ -37,10 +37,10 @@ def get_comments(project_id):
     if not project_id:
         return {'message': "No project id"}
     # project_comments = Comment.query.filter_by(project_id=project_id).all()
-    project_comments = db.session.query(comment_user_joining_table, Comment, User) \
+    project_comments = db.session.query(user_comment_joining_table, Comment, User) \
         .filter_by(project_id=project_id) \
-        .join(Comment, Comment.owner_id == comment_user_joining_table.c.owner_id) \
-        .join(User, User.id == comment_user_joining_table.c.user_id) \
+        .join(Comment, Comment.owner_id == user_comment_joining_table.c.owner_id) \
+        .join(User, User.id == user_comment_joining_table.c.user_id) \
         .all()
 
     comments_json = [{
